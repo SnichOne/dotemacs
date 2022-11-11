@@ -1,0 +1,36 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("Emacs Help: new line in multiline comment."
+ (position . 248)
+ (help-fn . describe-key--helper)
+ (help-args
+  (("\352" .
+	   [134217834]))
+  "tmp.org")
+ (position . 248)
+ (handler . help-bookmark-jump))
+("Emacs Manual: display the section of the Emacs manual that describes the command corresponding to KEY."
+ (front-context-string . "‘C-h K KEY’ disp")
+ (rear-context-string . "mmand does.\n\n   ")
+ (position . 170378)
+ (filename . "/usr/share/info/emacs")
+ (info-node . "Key Help")
+ (handler . Info-bookmark-jump)
+ (annotation . ""))
+("Emacs Manual: allow commands while minibuffer is active."
+ (front-context-string . "   Emacs normall")
+ (rear-context-string . "ther Window::.\n\n")
+ (position . 132536)
+ (filename . "/usr/share/info/emacs")
+ (info-node . "Minibuffer Edit")
+ (handler . Info-bookmark-jump))
+("Emacs Manual: repeat mode."
+ (front-context-string . "   Also you can ")
+ (rear-context-string . "it once again.\n\n")
+ (position . 121417)
+ (filename . "/usr/share/info/emacs")
+ (info-node . "Repeating")
+ (handler . Info-bookmark-jump))
+)
