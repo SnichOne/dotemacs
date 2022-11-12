@@ -398,8 +398,11 @@
 (use-package modus-themes
   :init
   ;; Add all your customizations prior to loading the themes
+
+  ;; Adjust modus-vivendi colors.
   (setq modus-themes-vivendi-color-overrides
-        '((fg-main . "#f0fff0")))
+        '((fg-main . "#f0fff0")))       ; Default face is white on black, dim white a bit.
+
   (setq modus-themes-mode-line '(borderless)
         modus-themes-syntax '(yellow-comments))
 
