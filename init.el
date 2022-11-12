@@ -403,7 +403,7 @@
   (setq modus-themes-vivendi-color-overrides
         '((fg-main . "#f0fff0")))       ; Default face is white on black, dim white a bit.
 
-  (setq modus-themes-mode-line '(borderless)
+  (setq modus-themes-mode-line '(borderless accented)
         modus-themes-syntax '(yellow-comments))
 
   ;; Load the theme files before enabling a theme
@@ -426,4 +426,14 @@
   :config
   (setq which-key-idle-delay 0.4)
   (which-key-mode))
+
+
+;; Collapse minor modes in modeline.
+;; Probably will switch to doom-modeline, if I ever use evil-mode.
+(use-package minions
+  :config
+  (setq minions-mode-line-lighter ";")
+  :defer 2
+  :config
+  (minions-mode 1))
 ;; ---------------------------------------------------------------------------
