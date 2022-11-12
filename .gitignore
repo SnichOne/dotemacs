@@ -1,3 +1,5 @@
+*.elc
 places
+projects
 eln-cache/
 /eshell/history
