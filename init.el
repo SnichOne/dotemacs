@@ -72,9 +72,9 @@
 ;; ((un)comment the following(previous) line)
 ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; Enable the leuven theme, a nice light theme available default, e.g. provides
-;; awesome Org-mode support by highlighting headers and changing title font
-;; size.
+;; Enable the leuven theme, a nice light theme available by default, e.g.
+;; provides awesome Org-mode support by highlighting headers and changing title
+;; font size.
 ;; (load-theme 'leuven-high-contrast t)
 ;; I am bit tired of the leuven theme — want to try modus-themes. Leuven,
 ;; modus-operandi and default are the best light themes.
@@ -188,7 +188,17 @@
 (save-place-mode 1)
 
 ;; Auto refresh buffers when the underlying file has changed outside of Emacs.
+;; It's called Auto Revert mode in Emacs.
 (global-auto-revert-mode 1)
+;; When Auto Revert mode a buffer that is under version control, it updates the
+;; version control information in the mode line. However, Auto Revert mode may
+;; not properly update this information if the version control status changes
+;; without changes to the work file, from outside the current Emacs session. If
+;; you set ‘auto-revert-check-vc-info’ to ‘t’, Auto Revert mode updates the
+;; version control status information every ‘auto-revert-interval’ seconds, even
+;; if the work file itself is unchanged. The resulting CPU usage depends on the
+;; version control system, but is usually not excessive.
+;; (customize-set-variable 'auto-revert-check-vc-info t)
 
 ;; Auto refresh Dired and other similar buffers.
 (customize-set-variable 'global-auto-revert-non-file-buffers t)
