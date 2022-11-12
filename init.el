@@ -263,13 +263,13 @@
 
 ;; Scale LaTeX preview.
 (customize-set-variable 'org-format-latex-options
-                        '(:foreground default
-                                      :background default
-                                      :scale 1.5
-                                      :html-foreground "Black"
-                                      :html-background "Transparent"
-                                      :html-scale 1.0
-                                      :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+                        '( :foreground default
+                           :background default
+                           :scale 1.5
+                           :html-foreground "Black"
+                           :html-background "Transparent"
+                           :html-scale 1.0
+                           :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 ;; Enable syntax highlighting for latex fragments.
 ;; Note: I didn't understood
