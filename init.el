@@ -214,7 +214,11 @@
 ;; Use spaces, not tabs, for indentation.
 (customize-set-variable 'indent-tabs-mode nil)
 
-;; Remove trailing whitespaces before writing file.
+;; Enable highlighting of matching pair of parentheses. By default, there is a
+;; small delay between the movement of a cursor and the highlighting of the
+;; matching pair of parentheses. The following line of code gets rid of this
+;; delay.
+(customize-set-variable 'show-paren-delay 0)
 
 ;; Make Emacs hotkeys work in Russian layout.
 ;; http://reangdblog.blogspot.com/2015/05/emacs.html.
