@@ -31,6 +31,16 @@
 ;; https://github.com/susam/emfy#keep-working-directory-tidy
 (customize-set-variable 'backup-by-copying t)
 
+;; Better isearch defaults. Isearch stands for incremental search. This means
+;; that search results are updated and highlighted while you are typing your
+;; query, incrementally.
+(customize-set-variable 'lazy-highlight-initial-delay 0)
+;; I tested scroll while isearch is active, it works awfully and doesn't let you
+;; to scroll more than a screen away from the active match. Do not enable it.
+;; (customize-set-variable 'isearch-allow-scroll nil)
+;; Highlighting full buffer does not make a lot of sense without scroll.
+;; (customize-set-variable 'lazy-highlight-buffer t)
+
 ;; Even if you avoid using the customization UI, some settings may cause
 ;; customization variables to be added to your init.el file. Let's change that
 ;; and move customization variables to a separate file and load it.
@@ -356,16 +366,17 @@
 
 ;; Display scroll via nyan cat.
 (use-package nyan-mode
+  :defer 1
   :config (nyan-mode 1))
 
 
-;; Enable rich annotations using the Marginalia package
+;; Enable rich annotations using the Marginalia package.
 (use-package marginalia
-  ;; Either bind `marginalia-cycle' globally or only in the minibuffer
-  :bind (:map minibuffer-local-map
-              ("M-A" . marginalia-cycle))
+  ;; Either bind `marginalia-cycle' globally or only in the minibuffer.
+  :bind
+  (:map minibuffer-local-map ("M-A" . marginalia-cycle))
 
-  ;; The :init configuration is always executed (Not lazy!)
+  ;; The :init configuration is always executed (Not lazy!).
   :init
 
   ;; Must be in the :init section of use-package such that the mode gets
@@ -383,6 +394,7 @@
 ;; Taken from:
 ;; https://protesilaos.com/emacs/modus-themes#h:8eb4b758-d318-4480-9ead-357a571beb93
 (use-package dimmer
+  :defer 1
   :config
   (setq dimmer-fraction 0.3)
   (setq dimmer-adjustment-mode :foreground)
@@ -397,7 +409,7 @@
 ;; "#+title: ...") distinguishable from comments.
 (use-package modus-themes
   :init
-  ;; Add all your customizations prior to loading the themes
+  ;; Add all your customizations prior to loading the themes.
 
   ;; Adjust modus-vivendi colors.
   (setq modus-themes-vivendi-color-overrides
@@ -406,11 +418,11 @@
   (setq modus-themes-mode-line '(borderless accented)
         modus-themes-syntax '(yellow-comments))
 
-  ;; Load the theme files before enabling a theme
+  ;; Load the theme files before enabling a theme.
   (modus-themes-load-themes)
   :config
   ;; Load the theme of your choice:
-  (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi)
+  (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi).
   :bind ("<f5>" . modus-themes-toggle))
 
 
@@ -421,7 +433,6 @@
 ;; follow C-x (or as many as space allows given your settings). This includes
 ;; prefixes like C-x 8 which are shown in a different face.
 (use-package which-key
-  :diminish which-key-mode
   :defer 2
   :config
   (setq which-key-idle-delay 0.4)
@@ -433,7 +444,39 @@
 (use-package minions
   :config
   (setq minions-mode-line-lighter ";")
-  :defer 2
+  :defer 1
   :config
   (minions-mode 1))
+
+
+;; Convenient completion popup.
+(use-package company
+  :defer 1
+  :commands (completion-at-point)
+  :bind ( :map prog-mode-map
+          ("<tab>" . company-indent-or-complete-common))
+  :config
+  (setq company-minimum-prefix-length 1
+        company-idle-delay 0.0)         ; Default is 0.2.
+  (global-company-mode))
+
+
+;; Enable Flycheck globally. Check for errors on the fly. Flycheck has better
+;; integration with lsp-mode than built-in Flymake, e.g. lsp-ui sideline does
+;; not show diagnostics with Flymake.
+(use-package flycheck
+  :defer 1
+  :config (global-flycheck-mode))
+
+;; LSP support.
+(use-package lsp-mode
+  :init
+  ;; Set prefix for lsp-command-keymap (few alternatives - "s-l", "C-c l").
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((python-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration)) ; shows keymap names, e.g. +goto, +refactor, etc.
+  :commands (lsp lsp-deferred))
+;; Optionally
+(use-package lsp-ui :commands lsp-ui-mode)
+;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 ;; ---------------------------------------------------------------------------

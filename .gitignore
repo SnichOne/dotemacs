@@ -1,5 +1,7 @@
 *.elc
+.lsp-session-v*
 places
 projects
+.cache/
 eln-cache/
 /eshell/history
