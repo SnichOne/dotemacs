@@ -101,7 +101,7 @@
 
 ;; Enable line numbers in programming modes. Not
 ;; 'global-display-line-numbers-mode' because there are many special and
-;; temporary modes where we don't need/want them.
+;; temporary modes where we don't need/want line numbering.
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
@@ -284,6 +284,11 @@
 ;; stars, only one star (the rightmost) at each heading is visible, the rest are
 ;; masked with the same font color as background.
 (customize-set-variable 'org-startup-indented t)
+
+;; Customize org-M-RET-may-split-line to make M-RET not split the line. Doom
+;; Emacs sets it to nil by default.
+;; Source: https://orgmode.org/manual/Structure-Editing.html#index-M_002dRET.
+(customize-set-variable 'org-M-RET-may-split-line nil)
 
 ;; Scale LaTeX preview.
 (customize-set-variable 'org-format-latex-options
