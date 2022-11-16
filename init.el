@@ -291,6 +291,8 @@
 (customize-set-variable 'org-M-RET-may-split-line nil)
 
 ;; Scale LaTeX preview.
+;; Alternative to customize-set-variable one can use plist-put
+;; (plist-put org-format-latex-options :scale 1.5)
 (customize-set-variable 'org-format-latex-options
                         '( :foreground default
                            :background default
@@ -318,7 +320,6 @@
 ;; BTW, maybe instead of setting 'auto-hscroll-mode' to 'current-line' it's
 ;; better to remap org-fill-paragraph to scroll horizontally to left after
 ;; filling the paragraph.
-;; (add-hook 'org-mode-hook '(setq-local auto-hscroll-mode 'current-line))
 (setq-mode-local org-mode auto-hscroll-mode 'current-line)
 ;; ---------------------------------------------------------------------------
 
@@ -369,7 +370,7 @@
 (setq use-package-always-ensure t)
 
 
-;; Display scroll via nyan cat.
+;; Display scroll via nyan cat. Alternative — the 'poke-line' package.
 (use-package nyan-mode
   :defer 1
   :config (nyan-mode 1))
@@ -386,7 +387,11 @@
 
   ;; Must be in the :init section of use-package such that the mode gets
   ;; enabled right away. Note that this forces loading the package.
-  (marginalia-mode))
+  (marginalia-mode)
+
+  :config
+  (add-hook 'minibuffer-setup-hook
+      (lambda () (setq truncate-lines t))))
 
 
 ;; Enable the minor mode that indicates which buffer is currently active by
@@ -398,14 +403,17 @@
 ;;
 ;; Taken from:
 ;; https://protesilaos.com/emacs/modus-themes#h:8eb4b758-d318-4480-9ead-357a571beb93
-(use-package dimmer
-  :defer 1
-  :config
-  (setq dimmer-fraction 0.3)
-  (setq dimmer-adjustment-mode :foreground)
-  (setq dimmer-use-colorspace :rgb)
+;;
+;; Update: commented it out, since it dims lsp signature in the minibuffer or
+;; echo area, do not know what it is and fixing it is not a priority.
+;; (use-package dimmer
+;;   :defer 1
+;;   :config
+;;   (setq dimmer-fraction 0.3)
+;;   (setq dimmer-adjustment-mode :foreground)
+;;   (setq dimmer-use-colorspace :rgb)
 
-  (dimmer-mode 1))
+;;   (dimmer-mode 1))
 
 
 ;; Load Modus theme.
@@ -459,10 +467,17 @@
   :defer 1
   :commands (completion-at-point)
   :bind ( :map prog-mode-map
-          ("<tab>" . company-indent-or-complete-common))
+          ("<tab>" . company-indent-or-complete-common)
+          :map company-active-map
+          ("<tab>" . company-complete-common-or-cycle)
+          ("<backtab>" . company-select-previous))
   :config
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.0)         ; Default is 0.2.
+  ;; There is company-tng-mode which behaves similar to Vim YCM or coc, but not
+  ;; exactly: when you cycle through with TAB it outputs "virtual" arguments
+  ;; which disappear when you start typing anyhting.
+  ;; (company-tng-mode)
   (global-company-mode))
 
 
@@ -481,7 +496,17 @@
   :hook ((python-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration)) ; shows keymap names, e.g. +goto, +refactor, etc.
   :commands (lsp lsp-deferred))
+
 ;; Optionally
 (use-package lsp-ui :commands lsp-ui-mode)
 ;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+
+;; Evil — Vim emulation.
+;; (use-package evil
+;;   :init
+;;   ;; Evil uses "C-z" and "C-M-z" to switch to Emacs state, hence unbind "C-z"
+;;   ;; which is bound to 'suspend-emacs' by default.
+;;   (global-unset-key (kbd "C-z"))
+;;   (evil-mode))
 ;; ---------------------------------------------------------------------------
