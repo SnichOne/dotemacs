@@ -1,7 +1,7 @@
 This is use-package.info, produced by makeinfo version 6.7 from
 use-package.texi.
 
-     Copyright (C) 2012-2022 John Wiegley <johnw@newartisans.com>
+     Copyright (C) 2012-2022 Free Software Foundation, Inc.
 
      You can redistribute this document and/or modify it under the terms
      of the GNU General Public License as published by the Free Software
@@ -30,7 +30,7 @@ tidy.  I created it because I have over 80 packages that I use in Emacs,
 and things were getting difficult to manage.  Yet with this utility my
 total load time is around 2 seconds, with no loss of functionality!
 
-     Copyright (C) 2012-2022 John Wiegley <johnw@newartisans.com>
+     Copyright (C) 2012-2022 Free Software Foundation, Inc.
 
      You can redistribute this document and/or modify it under the terms
      of the GNU General Public License as published by the Free Software
@@ -56,33 +56,33 @@ total load time is around 2 seconds, with no loss of functionality!
 
 Installation
 
-* Installing from an Elpa Archive::
+* Installing from GNU ELPA::
 * Installing from the Git Repository::
 * Post-Installation Tasks::
 
 Keywords
 
-* after::
-* ‘bind-keymap’, ‘bind-keymap*’: bind-keymap bind-keymap*.
-* ‘bind’, ‘bind*’: bind bind*.
-* commands::
-* ‘preface’, ‘init’, ‘config’: preface init config.
-* custom::
-* custom-face::
-* ‘defer’, ‘demand’: defer demand.
-* ‘defines’, ‘functions’: defines functions.
-* ‘diminish’, ‘delight’: diminish delight.
-* disabled::
-* ‘ensure’, ‘pin’: ensure pin.
-* hook::
-* ‘if’, ‘when’, ‘unless’: if when unless.
-* load-path::
-* ‘mode’, ‘interpreter’: mode interpreter.
-* ‘magic’, ‘magic-fallback’: magic magic-fallback.
-* no-require::
-* requires::
+* after:: ‘:after’.
+* bind-keymap bind-keymap*:: ‘:bind-keymap’, ‘:bind-keymap*’.
+* bind bind*:: ‘:bind’, ‘:bind*’.
+* commands:: ‘:commands’.
+* preface init config:: ‘:preface’, ‘:init’, ‘:config’.
+* custom:: ‘:custom’.
+* custom-face:: ‘:custom-face’.
+* defer demand:: ‘:defer’, ‘:demand’.
+* defines functions:: ‘:defines’, ‘:functions’.
+* diminish delight:: ‘:diminish’, ‘:delight’.
+* disabled:: ‘:disabled’.
+* ensure pin:: ‘:ensure’, ‘:pin’.
+* hook:: ‘:hook’.
+* if when unless:: ‘:if’, ‘:when’, ‘:unless’.
+* load-path:: ‘:load-path’.
+* mode interpreter:: ‘:mode’, ‘:interpreter’.
+* magic magic-fallback:: ‘:magic’, ‘:magic-fallback’.
+* no-require:: ‘:no-require’.
+* requires:: ‘:requires’.
 
-‘:bind’, ‘:bind*’
+‘bind’, ‘bind*’
 
 * Binding to local keymaps::
 
@@ -113,36 +113,22 @@ from its development repository.
 
 * Menu:
 
-* Installing from an Elpa Archive::
+* Installing from GNU ELPA::
 * Installing from the Git Repository::
 * Post-Installation Tasks::
 
 
-File: use-package.info,  Node: Installing from an Elpa Archive,  Next: Installing from the Git Repository,  Up: Installation
+File: use-package.info,  Node: Installing from GNU ELPA,  Next: Installing from the Git Repository,  Up: Installation
 
-2.1 Installing from an Elpa Archive
-===================================
+2.1 Installing from GNU ELPA
+============================
 
-use-package is available from Melpa and Melpa-Stable.  If you haven’t
-used Emacs’ package manager before, then it is high time you familiarize
-yourself with it by reading the documentation in the Emacs manual, see
-*note (emacs)Packages::.  Then add one of the archives to
-‘package-archives’:
+use-package is available from GNU ELPA. If you haven’t used Emacs’
+package manager before, then it is high time you familiarize yourself
+with it by reading the documentation in the Emacs manual, see *note
+(emacs)Packages::.  Then add one of the archives to ‘package-archives’:
 
-   • To use Melpa:
-
-     (require 'package)
-     (add-to-list 'package-archives
-                  '("melpa" . "https://melpa.org/packages/") t)
-
-   • To use Melpa-Stable:
-
-     (require 'package)
-     (add-to-list 'package-archives
-                  '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
-   Once you have added your preferred archive, you need to update the
-local package list using:
+   First, you need to update the local package list using:
 
      M-x package-refresh-contents RET
 
@@ -154,7 +140,7 @@ dependencies using:
    Now see *note Post-Installation Tasks::.
 
 
-File: use-package.info,  Node: Installing from the Git Repository,  Next: Post-Installation Tasks,  Prev: Installing from an Elpa Archive,  Up: Installation
+File: use-package.info,  Node: Installing from the Git Repository,  Next: Post-Installation Tasks,  Prev: Installing from GNU ELPA,  Up: Installation
 
 2.2 Installing from the Git Repository
 ======================================
@@ -217,7 +203,7 @@ for ‘load-path’.
 
    should display something like
 
-     use-package-version’s value is "2.4.1"
+     use-package-version’s value is "2.4.3"
 
    If you are completely new to use-package then see *note Getting
 Started::.
@@ -276,25 +262,25 @@ File: use-package.info,  Node: Keywords,  Next: Debugging Tools,  Prev: Issues/R
 
 * Menu:
 
-* after::
-* ‘bind-keymap’, ‘bind-keymap*’: bind-keymap bind-keymap*.
-* ‘bind’, ‘bind*’: bind bind*.
-* commands::
-* ‘preface’, ‘init’, ‘config’: preface init config.
-* custom::
-* custom-face::
-* ‘defer’, ‘demand’: defer demand.
-* ‘defines’, ‘functions’: defines functions.
-* ‘diminish’, ‘delight’: diminish delight.
-* disabled::
-* ‘ensure’, ‘pin’: ensure pin.
-* hook::
-* ‘if’, ‘when’, ‘unless’: if when unless.
-* load-path::
-* ‘mode’, ‘interpreter’: mode interpreter.
-* ‘magic’, ‘magic-fallback’: magic magic-fallback.
-* no-require::
-* requires::
+* after:: ‘after’.
+* bind-keymap bind-keymap*:: ‘:bind-keymap’, ‘:bind-keymap*’.
+* bind bind*:: ‘bind’ ‘:bind*’.
+* commands:: ‘:commands’.
+* preface init config:: ‘:preface’, ‘:init’, ‘:config’.
+* custom:: ‘:custom’.
+* custom-face:: ‘:custom-face’.
+* defer demand:: ‘:defer’, ‘:demand’.
+* defines functions:: ‘:defines’, ‘:functions’.
+* diminish delight:: ‘:diminish’, ‘:delight’.
+* disabled:: ‘:disabled’.
+* ensure pin:: ‘:ensure’, ‘:pin’.
+* hook:: ‘:hook’.
+* if when unless:: ‘:if’, ‘:when’, ‘:unless’.
+* load-path:: ‘:load-path’.
+* mode interpreter:: ‘:mode’, ‘:interpreter’.
+* magic magic-fallback:: ‘:magic’, ‘:magic-fallback’.
+* no-require:: ‘:no-require’.
+* requires:: ‘:requires’.
 
 
 File: use-package.info,  Node: after,  Next: bind-keymap bind-keymap*,  Up: Keywords
@@ -963,37 +949,37 @@ TODO
 
 
 Tag Table:
-Node: Top786
-Node: Introduction2828
-Node: Installation3339
-Node: Installing from an Elpa Archive3691
-Node: Installing from the Git Repository4820
-Node: Post-Installation Tasks6363
-Node: Getting Started7051
-Node: Basic Concepts7230
-Node: Issues/Requests8394
-Node: Keywords8531
-Node: after9299
-Node: bind-keymap bind-keymap*11311
-Node: bind bind*12364
-Node: Binding to local keymaps14439
-Node: commands15586
-Node: preface init config15728
-Node: custom17827
-Node: custom-face18267
-Node: defer demand18587
-Node: defines functions19399
-Node: diminish delight20544
-Node: disabled22487
-Node: ensure pin22982
-Node: hook25712
-Node: if when unless27137
-Node: load-path28083
-Node: mode interpreter29229
-Node: magic magic-fallback30540
-Node: no-require31394
-Node: requires32098
-Node: Debugging Tools32985
+Node: Top780
+Node: Introduction2989
+Node: Installation3500
+Node: Installing from GNU ELPA3845
+Node: Installing from the Git Repository4586
+Node: Post-Installation Tasks6122
+Node: Getting Started6810
+Node: Basic Concepts6989
+Node: Issues/Requests8153
+Node: Keywords8290
+Node: after9237
+Node: bind-keymap bind-keymap*11249
+Node: bind bind*12302
+Node: Binding to local keymaps14377
+Node: commands15524
+Node: preface init config15666
+Node: custom17765
+Node: custom-face18205
+Node: defer demand18525
+Node: defines functions19337
+Node: diminish delight20482
+Node: disabled22425
+Node: ensure pin22920
+Node: hook25650
+Node: if when unless27075
+Node: load-path28021
+Node: mode interpreter29167
+Node: magic magic-fallback30478
+Node: no-require31332
+Node: requires32036
+Node: Debugging Tools32923
 
 End Tag Table
 

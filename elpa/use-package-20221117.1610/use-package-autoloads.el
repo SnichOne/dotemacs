@@ -192,11 +192,10 @@ Normalize arguments to delight.
 ;;; Generated autoloads from use-package-jump.el
 
 (autoload 'use-package-jump-to-package-form "use-package-jump" "\
-Attempt to find and jump to the `use-package' form that loaded
-PACKAGE. This will only find the form if that form actually
-required PACKAGE. If PACKAGE was previously required then this
-function will jump to the file that originally required PACKAGE
-instead.
+Attempt to find and jump to the `use-package' form that loaded PACKAGE.
+This will only find the form if that form actually required
+PACKAGE.  If PACKAGE was previously required then this function
+will jump to the file that originally required PACKAGE instead.
 
 \(fn PACKAGE)" t nil)
 
@@ -209,7 +208,7 @@ instead.
 ;;; Generated autoloads from use-package-lint.el
 
 (autoload 'use-package-lint "use-package-lint" "\
-Check for errors in use-package declarations.
+Check for errors in `use-package' declarations.
 For example, if the module's `:if' condition is met, but even
 with the specified `:load-path' the module cannot be found." t nil)
 

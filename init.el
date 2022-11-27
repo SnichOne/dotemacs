@@ -452,13 +452,13 @@
   (which-key-mode))
 
 
-;; Collapse minor modes in modeline.
+;; Collapse all minor modes in modeline, but whitelist flycheck-mode.
 ;; Probably will switch to doom-modeline, if I ever use evil-mode.
 (use-package minions
-  :config
-  (setq minions-mode-line-lighter ";")
   :defer 1
   :config
+  (setq minions-mode-line-lighter ";")
+  (setq minions-prominent-modes '(flycheck-mode))
   (minions-mode 1))
 
 
@@ -486,7 +486,18 @@
 ;; not show diagnostics with Flymake.
 (use-package flycheck
   :defer 1
-  :config (global-flycheck-mode))
+  :config
+  (setq flycheck-display-errors-delay 0)
+  (global-flycheck-mode))
+
+;; Enable flycheck-status-emoji, it replaces the standard Flycheck mode-line
+;; status indicators with cute, compact emoji that convey the corresponding
+;; information.
+(use-package flycheck-status-emoji
+  :after flycheck
+  :config
+  (flycheck-status-emoji-mode))
+
 
 ;; LSP support.
 (use-package lsp-mode
@@ -501,6 +512,14 @@
 (use-package lsp-ui :commands lsp-ui-mode)
 ;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
+
+;; Dumb Jump is an Emacs "jump to definition" package with support for 50+
+;; programming languages that favors "just working". This means minimal — and
+;; ideally zero — configuration with absolutely no stored indexes (TAGS) or
+;; persistent background processes..
+(use-package dumb-jump
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 ;; Evil — Vim emulation.
 ;; (use-package evil
