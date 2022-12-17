@@ -41,6 +41,10 @@
 ;; Highlighting full buffer does not make a lot of sense without scroll.
 ;; (customize-set-variable 'lazy-highlight-buffer t)
 
+;; Show eldoc (documentation in minibuffer) as soon as possible without any
+;; delay.
+(customize-set-variable 'eldoc-idle-delay 0)
+
 ;; Even if you avoid using the customization UI, some settings may cause
 ;; customization variables to be added to your init.el file. Let's change that
 ;; and move customization variables to a separate file and load it.
@@ -285,8 +289,9 @@
 ;; masked with the same font color as background.
 (customize-set-variable 'org-startup-indented t)
 
-;; Customize org-M-RET-may-split-line to make M-RET not split the line. Doom
-;; Emacs sets it to nil by default.
+;; Customize org-M-RET-may-split-line to make M-RET not split the line. Useful
+;; when inserting new heading or list item. Doom Emacs sets it to nil by
+;; default.
 ;; Source: https://orgmode.org/manual/Structure-Editing.html#index-M_002dRET.
 (customize-set-variable 'org-M-RET-may-split-line nil)
 
@@ -452,13 +457,13 @@
   (which-key-mode))
 
 
-;; Collapse all minor modes in modeline, but whitelist flycheck-mode.
+;; Collapse all minor modes in modeline, but whitelist flycheck and flymake.
 ;; Probably will switch to doom-modeline, if I ever use evil-mode.
 (use-package minions
   :defer 1
   :config
   (setq minions-mode-line-lighter ";")
-  (setq minions-prominent-modes '(flycheck-mode))
+  (setq minions-prominent-modes '(flycheck-mode flymake-mode))
   (minions-mode 1))
 
 
@@ -466,51 +471,77 @@
 (use-package company
   :defer 1
   :commands (completion-at-point)
-  :bind ( :map prog-mode-map
-          ("<tab>" . company-indent-or-complete-common)
-          :map company-active-map
-          ("<tab>" . company-complete-common-or-cycle)
-          ("<backtab>" . company-select-previous))
+  ;; :bind ( :map prog-mode-map
+  ;;         ("<tab>" . company-indent-or-complete-common)
+  ;;         :map company-active-map
+  ;;         ("<tab>" . company-complete-common-or-cycle)
+  ;;         ("<backtab>" . company-select-previous))
   :config
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.0)         ; Default is 0.2.
-  ;; There is company-tng-mode which behaves similar to Vim YCM or coc, but not
-  ;; exactly: when you cycle through with TAB it outputs "virtual" arguments
-  ;; which disappear when you start typing anyhting.
-  ;; (company-tng-mode)
+  ;; There is company-tng-mode which behaves similar to Vim YCM or coc, but it's
+  ;; not working exactly with lsp-mode and pylsp server: when you cycle through
+  ;; with TAB it outputs "virtual" arguments which disappear when you start
+  ;; typing anyhting.
+  (company-tng-mode)
   (global-company-mode))
 
 
 ;; Enable Flycheck globally. Check for errors on the fly. Flycheck has better
 ;; integration with lsp-mode than built-in Flymake, e.g. lsp-ui sideline does
 ;; not show diagnostics with Flymake.
-(use-package flycheck
-  :defer 1
-  :config
-  (setq flycheck-display-errors-delay 0)
-  (global-flycheck-mode))
+;; (use-package flycheck
+;;   :defer 1
+;;   :config
+;;   (setq flycheck-display-errors-delay 0)
+;;   (global-flycheck-mode))
 
 ;; Enable flycheck-status-emoji, it replaces the standard Flycheck mode-line
 ;; status indicators with cute, compact emoji that convey the corresponding
 ;; information.
-(use-package flycheck-status-emoji
-  :after flycheck
-  :config
-  (flycheck-status-emoji-mode))
-
+;; (use-package flycheck-status-emoji
+;;   :after flycheck
+;;   :config
+;;   (flycheck-status-emoji-mode))
 
 ;; LSP support.
-(use-package lsp-mode
-  :init
-  ;; Set prefix for lsp-command-keymap (few alternatives - "s-l", "C-c l").
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((python-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration)) ; shows keymap names, e.g. +goto, +refactor, etc.
-  :commands (lsp lsp-deferred))
+;; (use-package lsp-mode
+;;   :init
+;;   ;; Set prefix for lsp-command-keymap (few alternatives - "s-l", "C-c l").
+;;   (setq lsp-enable-snippet nil
+;;         lsp-completion-enable-additional-text-edit nil
+;;         lsp-completion-show-detail nil
+;;         lsp-completion-show-kind nil
+;;         lsp-pylsp-plugins-jedi-completion-include-params nil
+;;         lsp-pylsp-plugins-jedi-completion-include-class-objects nil
+;;         lsp-keymap-prefix "C-c l")
+;;   :hook ((python-mode . lsp-deferred)
+;;          (lsp-mode . lsp-enable-which-key-integration)) ; shows keymap names, e.g. +goto, +refactor, etc.
+;;   :commands (lsp lsp-deferred))
 
 ;; Optionally
-(use-package lsp-ui :commands lsp-ui-mode)
+;; (use-package lsp-ui :commands lsp-ui-mode)
 ;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+
+;; Enable Flymake in prog-mode. Flymake is a universal on-the-fly syntax checker.
+(use-package flymake
+  :ensure nil
+  :hook prog-mode
+  :bind (("C-c [ e" . flymake-goto-prev-error)
+         ("C-c ] e" . flymake-goto-next-error)
+         ("C-c e b" . flymake-show-buffer-diagnostics)
+         ("C-c e p" . flymake-show-project-diagnostics)))
+
+;; LSP support.
+(use-package eglot
+  :custom
+  ;; This stops eglot from logging the json events of lsp server.
+  (setq eglot-events-buffer-size 0)
+  :hook (python-mode . eglot-ensure))
+;; (use-package eldoc-box
+;;   :config
+;;   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-at-point-mode t))
 
 
 ;; Dumb Jump is an Emacs "jump to definition" package with support for 50+
