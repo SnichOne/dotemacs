@@ -8,6 +8,8 @@
 ;; Easy Customization UI, e.g. you can see all customized variables with the
 ;; 'customized-unsaved' command.
 
+;; TODO:
+;; - rewrite use-package :config to :custom where applicable.
 
 (require 'mode-local)                   ; provides 'setq-mode-local'
 (require 'package)                      ; package manager
@@ -56,6 +58,11 @@
 ;; ---------------------------------------------------------------------------
 ;; Emacs basic look.
 
+;; Disable scroll bar, scroll bar is nice but for some reason Emacs does not
+;; allow you to resize the window when you try to drag the window by scroll bar,
+;; so you have to resize only by dragging the area on modeline.
+;; (scroll-bar-mode -1)
+
 ;; Highlight current line in all buffers.
 (global-hl-line-mode 1)
 
@@ -83,11 +90,11 @@
 (column-number-mode 1)
 
 ;; Explicitly define a width to reduce the cost of on-the-fly computation.
-(setq-default display-line-numbers-width 3)
+(customize-set-variable 'display-line-numbers-width 3)
 
 ;; Show absolute line numbers for narrowed regions to make it easier to tell the
 ;; buffer is narrowed, and where you are, exactly.
-(setq-default display-line-numbers-widen t)
+(customize-set-variable 'display-line-numbers-widen t)
 
 ;; Enable line numbers in programming modes. Not
 ;; 'global-display-line-numbers-mode' because there are many special and
@@ -97,6 +104,9 @@
 
 ;; Show the end of buffer with a special glyph in the left fringe.
 (setq-mode-local text-mode indicate-empty-lines t)
+
+;; Make calendar begin weeks on Monday.
+(customize-set-variable 'calendar-week-start-day 1)
 ;; ---------------------------------------------------------------------------
 
 
@@ -177,6 +187,7 @@
 ;; <ESC> <TAB>) binding for flyspell, because it's already used for the
 ;; 'complete-symbol' or 'ispell-complete-word' commands, e.g. this binding
 ;; overrides 'complete-symbol' in org-mode.
+;; By default, flyspell corrects word using M-<TAB>.
 (customize-set-variable 'flyspell-use-meta-tab nil)
 
 ;; Let a period followed by a single space be treated as end of sentence. By
@@ -198,7 +209,7 @@
 ;; version control status information every ‘auto-revert-interval’ seconds, even
 ;; if the work file itself is unchanged. The resulting CPU usage depends on the
 ;; version control system, but is usually not excessive.
-;; (customize-set-variable 'auto-revert-check-vc-info t)
+(customize-set-variable 'auto-revert-check-vc-info t)
 
 ;; Auto refresh Dired and other similar buffers.
 (customize-set-variable 'global-auto-revert-non-file-buffers t)
@@ -264,58 +275,6 @@
 
 
 ;; ---------------------------------------------------------------------------
-;; Org mode settings.
-
-;; Fontify (e.g., highlight with a background color) the whole line for
-;; headings. Looks nice with the leuven theme.
-;; (customize-set-variable 'org-fontify-whole-heading-line t)
-
-;; Display the buffer in the indented view, this also hides leading heading
-;; stars, only one star (the rightmost) at each heading is visible, the rest are
-;; masked with the same font color as background.
-(customize-set-variable 'org-startup-indented t)
-
-;; Customize org-M-RET-may-split-line to make M-RET not split the line. Useful
-;; when inserting new heading or list item. Doom Emacs sets it to nil by
-;; default.
-;; Source: https://orgmode.org/manual/Structure-Editing.html#index-M_002dRET.
-(customize-set-variable 'org-M-RET-may-split-line nil)
-
-;; Scale LaTeX preview.
-;; Alternative to customize-set-variable one can use plist-put
-;; (plist-put org-format-latex-options :scale 1.5)
-(customize-set-variable 'org-format-latex-options
-                        '( :foreground default
-                           :background default
-                           :scale 1.5
-                           :html-foreground "Black"
-                           :html-background "Transparent"
-                           :html-scale 1.0
-                           :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
-
-;; Enable syntax highlighting for latex fragments.
-;; Note: I didn't understood
-(customize-set-variable 'org-highlight-latex-and-related '(native))
-
-;; Add by default additional LaTeX packages for Russian language support.
-;; (require 'org)
-;; (add-to-list 'org-latex-packages-alist '("" "cmap" t))
-;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
-
-;; Org mode sets 'truncate-lines' to 't', so each line of text has just one
-;; scree line. But there is a problem with it: you can be left with horizontal
-;; scroll after you invoke 'org-fill-paragraph' on a long line and you will have
-;; to manually scroll to adjust the view. Let's change 'auto-hscholl-mode' to
-;; f'current-line' locally to 'org-mode' to avoid the problem.
-;;
-;; BTW, maybe instead of setting 'auto-hscroll-mode' to 'current-line' it's
-;; better to remap org-fill-paragraph to scroll horizontally to left after
-;; filling the paragraph.
-(setq-mode-local org-mode auto-hscroll-mode 'current-line)
-;; ---------------------------------------------------------------------------
-
-
-;; ---------------------------------------------------------------------------
 ;; Elisp mode
 
 ;; Update: commented out the code below, cz it sucks sometimes and defaults are
@@ -363,8 +322,8 @@
 
 ;; Display scroll via nyan cat. Alternative — the 'poke-line' package.
 (use-package nyan-mode
-  :defer 1
-  :config (nyan-mode 1))
+  :custom
+  (nyan-mode t))
 
 
 ;; Enable rich annotations using the Marginalia package.
@@ -409,24 +368,48 @@
 
 ;; Load Modus theme.
 ;;
-;; TODO, modify the 'shadow' face, to make org properties (e.g., lines like
+;; TODO: modify the 'shadow' face, to make org properties (e.g., lines like
 ;; "#+title: ...") distinguishable from comments.
 (use-package modus-themes
-  :init
+  :demand
+  :config
   ;; Add all your customizations prior to loading the themes.
 
   ;; Adjust modus-vivendi colors.
-  (setq modus-themes-vivendi-color-overrides
-        '((fg-main . "#f0fff0")))       ; Default face is white on black, dim white a bit.
+  ;; TODO review whether the following customization works in the 4.0 version
+  ;; (setq modus-themes-vivendi-color-overrides
+  ;;       '((fg-main . "#f0fff0")))       ; Default face is white on black, dim white a bit.
 
-  (setq modus-themes-mode-line '(borderless accented)
-        modus-themes-syntax '(yellow-comments))
+  ;; TODO (change the following code since such customizations are deprecated in
+  ;; the 4.0 version.
+  ;; (setq modus-themes-mode-line '(borderless accented)
+  ;;       modus-themes-syntax '(yellow-comments))
+  ;;
+  ;; E.g. to make mode line borderless use:
+  ;; (setq modus-themes-common-palette-overrides
+  ;;       '((border-mode-line-active unspecified)
+  ;;       (border-mode-line-inactive unspecified)))
 
-  ;; Load the theme files before enabling a theme.
-  (modus-themes-load-themes)
-  :config
+  ;; Maybe define some palette overrides (there are interesting presets:
+  ;; `modus-themes-preset-overrides-faint`
+  ;; and `modus-themes-preset-overrides-intense`
+  (setq modus-themes-common-palette-overrides
+        '(;; remove mode line border
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
+
+          ;; remove fringe background
+          (fringe unspecified)
+
+          ;; make org properties and attributes (e.g., lines like "#+title: ...")
+          ;; distinguishable from comments.
+          (prose-metadata cyan-warmer)
+          (prose-metadata-value magenta)))
+          ;; (comment yellow-faint)
+          ;; (string green-warmer)))
+
   ;; Load the theme of your choice:
-  (modus-themes-load-operandi) ;; OR (modus-themes-load-vivendi).
+  (load-theme 'modus-operandi :no-confirm) ;; OR (load-theme 'modus-vivendi :no-confirm).
   :bind ("<f5>" . modus-themes-toggle))
 
 
@@ -437,7 +420,7 @@
 ;; follow C-x (or as many as space allows given your settings). This includes
 ;; prefixes like C-x 8 which are shown in a different face.
 (use-package which-key
-  :defer 2
+  :defer 1
   :config
   (setq which-key-idle-delay 0.4)
   (which-key-mode))
@@ -455,22 +438,23 @@
 
 ;; Convenient completion popup.
 (use-package company
-  :defer 1
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0)         ; Default is 0.2.
   :commands (completion-at-point)
-  ;; :bind ( :map prog-mode-map
-  ;;         ("<tab>" . company-indent-or-complete-common)
-  ;;         :map company-active-map
-  ;;         ("<tab>" . company-complete-common-or-cycle)
-  ;;         ("<backtab>" . company-select-previous))
-  :config
-  (setq company-minimum-prefix-length 1
-        company-idle-delay 0.0)         ; Default is 0.2.
+  :hook
+  (after-init . global-company-mode)
   ;; There is company-tng-mode which behaves similar to Vim YCM or coc, but it's
   ;; not working exactly with lsp-mode and pylsp server: when you cycle through
   ;; with TAB it outputs "virtual" arguments which disappear when you start
-  ;; typing anyhting.
-  (company-tng-mode)
-  (global-company-mode))
+  ;; typing anything.
+  (after-init . company-tng-mode)
+  :bind
+  ( :map prog-mode-map ("<tab>" . company-indent-or-complete-common))
+  ;;         :map company-active-map
+  ;;         ("<tab>" . company-complete-common-or-cycle)
+  ;;         ("<backtab>" . company-select-previous))
+  )
 
 
 ;; Enable Flycheck globally. Check for errors on the fly. Flycheck has better
@@ -517,13 +501,15 @@
   :bind (("C-c [ e" . flymake-goto-prev-error)
          ("C-c ] e" . flymake-goto-next-error)
          ("C-c e b" . flymake-show-buffer-diagnostics)
-         ("C-c e p" . flymake-show-project-diagnostics)))
+         ("C-c e p" . flymake-show-project-diagnostics))
+  :config
+  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake))
 
 ;; LSP support.
 (use-package eglot
   :custom
   ;; This stops eglot from logging the json events of lsp server.
-  (setq eglot-events-buffer-size 0)
+  (eglot-events-buffer-size 0)
   :hook (python-mode . eglot-ensure))
 ;; (use-package eldoc-box
 ;;   :config
@@ -538,11 +524,169 @@
   :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
+
+;; Highlight TODO and similar keywords in comments and strings.
+(use-package hl-todo
+  :hook (prog-mode conf-mode)
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        `(("TODO"       warning bold)
+          ("FIXME"      error bold)
+          ("HACK"       font-lock-constant-face bold)
+          ("REVIEW"     font-lock-keyword-face bold)
+          ("NOTE"       success bold)
+          ("DEPRECATED" font-lock-doc-face bold))))
+
+
+;; Load 'setq-mode-local'.
+;; (use-package mode-local
+;;   :ensure nil)
+
+
+;; Org mode (use built-in version).
+(use-package org
+  :ensure nil
+
+  :after mode-local
+
+  :custom
+  ;; Fontify (e.g., highlight with a background color) the whole line for
+  ;; headings. Looks nice with the leuven theme.
+  ;; (org-fontify-whole-heading-line t)
+
+  ;; Display the buffer in the indented view, this also hides leading heading
+  ;; stars, only one star (the rightmost) at each heading is visible, the rest are
+  ;; masked with the same font color as background.
+  (org-startup-indented t)
+
+  ;; Customize org-M-RET-may-split-line to make M-RET not split the line. Useful
+  ;; when inserting new heading or list item. Doom Emacs sets it to nil by
+  ;; default.
+  ;; Source: https://orgmode.org/manual/Structure-Editing.html#index-M_002dRET.
+  (org-M-RET-may-split-line nil)
+
+  ;; Scale LaTeX preview.
+  ;; Alternative to customize-set-variable one can use plist-put:
+  ;; (plist-put org-format-latex-options :scale 1.5)
+  (org-format-latex-options '( :foreground default
+                               :background default
+                               :scale 1.5
+                               :html-foreground "Black"
+                               :html-background "Transparent"
+                               :html-scale 1.0
+                               :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+  ;; Enable syntax highlighting for latex fragments.
+  ;; Note: I didn't understood
+  (org-highlight-latex-and-related '(native))
+
+  ;; Prevent inadvertently edit an invisible part of the buffer and be confused
+  ;; on what has been edited and how to undo the mistake. Setting
+  ;; 'org-catch-invisible-edits' to 'error' makes Emacs throw an error and do
+  ;; nothing when inserting or deleting a character in an invisible region.
+  (org-catch-invisible-edits 'error)
+
+  ;; Store quick notes (C-c C-z) in the drawer (LOGBOOK by default). It is also
+  ;; possible to arrange for state change notes and clock times to be stored in
+  ;; a similar way.
+  (org-log-into-drawer t)
+
+  ;; Insert a line ‘CLOSED: [timestamp]’ just after the headline each time you
+  ;; turn an entry from a TODO (not-done) state into any of the DONE states.
+  (org-log-done 'time)
+
+  ;; Configure a default target file for notes (org-capture).
+  (org-default-notes-file "~/org/notes.org")
+
+  ;; It seems, that you should set 'org-link-search-must-match-exact-headline'
+  ;; to nil to make links like ‘file:projects.org::some words’ perform text
+  ;; search in the file. By default ('query-to-create'), clicking on such links
+  ;; will fuzzy? search for match with headlines and offer to create a new
+  ;; headline when none matched.
+  (org-link-search-must-match-exact-headline nil)
+
+  ;; Configure capture templates:
+  ;; 1. life.org task template,
+  ;; 2. life_journal.org daily plan template: datetree structure,
+  ;; 3. work.org task template,
+  ;; 4. work_journal.org daily plan template: datetree structure.
+  ;; TODO ⮷
+  ;; 5. book template
+  ;; 6. movie template
+  (org-capture-templates
+   '(("l" "Life")
+     ("lt" "Life task" entry (file "life.org")
+      "* TODO %^{Name}\n\n%?"
+      :empty-lines 1
+      :prepend t)
+     ("li" "Life daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
+      nil
+      :empty-lines-before 1)
+
+     ("w" "Work")
+     ("wt" "Work task" entry (file "work.org")
+      "* TODO %^{Name}\n\n%?"
+      :empty-lines 1
+      :prepend t)
+     ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
+      nil
+      :empty-lines-before 1)))
+
+  :bind
+  ;; For a better experience, the three Org commands ‘org-store-link’,
+  ;; ‘org-capture’ and ‘org-agenda’ ought to be accessible anywhere in Emacs,
+  ;; not just in Org buffers. To that effect, you need to bind them to globally
+  ;; available keys
+  (("C-c o a" . org-agenda)
+   ("C-c o c" . org-capture)
+   ("C-c o l" . org-store-link))
+
+  :config
+  ;; Org mode sets 'truncate-lines' to 't', so each line of text has just one
+  ;; scree line. But there is a problem with it: you can be left with horizontal
+  ;; scroll after you invoke 'org-fill-paragraph' on a long line and you will
+  ;; have to manually scroll to adjust the view. Let's change
+  ;; 'auto-hscholl-mode' to f'current-line' locally to 'org-mode' to avoid the
+  ;; problem.
+  ;; BTW, maybe instead of setting 'auto-hscroll-mode' to 'current-line' it's
+  ;; better to remap org-fill-paragraph to scroll horizontally to left after
+  ;; filling the paragraph.
+  (setq-mode-local org-mode auto-hscroll-mode 'current-line)
+
+  ;; Add by default additional LaTeX packages for Russian language support.
+  ;; Note: I changed my mind, these settings better should be better placed
+  ;; using headers per file basis.
+  ;; (add-to-list 'org-latex-packages-alist '("" "cmap" t))
+  ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
+)
+
+
+;; Dired (built-in file manager).
+(use-package dired
+  :ensure nil
+  :custom
+  (dired-listing-switches "-al --group-directories-first")
+  :hook
+  (dired-mode . dired-hide-details-mode))
+
+
+;; Org-roam
+;; (use-package org-roam
+;;   :custom
+;;   (org-roam-directory "~/org/roam notes/"))
+
 ;; Evil — Vim emulation.
 ;; (use-package evil
 ;;   :init
 ;;   ;; Evil uses "C-z" and "C-M-z" to switch to Emacs state, hence unbind "C-z"
 ;;   ;; which is bound to 'suspend-emacs' by default.
 ;;   (global-unset-key (kbd "C-z"))
-;;   (evil-mode))
+;;   :custom
+;;   ;; Set default Evil state to "emacs".
+;;   (evil-default-state 'emacs)
+;;   (evil-motion-state-modes nil)
+;;   (evil-insert-state-modes nil)
+;;   :config
+;;   (evil-mode 1))
 ;; ---------------------------------------------------------------------------
