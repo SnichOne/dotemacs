@@ -22,7 +22,7 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/notes.org" "/home/snich/org/life.org"))
  '(package-selected-packages
-   '(hl-todo eglot dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode)))
+   '(xeft hl-todo eglot dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

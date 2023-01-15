@@ -107,6 +107,12 @@
 
 ;; Make calendar begin weeks on Monday.
 (customize-set-variable 'calendar-week-start-day 1)
+
+;; Scroll horizontally with touchpad.
+;; Correct left-right scroll direction for OS X.
+(customize-set-variable 'mouse-wheel-flip-direction t)
+;; Enable left-right scroll from trackpad.
+(customize-set-variable 'mouse-wheel-tilt-scroll t)
 ;; ---------------------------------------------------------------------------
 
 
@@ -649,10 +655,18 @@
   ;; have to manually scroll to adjust the view. Let's change
   ;; 'auto-hscholl-mode' to f'current-line' locally to 'org-mode' to avoid the
   ;; problem.
-  ;; BTW, maybe instead of setting 'auto-hscroll-mode' to 'current-line' it's
+  ;; TODO: I disabled it, it is inconvenient for table editing that do not fit
+  ;; on screen. I think I experienced some bugs when it is set to 'current-line'
+  ;; (UPD, it was probably bug caused by company; when the screen is split
+  ;; vertically and you type on a long line that does not fit the screen, the
+  ;; point in org-mode moves to a random position if Emacs opens company
+  ;; completions in a tooltip).
+  ;; (setq-mode-local org-mode auto-hscroll-mode 'current-line)
+
+  ;; Instead of setting 'auto-hscroll-mode' to 'current-line' it's
   ;; better to remap org-fill-paragraph to scroll horizontally to left after
   ;; filling the paragraph.
-  (setq-mode-local org-mode auto-hscroll-mode 'current-line)
+  (advice-add 'org-fill-paragraph :after #'scroll-right)
 
   ;; Add by default additional LaTeX packages for Russian language support.
   ;; Note: I changed my mind, these settings better should be better placed
@@ -661,6 +675,19 @@
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
 )
 
+;; Xeft. Full-text search for notes. Based on Xapian.
+(use-package xeft
+  :commands xeft
+  :custom
+  ;; Set path to notes.
+  (xeft-directory "~/org/")
+  ;; Set path to Xeft database.
+  (xeft-database "~/.config/xeft")
+  ;; Ignore not org files.
+  (xeft-ignore-extension '("iimg" "png" "html" "pdf" "tex" "log"))
+  ;; Make Xeft search recursively, by default search works only for first level
+  ;; files in `xeft-directory`
+  (xeft-recursive t))
 
 ;; Dired (built-in file manager).
 (use-package dired

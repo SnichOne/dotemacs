@@ -1017,15 +1017,15 @@
 			   ("Nikolaj Schumacher <bugs * nschum de>"))
 			  (:commit . "438a1cb2563e2a2496be4678cc0df8d5b22caf5d"))])
  (hl-block-mode .
-		[(0 1)
+		[(0 2)
 		 ((emacs
 		   (26 1)))
 		 "Highlighting nested blocks" tar
-		 ((:url . "https://codeberg.com/ideasman42/emacs-hl-block-mode")
+		 ((:url . "https://codeberg.org/ideasman42/emacs-hl-block-mode")
 		  (:maintainer "Campbell Barton" . "ideasman42@gmail.com")
 		  (:authors
 		   ("Campbell Barton" . "ideasman42@gmail.com"))
-		  (:commit . "877e14c0645397aa8c1a45eb34ea70f3ecd21280"))])
+		  (:commit . "760e02b5fd66812e701c12292a1f00bde3c1c46c"))])
  (hl-column .
 	    [(1 0)
 	     ((emacs
@@ -1088,7 +1088,7 @@
 		(:maintainer "Bozhidar Batsov" . "bozhidar@batsov.dev")
 		(:commit . "151b20ba9d3ae39b88f91aecbab98bd5a5215f1a"))])
  (inf-ruby .
-	   [(2 6 2)
+	   [(2 7 0)
 	    ((emacs
 	      (24 3)))
 	    "Run a Ruby process in a buffer" tar
@@ -1101,7 +1101,7 @@
 	      ("Cornelius Mika" . "cornelius.mika@gmail.com")
 	      ("Dmitry Gutov" . "dgutov@yandex.ru")
 	      ("Kyle Hargraves" . "pd@krh.me"))
-	     (:commit . "eb7bf95d5b03bdb9b28647c89ea0a73e35fe0ad1"))])
+	     (:commit . "997b3c5f9d9d7ff72b1a1cbdb55b1f575748a9ca"))])
  (inkpot-theme .
 	       [(0 1)
 		((emacs
@@ -2051,15 +2051,15 @@
 		 (:authors
 		  ("Mark Tran" . "mark.tran@gmail.com")))])
  (undo-fu .
-	  [(0 4)
+	  [(0 5)
 	   ((emacs
 	     (25 1)))
 	   "Undo helper with redo" tar
-	   ((:url . "https://codeberg.com/ideasman42/emacs-undo-fu")
+	   ((:url . "https://codeberg.org/ideasman42/emacs-undo-fu")
 	    (:maintainer "Campbell Barton" . "ideasman42@gmail.com")
 	    (:authors
 	     ("Campbell Barton" . "ideasman42@gmail.com"))
-	    (:commit . "46de023b5f8ddb989eeff7665feeec2877d8eda8"))])
+	    (:commit . "57615408f9bd70247d2b2844a1946a00300ef5bb"))])
  (undo-fu-session .
 		  [(0 4)
 		   ((emacs
@@ -2199,7 +2199,7 @@
 	      (:authors
 	       ("Le Wang")))])
  (xah-fly-keys .
-	       [(22 5 20230101184908)
+	       [(22 5 20230113094711)
 		((emacs
 		  (24 1)))
 		"ergonomic modal keybinding minor mode." tar
@@ -2208,7 +2208,7 @@
 		 (:maintainer "Xah Lee" . "xah@xahlee.org")
 		 (:authors
 		  ("Xah Lee ( http://xahlee.info/ )"))
-		 (:commit . "529393f56daff086eb518d53e0b3d8a2b9ee4ca8"))])
+		 (:commit . "ac6d0c397fa036868275aff1d5056d2a86a24caa"))])
  (xkcd .
        [(1 1)
 	((json
