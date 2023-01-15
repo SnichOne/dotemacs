@@ -443,24 +443,50 @@
 
 
 ;; Convenient completion popup.
-(use-package company
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0)         ; Default is 0.2.
-  :commands (completion-at-point)
+;; (use-package company
+;;   :custom
+;;   (company-minimum-prefix-length 1)
+;;   (company-idle-delay 0.0)         ; Default is 0.2.
+;;   :commands (completion-at-point)
+;;   :hook
+;;   (after-init . global-company-mode)
+;;   ;; There is company-tng-mode which behaves similar to Vim YCM or coc, but it's
+;;   ;; not working exactly with lsp-mode and pylsp server: when you cycle through
+;;   ;; with TAB it outputs "virtual" arguments which disappear when you start
+;;   ;; typing anything.
+;;   (after-init . company-tng-mode)
+;;   :bind
+;;   ( :map prog-mode-map ("<tab>" . company-indent-or-complete-common))
+;;   ;;         :map company-active-map
+;;   ;;         ("<tab>" . company-complete-common-or-cycle)
+;;   ;;         ("<backtab>" . company-select-previous))
+;;   )
+
+;; Corfu. Completion popup.
+;; TODO: configure word completion in Org mode, e.g., `ispell-complete-word`.
+(use-package corfu
   :hook
-  (after-init . global-company-mode)
-  ;; There is company-tng-mode which behaves similar to Vim YCM or coc, but it's
-  ;; not working exactly with lsp-mode and pylsp server: when you cycle through
-  ;; with TAB it outputs "virtual" arguments which disappear when you start
-  ;; typing anything.
-  (after-init . company-tng-mode)
+  (after-init . global-corfu-mode)
+  :custom
+  ;; TAB-and-Go completion customizations
+  (corfu-auto t)
+  (corfu-auto-delay 0)
+  (corfu-auto-prefix 1)
+  (corfu-cycle t)
+  ;; TODO: corfu-preselect-first will be deprecated.
+  (corfu-preselect-first nil)
+  ;; Display candidate documentation or source in a popup next to the candidate
+  ;; menu.
+  (corfu-popupinfo-mode t)
+  ;; Use TAB for cycling, default is `corfu-complete'.
   :bind
-  ( :map prog-mode-map ("<tab>" . company-indent-or-complete-common))
-  ;;         :map company-active-map
-  ;;         ("<tab>" . company-complete-common-or-cycle)
-  ;;         ("<backtab>" . company-select-previous))
-  )
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
+  :config
+  (setq tab-always-indent 'complete))
 
 
 ;; Enable Flycheck globally. Check for errors on the fly. Flycheck has better
