@@ -6,3 +6,7 @@ projects
 games/
 eln-cache/
 /eshell/history
+
+# It seems, /trasient/history.el contains magit commands history, so it should
+# not be tracked.
+/transient/history.el

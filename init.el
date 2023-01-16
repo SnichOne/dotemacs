@@ -247,6 +247,10 @@
 ;; delay.
 (customize-set-variable 'show-paren-delay 0)
 
+;; Make it easier to follow Git's 50/72 rule in 'VC' (Emacs built-in package,
+;; that is interface to version control systems).
+(setq-mode-local vc-git-log-edit-mode fill-column 72)
+
 ;; Make Emacs hotkeys work in Russian layout.
 ;; http://reangdblog.blogspot.com/2015/05/emacs.html.
 ;; LOR suggests that method does not always work:
@@ -526,7 +530,8 @@
 ;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 
-;; Enable Flymake in prog-mode. Flymake is a universal on-the-fly syntax checker.
+;; Enable Flymake in prog-mode. Flymake is a universal on-the-fly syntax
+;; checker.
 (use-package flymake
   :ensure nil
   :hook prog-mode
@@ -571,7 +576,8 @@
           ("DEPRECATED" font-lock-doc-face bold))))
 
 
-;; Load 'setq-mode-local'.
+;; TODO: Load 'setq-mode-local' using use-package, after refactoring the
+;; sections above without use-package: should I rewrite them  use-package.
 ;; (use-package mode-local
 ;;   :ensure nil)
 
@@ -579,8 +585,6 @@
 ;; Org mode (use built-in version).
 (use-package org
   :ensure nil
-
-  :after mode-local
 
   :custom
   ;; Fontify (e.g., highlight with a background color) the whole line for
@@ -592,11 +596,13 @@
   ;; masked with the same font color as background.
   (org-startup-indented t)
 
-  ;; Customize org-M-RET-may-split-line to make M-RET not split the line. Useful
-  ;; when inserting new heading or list item. Doom Emacs sets it to nil by
-  ;; default.
-  ;; Source: https://orgmode.org/manual/Structure-Editing.html#index-M_002dRET.
-  (org-M-RET-may-split-line nil)
+  ;; Customize org-M-RET-may-split-line to make M-RET not split the line, but
+  ;; allow splitting the line at the cursor position when creating a new list
+  ;; item. Useful when inserting new heading. Doom Emacs doesn't split the line
+  ;; in all contexts by default. Source:
+  ;; https://orgmode.org/manual/Structure-Editing.html#index-M_002dRET.
+  (org-M-RET-may-split-line '((default . nil)
+                              (item . t)))
 
   ;; Scale LaTeX preview.
   ;; Alternative to customize-set-variable one can use plist-put:
@@ -691,20 +697,13 @@
   ;; Org mode sets 'truncate-lines' to 't', so each line of text has just one
   ;; scree line. But there is a problem with it: you can be left with horizontal
   ;; scroll after you invoke 'org-fill-paragraph' on a long line and you will
-  ;; have to manually scroll to adjust the view. Let's change
+  ;; have to manually scroll to adjust the view. You can change
   ;; 'auto-hscholl-mode' to f'current-line' locally to 'org-mode' to avoid the
-  ;; problem.
-  ;; TODO: I disabled it, it is inconvenient for table editing that do not fit
-  ;; on screen. I think I experienced some bugs when it is set to 'current-line'
-  ;; (UPD, it was probably bug caused by company; when the screen is split
-  ;; vertically and you type on a long line that does not fit the screen, the
-  ;; point in org-mode moves to a random position if Emacs opens company
-  ;; completions in a tooltip).
-  ;; (setq-mode-local org-mode auto-hscroll-mode 'current-line)
-
-  ;; Instead of setting 'auto-hscroll-mode' to 'current-line' it's
-  ;; better to remap org-fill-paragraph to scroll horizontally to left after
-  ;; filling the paragraph.
+  ;; problem. But setting this option makes inconvenient table editing of tables
+  ;; that do not fit on screen.
+  ;; So instead of setting 'auto-hscroll-mode' to 'current-line' I better remap
+  ;; org-fill-paragraph to scroll horizontally to left after filling the
+  ;; paragraph.
   (advice-add 'org-fill-paragraph :after #'scroll-right)
 
   ;; Add by default additional LaTeX packages for Russian language support.
@@ -713,6 +712,11 @@
   ;; (add-to-list 'org-latex-packages-alist '("" "cmap" t))
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
 )
+
+;; Org-roam
+;; (use-package org-roam
+;;   :custom
+;;   (org-roam-directory "~/org/roam notes/"))
 
 ;; Xeft. Full-text search for notes. Based on Xapian.
 (use-package xeft
@@ -728,6 +732,7 @@
   ;; files in `xeft-directory`
   (xeft-recursive t))
 
+
 ;; Dired (built-in file manager).
 (use-package dired
   :ensure nil
@@ -737,10 +742,12 @@
   (dired-mode . dired-hide-details-mode))
 
 
-;; Org-roam
-;; (use-package org-roam
-;;   :custom
-;;   (org-roam-directory "~/org/roam notes/"))
+;; Magit. Complete text-based user interface to Git.
+;; "A Git Porcelain inside Emacs".
+(use-package magit
+  :custom
+  (magit-view-git-manual-method 'man))
+
 
 ;; Evil — Vim emulation.
 ;; (use-package evil
