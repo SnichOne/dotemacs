@@ -7,8 +7,8 @@
  (help-fn . describe-key--helper)
  (help-args
   (("\352" .
-	   [134217834]))
-  "tmp.org")
+    [134217834]))
+  "*Bookmark List*")
  (position . 248)
  (handler . help-bookmark-jump))
 ("Emacs Manual: display the section of the Emacs manual that describes the command corresponding to KEY."

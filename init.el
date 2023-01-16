@@ -628,7 +628,7 @@
   ;; turn an entry from a TODO (not-done) state into any of the DONE states.
   (org-log-done 'time)
 
-  ;; Configure a default target file for notes (org-capture).
+  ;; Configure default target file for notes (org-capture).
   (org-default-notes-file "~/org/notes.org")
 
   ;; It seems, that you should set 'org-link-search-must-match-exact-headline'
@@ -637,6 +637,19 @@
   ;; will fuzzy? search for match with headlines and offer to create a new
   ;; headline when none matched.
   (org-link-search-must-match-exact-headline nil)
+
+  ;; Customize refile targets: allow refilling entries ('C-c C-w' or 'M-x
+  ;; org-refile') to any headline in the current buffer with level <= 4.
+  (org-refile-targets '((nil :maxlevel . 4)))
+  ;; Make refile use outline path (including filename without directory) for
+  ;; targets as paths. So a level 3 headline will be available as
+  ;; filename/level1/level2/level3. By default, refile accepts only the headline
+  ;; without it's parent(s).
+  (org-refile-use-outline-path 'file)
+  ;; Disable refiling in steps ('org-outline-path-complete-in-steps') since it
+  ;; does not work with fido-mode (and maybe with all other completion
+  ;; packages).
+  (org-outline-path-complete-in-steps nil)
 
   ;; Configure capture templates:
   ;; 1. life.org task template,
