@@ -673,7 +673,7 @@
       :prepend t)
      ("li" "Life daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
-      :empty-lines-before 1)
+      :empty-lines 1)
 
      ("w" "Work")
      ("wt" "Work task" entry (file "work.org")
@@ -682,7 +682,7 @@
       :prepend t)
      ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
-      :empty-lines-before 1)))
+      :empty-lines 1)))
 
   :bind
   ;; For a better experience, the three Org commands ‘org-store-link’,
