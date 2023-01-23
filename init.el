@@ -610,7 +610,7 @@
   ;; (plist-put org-format-latex-options :scale 1.5)
   (org-format-latex-options '( :foreground default
                                :background default
-                               :scale 1.5
+                               :scale 1.8
                                :html-foreground "Black"
                                :html-background "Transparent"
                                :html-scale 1.0
@@ -684,12 +684,14 @@
      ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
       :empty-lines 1)))
+  ;; Disable automatic bookmarks creation.
+  (org-bookmark-names-plist nil)
 
   :bind
   ;; For a better experience, the three Org commands ‘org-store-link’,
   ;; ‘org-capture’ and ‘org-agenda’ ought to be accessible anywhere in Emacs,
   ;; not just in Org buffers. To that effect, you need to bind them to globally
-  ;; available keys
+  ;; available keys.
   (("C-c o a" . org-agenda)
    ("C-c o c" . org-capture)
    ("C-c o l" . org-store-link))

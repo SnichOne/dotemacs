@@ -10,3 +10,6 @@ eln-cache/
 # It seems, /trasient/history.el contains magit commands history, so it should
 # not be tracked.
 /transient/history.el
+
+# NOTE: I am not sure what this file is for
+.org-id-locations
