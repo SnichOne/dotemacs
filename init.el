@@ -327,6 +327,7 @@
 ;; Configure use-package to install packages with package.el if they are not
 ;; installed.
 (eval-when-compile (require 'use-package))
+(require 'bind-key)
 (setq use-package-always-ensure t)
 
 
@@ -745,8 +746,18 @@
 ;; Magit. Complete text-based user interface to Git.
 ;; "A Git Porcelain inside Emacs".
 (use-package magit
+  :commands (magit-status magit-project-status)
   :custom
-  (magit-view-git-manual-method 'man))
+  (magit-view-git-manual-method 'man)
+  :init
+  ;; Project.el integration: bind `magit-project-status` to "m" in the project
+  ;; switch menu (when hitting `C-x p p`).
+  ;; NOTE: Magit already has such integration, but it's placed in `magit-extras.el`
+  ;; and it is not executed until `magit-extras` is evaluated. I decided to take
+  ;; the following two lines from `magit-extras` and put it here, in the :init
+  ;; block.
+  (define-key project-prefix-map "m" #'magit-project-status)
+  (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
 
 
 ;; Evil — Vim emulation.
