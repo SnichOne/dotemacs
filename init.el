@@ -119,7 +119,7 @@
 ;; ---------------------------------------------------------------------------
 ;; Buffer management.
 
-;; Bind IBuffer to 'C-x C-b', the shortcut executes `list-buffer` by default but
+;; Bind IBuffer to 'C-x C-b', the shortcut executes 'list-buffer' by default but
 ;; IBuffer is superior. IBuffer is a major mode for viewing a list of buffers
 ;; and operating on them in a way analogous to that of Dired, including
 ;; filtering, marking, sorting in various ways, and acting on buffers.
@@ -339,7 +339,7 @@
 
 ;; Enable rich annotations using the Marginalia package.
 (use-package marginalia
-  ;; Either bind `marginalia-cycle' globally or only in the minibuffer.
+  ;; Either bind 'marginalia-cycle' globally or only in the minibuffer.
   :bind
   (:map minibuffer-local-map ("M-A" . marginalia-cycle))
 
@@ -402,15 +402,15 @@
   ;;       (border-mode-line-inactive unspecified)))
 
   ;; Maybe define some palette overrides (there are interesting presets:
-  ;; `modus-themes-preset-overrides-faint`
-  ;; and `modus-themes-preset-overrides-intense`
+  ;; 'modus-themes-preset-overrides-faint'
+  ;; and 'modus-themes-preset-overrides-intense'
   (setq modus-themes-common-palette-overrides
         '(;; remove mode line border
           (border-mode-line-active unspecified)
           (border-mode-line-inactive unspecified)
 
           ;; remove fringe background
-          (fringe unspecified)
+          ;; (fringe unspecified)
 
           ;; make org properties and attributes (e.g., lines like "#+title: ...")
           ;; distinguishable from comments.
@@ -468,7 +468,7 @@
 ;;   )
 
 ;; Corfu. Completion popup.
-;; TODO: configure word completion in Org mode, e.g., `ispell-complete-word`.
+;; TODO: configure word completion in Org mode, e.g., 'ispell-complete-word'.
 (use-package corfu
   :hook
   (after-init . global-corfu-mode)
@@ -483,7 +483,7 @@
   ;; Display candidate documentation or source in a popup next to the candidate
   ;; menu.
   (corfu-popupinfo-mode t)
-  ;; Use TAB for cycling, default is `corfu-complete'.
+  ;; Use TAB for cycling, default is 'corfu-complete'.
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -751,7 +751,7 @@
   ;; Ignore not org files.
   (xeft-ignore-extension '("iimg" "png" "html" "pdf" "tex" "log"))
   ;; Make Xeft search recursively, by default search works only for first level
-  ;; files in `xeft-directory`
+  ;; files in 'xeft-directory'
   (xeft-recursive t))
 
 
@@ -773,11 +773,11 @@
   :custom
   (magit-view-git-manual-method 'man)
   :init
-  ;; Project.el integration: bind `magit-project-status` to "m" in the project
-  ;; switch menu (when hitting `C-x p p`).
-  ;; NOTE: Magit already has such integration, but it's placed in `magit-extras.el`
-  ;; and it is not executed until `magit-extras` is evaluated. I decided to take
-  ;; the following two lines from `magit-extras` and put it here, in the :init
+  ;; Project.el integration: bind 'magit-project-status' to "m" in the project
+  ;; switch menu (when hitting 'C-x p p').
+  ;; NOTE: Magit already has such integration, but it's placed in 'magit-extras.el'
+  ;; and it is not executed until 'magit-extras' is evaluated. I decided to take
+  ;; the following two lines from 'magit-extras' and put it here, in the :init
   ;; block.
   (define-key project-prefix-map "m" #'magit-project-status)
   (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
