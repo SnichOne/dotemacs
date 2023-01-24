@@ -740,8 +740,10 @@
 (use-package dired
   :ensure nil
   :custom
+  ;; Make Dired show directories first, works on Linux, MacOS.
   (dired-listing-switches "-al --group-directories-first")
   :hook
+  ;; Hide details: file properties, owner, size, modified time.
   (dired-mode . dired-hide-details-mode))
 
 
