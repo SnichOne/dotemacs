@@ -684,8 +684,27 @@
      ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
       :empty-lines 1)))
+
   ;; Disable automatic bookmarks creation.
+  ;; NOTE: Documentation for the 9.5 version says you should change
+  ;; 'org-capture-last-stored', but the documentation is incorrect, the
+  ;; up-to-date way is to customize 'org-bookmark-names-plist'.
   (org-bookmark-names-plist nil)
+
+  ;; Configure 'org-image-actual-width': make Org mode try to get the width from
+  ;; any "#+ATTR.*# keyword if it matches a width specification like:
+  ;;
+  ;;     #+ATTR_HTML: :width 300px
+  ;;
+  ;; and fall back on the original width if none is found.
+  ;; NOTE: One case use "#+ATTR_ORG: :width", and leave other "#+ATTR.*#
+  ;; keywords for their primal purpose.
+  (org-image-actual-width nil)
+
+  ;; Configure how much levels should be exported as a headline, inferior levels
+  ;; will usually produce itemize or enumerate lists when exported, but back-end
+  ;; behavior may differ.
+  (org-export-headline-levels 7)
 
   :bind
   ;; For a better experience, the three Org commands ‘org-store-link’,
