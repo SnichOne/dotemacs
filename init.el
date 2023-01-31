@@ -424,6 +424,17 @@
   :bind ("<f5>" . modus-themes-toggle))
 
 
+;; Olivetti lets you center your buffer for aesthetics and focus.
+;; NOTE: I tried it mostly for org mode, but it needs some configuration:
+;; 1. disable conflicting with org-cdlatex keybind: "C-c {",
+;; 2. customize initial width for org-mode, since I have large columns than then
+;;    fill-column value.
+;; (use-package olivetti
+;;   :bind
+;;   ("<left-margin> <mouse-1>" . ignore)
+;;   ("<right-margin> <mouse-1>" . ignore))
+
+
 ;; Enable the minor mode for Emacs that displays the key bindings following your
 ;; currently entered incomplete command (a prefix) in a popup. For example,
 ;; after enabling the minor mode if you enter C-x and wait for the default of 1
@@ -659,13 +670,14 @@
   (org-outline-path-complete-in-steps nil)
 
   ;; Configure capture templates:
-  ;; 1. life.org task template,
-  ;; 2. life_journal.org daily plan template: datetree structure,
-  ;; 3. work.org task template,
-  ;; 4. work_journal.org daily plan template: datetree structure.
+  ;; - life.org task template,
+  ;; - life_journal.org daily plan template: datetree structure,
+  ;; - life_journal.org weekly review template: datetree structure,
+  ;; - work.org task template,
+  ;; - work_journal.org daily plan template: datetree structure.
   ;; TODO ⮷
-  ;; 5. book template
-  ;; 6. movie template
+  ;; - book template,
+  ;; - movie template.
   (org-capture-templates
    '(("l" "Life")
      ("lt" "Life task" entry (file "life.org")
@@ -674,6 +686,9 @@
       :prepend t)
      ("li" "Life daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
+      :empty-lines 1)
+     ("lr" "Life weekly review" entry (file+olp+datetree "life_journal.org")
+      (file "templates/weekly_review.org")
       :empty-lines 1)
 
      ("w" "Work")
@@ -726,7 +741,15 @@
   ;; So instead of setting 'auto-hscroll-mode' to 'current-line' I better remap
   ;; org-fill-paragraph to scroll horizontally to left after filling the
   ;; paragraph.
-  (advice-add 'org-fill-paragraph :after #'scroll-right)
+  (defun set-selected-window-hscroll-to-0 ()
+    (interactive)
+    (set-window-hscroll (selected-window) 0))
+  (advice-add 'org-fill-paragraph :after #'set-selected-window-hscroll-to-0)
+
+  ;; Set the path to default bibliography files:
+  ;; '<org-directory>/bibligoraphy.bib'.
+  (setq org-cite-global-bibliography
+   (list (file-name-concat org-directory "bibliography.bib")))
 
   ;; Add by default additional LaTeX packages for Russian language support.
   ;; Note: I changed my mind, these settings better should be better placed
@@ -753,6 +776,18 @@
   ;; Make Xeft search recursively, by default search works only for first level
   ;; files in 'xeft-directory'
   (xeft-recursive t))
+
+
+;; Better LaTeX input.
+;; CDLaTeX
+(use-package cdlatex
+  :hook
+  (org-mode . turn-on-org-cdlatex))
+
+;; AUCTeX
+(use-package tex
+  :ensure auctex
+  :defer t)
 
 
 ;; Dired (built-in file manager).
