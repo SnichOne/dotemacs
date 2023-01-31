@@ -6,7 +6,7 @@
 ;; Rationale: 'customize-set-variable' triggers setter method which does all
 ;; needed initialization, and this method seems to be better integrated with
 ;; Easy Customization UI, e.g. you can see all customized variables with the
-;; 'customized-unsaved' command.
+;; 'customize-unsaved' command.
 
 ;; TODO:
 ;; - rewrite use-package :config to :custom where applicable.
