@@ -764,6 +764,8 @@
 ;;   (org-roam-directory "~/org/roam notes/"))
 
 ;; Xeft. Full-text search for notes. Based on Xapian.
+;; NOTE. Xeft on the first run will ask to download or install Xapian dynamic
+;; module. It seems that the download option is just fine.
 (use-package xeft
   :commands xeft
   :custom
