@@ -148,7 +148,7 @@
 ;; Display the default argument as ‘[DEFAULT-ARG]’ instead of ‘(default
 ;; DEFAULT-ARG)’, saving some screen space.
 ;;
-;; Note: use 'customize-set-variable' or plac before enabling
+;; NOTE: use 'customize-set-variable' or plac before enabling
 ;; 'minibuffer-electric-default-mode'.
 (customize-set-variable 'minibuffer-eldef-shorten-default t)
 
@@ -275,7 +275,7 @@
     (when input-method
       (activate-input-method current))))
 (cfg:reverse-input-method 'russian-computer)
-;; Note. 'cfg:reverse-input-method' causes Emacs to open the *Quail Completions*
+;; NOTE: 'cfg:reverse-input-method' causes Emacs to open the *Quail Completions*
 ;; buffer, let's auto-close it.
 (kill-buffer "*Quail Completions*")
 ;; ---------------------------------------------------------------------------
@@ -622,7 +622,7 @@
                                :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
   ;; Enable syntax highlighting for latex fragments.
-  ;; Note: I didn't understood
+  ;; NOTE: I didn't understood
   (org-highlight-latex-and-related '(native))
 
   ;; Prevent inadvertently edit an invisible part of the buffer and be confused
@@ -787,8 +787,8 @@
   (require 'org-id)
 
   ;; Add by default additional LaTeX packages for Russian language support.
-  ;; Note: I changed my mind, these settings better should be better placed
-  ;; using headers per file basis.
+  ;; NOTE: I changed my mind, these settings should be better placed using
+  ;; headers per file basis.
   ;; (add-to-list 'org-latex-packages-alist '("" "cmap" t))
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
 )
