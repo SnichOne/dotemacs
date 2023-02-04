@@ -722,6 +722,42 @@
   ;; behavior may differ.
   (org-export-headline-levels 7)
 
+  ;; Configure org-id to create ID only if 'org-store-link' is called directly
+  ;; and CUSTOM_ID is not present.
+  ;; Reason: to avoid proliferation of unwanted IDs, just because you happen to
+  ;; be in an Org file when you call ‘org-capture’ that automatically and
+  ;; preemptively creates a link.
+  ;; NOTE: 'org-id.el' should be loaded, e.g., "(require 'org-id)".
+  (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+
+  ;; Configure org mode to use timestamp slugs for the ID property instead of
+  ;; UUID.
+  (org-id-method 'ts)
+  ;; This will set up our unique IDs as timestamp, but we need to configure
+  ;; org-attach to use it. Because org-mode is set up to use UUIDs by default,
+  ;; org-attach is set to create directories that are meant to work with UUID.
+  ;; The functions that create directories for 'org-attach' are defined in
+  ;; another function, 'org-attach-id-to-path-function-list'. Specifically, it
+  ;; points to two functions: 'org-attach-id-uuid-folder-format' and
+  ;; 'org-attach-id-ts-folder-format'. You can go into 'org-attach.el' and see
+  ;; that they break down the folder structure in a pretty straightforward way:
+  ;; the UUID function (which is the one used by default) takes the first two
+  ;; characters of the UUID and makes a parent folder out of those (as seen
+  ;; above), while the ts function takes the first six. The first six characters
+  ;; make sense because they include the year and the month.
+
+  ;; By default, if we use the example of 20220315T083403.413614 as a timestamp,
+  ;; we will get the following directory structure:
+  ;; /home/user/org/data/20/220315T083403.413614. Not very useful: you will need
+  ;; to keep using org-mode until the year 2100 for a new sub-folder to be
+  ;; created! What needs to be changed is org-attach-id-to-path-function-list.
+  ;; It is as simple as changing the order of the functions on this list, so
+  ;; org-attach will know to use the function first.
+
+  ;; Source: https://taonaw-blog.netlify.app/2022-03-13/
+  (org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
+                                         org-attach-id-uuid-folder-format))
+
   :bind
   ;; For a better experience, the three Org commands ‘org-store-link’,
   ;; ‘org-capture’ and ‘org-agenda’ ought to be accessible anywhere in Emacs,
@@ -751,6 +787,10 @@
   ;; '<org-directory>/bibligoraphy.bib'.
   (setq org-cite-global-bibliography
    (list (file-name-concat org-directory "bibliography.bib")))
+
+  ;; Load org-id. This library will automatically create the ID property
+  ;; if 'org-id-link-to-org-use-id' is set.
+  (require 'org-id)
 
   ;; Add by default additional LaTeX packages for Russian language support.
   ;; Note: I changed my mind, these settings better should be better placed
