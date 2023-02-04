@@ -8,9 +8,6 @@
 ;; Easy Customization UI, e.g. you can see all customized variables with the
 ;; 'customize-unsaved' command.
 
-;; TODO:
-;; - rewrite use-package :config to :custom where applicable.
-
 (require 'mode-local)                   ; provides 'setq-mode-local'
 (require 'package)                      ; package manager
 
@@ -378,9 +375,6 @@
 
 
 ;; Load Modus theme.
-;;
-;; TODO: modify the 'shadow' face, to make org properties (e.g., lines like
-;; "#+title: ...") distinguishable from comments.
 (use-package modus-themes
   :demand
   :config
