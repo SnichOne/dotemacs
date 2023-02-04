@@ -712,8 +712,9 @@
   ;;     #+ATTR_HTML: :width 300px
   ;;
   ;; and fall back on the original width if none is found.
-  ;; NOTE: One case use "#+ATTR_ORG: :width", and leave other "#+ATTR.*#
-  ;; keywords for their primal purpose.
+  ;; NOTE: One can use the "#+ATTR_ORG: :width" option to control the width of
+  ;; the image displayed inline in Org mode, and leave other "#+ATTR.*# keywords
+  ;; for their primal purpose.
   (org-image-actual-width nil)
 
   ;; Configure how much levels should be exported as a headline, inferior levels
