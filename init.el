@@ -864,8 +864,12 @@
 ;;   :custom
 ;;   ;; Set default Evil state to "emacs".
 ;;   (evil-default-state 'emacs)
+;;   ;; There are some other ways to control the Evil state besides the
+;;   ;; 'evil-default-state' variable, e.g. 'evil-motion-state-modes' and
+;;   ;; 'evil-insert-state-modes. Let's configure them as well.
 ;;   (evil-motion-state-modes nil)
 ;;   (evil-insert-state-modes nil)
+
 ;;   :config
 ;;   (evil-mode 1))
 ;; ---------------------------------------------------------------------------
