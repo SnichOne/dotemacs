@@ -810,7 +810,9 @@
 
 ;; Org-anki. Emacs minor mode for making Anki cards with Org.
 (use-package org-anki
-  :after org
+  :after org                            ; required, because of the binding to
+                                        ; org-mode-map which is created only
+                                        ; after org package is loaded
   :commands (org-anki-sync-entry
              org-anki-update-all
              org-anki-delete-entry
@@ -821,6 +823,18 @@
     ("C-c a" . org-anki-sync-entry))
   :custom
   (anki-editor-create-decks t))
+
+
+;; Org-cliplink. A simple command that takes a URL from the clipboard and
+;; inserts an org-mode link with a title of a page found by the URL into the
+;; current buffer.
+(use-package org-cliplink
+  :after org                            ; required, because of the binding to
+                                        ; org-mode-map which is created only
+                                        ; after org package is loaded
+  :bind
+  ( :map org-mode-map
+    ("C-c o i" . org-cliplink)))
 
 ;; Org-roam
 ;; (use-package org-roam
