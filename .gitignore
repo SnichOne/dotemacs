@@ -13,3 +13,8 @@ eln-cache/
 
 # NOTE: I am not sure what this file is for
 .org-id-locations
+
+# NOTE: It seems, this directories contain some cookies, not sure what library
+# created them
+/url/
+/request/

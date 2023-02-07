@@ -28,13 +28,13 @@
 		(:authors
 		 ("Jordon Biondo" . "jordonbiondo@gmail.com")))])
  (annotate .
-	   [(1 8 4)
+	   [(1 8 5)
 	    nil "annotate files without changing them" tar
 	    ((:url . "https://github.com/bastibe/annotate.el")
 	     (:maintainer "Bastian Bechtold <bastibe.dev@mailbox.org>, cage" . "cage-dev@twistfold.it")
 	     (:authors
 	      ("Bastian Bechtold"))
-	     (:commit . "65c47283462667baa5e4c284f0cb2b314ebf3ec1"))])
+	     (:commit . "fb8e51da6ab37b6df2ac2b6a8555f3aa6b589fd6"))])
  (anti-zenburn-theme .
 		     [(2 5 1)
 		      nil "Low-contrast Zenburn-inverted theme" tar
@@ -1649,7 +1649,7 @@
 	       ("David Christiansen" . "david@davidchristiansen.dk"))
 	      (:keywords "convenience"))])
  (racket-mode .
-	      [(1 0 20221216 121840)
+	      [(1 0 20230124 151624)
 	       ((emacs
 		 (25 1)))
 	       "Racket editing, REPL, and more" tar
@@ -1884,7 +1884,7 @@
 	   ("Random User"))
 	  (:commit . "28a75a6f6803e5c5d121c4d36ef403e8832fbf1f"))])
  (sweeprolog .
-	     [(0 14 0)
+	     [(0 15 0)
 	      ((emacs
 		(28 1)))
 	      "Embedded SWI-Prolog" tar
@@ -1893,7 +1893,7 @@
 	       (:maintainer "Eshel Yaron" . "~eshel/dev@lists.sr.ht")
 	       (:authors
 		("Eshel Yaron" . "me@eshelyaron.com"))
-	       (:commit . "80ca3b9755d3f4068471f40eb1d026b7ae8db97c"))])
+	       (:commit . "86b629b99bdbe288372033132da58992aa70d517"))])
  (swift-mode .
 	     [(8 6 0)
 	      ((emacs
@@ -1935,15 +1935,16 @@
 		    ("wolray" . "wolray@foxmail.com"))
 		   (:commit . "d1464042783e252f5cac1fcac82fee16fc3534db"))])
  (systemd .
-	  [(1 6)
+	  [(1 6 1)
 	   ((emacs
 	     (24 4)))
 	   "Major mode for editing systemd units" tar
-	   ((:maintainer "Mark Oteiza" . "mvoteiza@udel.edu")
+	   ((:keywords "tools" "unix")
+	    (:maintainer "Mark Oteiza" . "mvoteiza@udel.edu")
 	    (:authors
 	     ("Mark Oteiza" . "mvoteiza@udel.edu"))
-	    (:keywords "tools" "unix")
-	    (:url . "https://elpa.nongnu.org/nongnu/systemd.html"))])
+	    (:url . "https://elpa.nongnu.org/nongnu/systemd.html")
+	    (:commit . "8742607120fbc440821acbc351fda1e8e68a8806"))])
  (tablist .
 	  [(1 0)
 	   ((emacs
@@ -2126,13 +2127,16 @@
 	     (:authors
 	      ("Elis \"etu\" Hirwing" . "elis@hirwing.se")))])
  (wgrep .
-	[(2 3 3)
-	 nil "Writable grep buffer and apply the changes to files" tar
+	[(3 0 0)
+	 ((emacs
+	   (25 1)))
+	 "Writable grep buffer and apply the changes to files" tar
 	 ((:url . "http://github.com/mhayashi1120/Emacs-wgrep/raw/master/wgrep.el")
+	  (:keywords "grep" "edit" "extensions")
 	  (:maintainer "Masahiro Hayashi" . "mhayashi1120@gmail.com")
 	  (:authors
 	   ("Masahiro Hayashi" . "mhayashi1120@gmail.com"))
-	  (:keywords "grep" "edit" "extensions"))])
+	  (:commit . "2d1c0509215499e927817b0d7d3f133db678e010"))])
  (why-this .
 	   [(2 0 4)
 	    ((emacs
@@ -2199,7 +2203,7 @@
 	      (:authors
 	       ("Le Wang")))])
  (xah-fly-keys .
-	       [(22 6 20230120120803)
+	       [(22 8 20230127142338)
 		((emacs
 		  (24 1)))
 		"ergonomic modal keybinding minor mode." tar
@@ -2208,7 +2212,7 @@
 		 (:maintainer "Xah Lee" . "xah@xahlee.org")
 		 (:authors
 		  ("Xah Lee ( http://xahlee.info/ )"))
-		 (:commit . "73b08aec53847b46bbb45945ef2da0900b080c84"))])
+		 (:commit . "b47253a138a764569bf569be29b96509316bf8b7"))])
  (xkcd .
        [(1 1)
 	((json

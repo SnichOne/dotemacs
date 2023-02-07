@@ -307,6 +307,13 @@
 ;; ---------------------------------------------------------------------------
 ;; Packages
 
+;; Do package configuration and installation using use-package.
+;; NOTE: Try to lazy-load packages as much as possible to reduce the startup time:
+;; - use the ':commands' block to specify commands that will serve as a trigger
+;;   to load the package,
+;; - use the ':bind' and ':mode' blocks for the same "trigger" purpose,
+;; - use ':defer' as a last resource to lazy-load the package.
+
 ;; Initialize package manager.
 ;; Following commands are taken from the tutorial:
 ;; https://github.com/susam/emfy#install-packages.
@@ -711,6 +718,10 @@
   ;; for their primal purpose.
   (org-image-actual-width nil)
 
+  ;; Download and display remote images: only for ssh connections, images linked
+  ;; to external URL (http, https) are not affected by this setting).
+  (org-display-remote-inline-images 'download)
+
   ;; Configure how much levels should be exported as a headline, inferior levels
   ;; will usually produce itemize or enumerate lists when exported, but back-end
   ;; behavior may differ.
@@ -791,7 +802,25 @@
   ;; headers per file basis.
   ;; (add-to-list 'org-latex-packages-alist '("" "cmap" t))
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
-)
+  )
+
+;; Install Org mode export dependencies.
+;; 1. Htmlize. Convert buffer text and decorations to HTML.
+(use-package htmlize)
+
+;; Org-anki. Emacs minor mode for making Anki cards with Org.
+(use-package org-anki
+  :after org
+  :commands (org-anki-sync-entry
+             org-anki-update-all
+             org-anki-delete-entry
+             org-anki-delete-all)
+  :bind
+  ;; Bind the sync entry command ('org-anki-sync-entry') to "C-c a s".
+  ( :map org-mode-map
+    ("C-c a" . org-anki-sync-entry))
+  :custom
+  (anki-editor-create-decks t))
 
 ;; Org-roam
 ;; (use-package org-roam
