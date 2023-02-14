@@ -315,7 +315,7 @@
 ;; - use ':defer' as a last resource to lazy-load the package.
 
 ;; Initialize package manager.
-;; Following commands are taken from the tutorial:
+;; The following commands are taken from the tutorial:
 ;; https://github.com/susam/emfy#install-packages.
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -859,12 +859,12 @@
 
 
 ;; Better LaTeX input.
-;; CDLaTeX
+;; CDLaTeX.
 (use-package cdlatex
   :hook
   (org-mode . turn-on-org-cdlatex))
 
-;; AUCTeX
+;; AUCTeX.
 (use-package tex
   :ensure auctex
   :defer t)
