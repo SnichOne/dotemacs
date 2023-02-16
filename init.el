@@ -763,6 +763,13 @@
   (org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format
                                          org-attach-id-uuid-folder-format))
 
+  ;; Configure languages which can be evaluated in Org buffers.
+  (org-babel-load-languages '((R . t)
+                              (python . t)))
+  ;; Disable the confirmation prompt asking permission to evaluate the source
+  ;; code.
+  (org-confirm-babel-evaluate nil)
+
   :bind
   ;; For a better experience, the three Org commands ‘org-store-link’,
   ;; ‘org-capture’ and ‘org-agenda’ ought to be accessible anywhere in Emacs,
@@ -823,7 +830,6 @@
     ("C-c a" . org-anki-sync-entry))
   :custom
   (anki-editor-create-decks t))
-
 
 ;; Org-cliplink. A simple command that takes a URL from the clipboard and
 ;; inserts an org-mode link with a title of a page found by the URL into the
@@ -896,6 +902,23 @@
   ;; block.
   (define-key project-prefix-map "m" #'magit-project-status)
   (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
+
+
+;; Emacs Speaks Statistics (ESS). It is designed to support editing of scripts
+;; and interaction with various statistical analysis programs such as R, S-Plus,
+;; SAS, Stata and OpenBUGS/JAGS.
+(use-package ess
+  ;; Configuration for R language
+  :commands R
+  :mode (("\\.[rR]\\'" . R-mode)
+         ("\\.[rR]nw\\'" . Rnw-mode))
+  :interpreter ("R" . R-mode))
+
+
+;; Expand region increases the selected region by semantic units. Just keep
+;; pressing the key until it selects what you want.
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
 
 
 ;; Evil — Vim emulation.
