@@ -965,6 +965,23 @@
   :interpreter ("R" . R-mode))
 
 
+;; Python (built-in python.el).
+(use-package python
+  :ensure nil
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python[0-9.]*" . python-mode)
+  :custom
+  ;; Configure multiplier applied to indentation inside multi-line def blocks,
+  ;; i.e. defines how function parameters should be indented.
+  (python-indent-def-block-scale 1)
+  ;; Use pep 257 style to fill docstrings.
+  (python-fill-docstring-style 'pep-257-nn)
+  :config
+  ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
+  (setq-mode-local python-mode fill-column 72)
+)
+
+
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
 (use-package expand-region
