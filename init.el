@@ -356,7 +356,7 @@
 
   :config
   (add-hook 'minibuffer-setup-hook
-      (lambda () (setq truncate-lines t))))
+            (lambda () (setq truncate-lines t))))
 
 
 ;; Enable the minor mode that indicates which buffer is currently active by
@@ -801,7 +801,7 @@
   ;; Set the path to default bibliography files:
   ;; '<org-directory>/bibligoraphy.bib'.
   (setq org-cite-global-bibliography
-   (list (file-name-concat org-directory "bibliography.bib")))
+        (list (file-name-concat org-directory "bibliography.bib")))
 
   ;; Load org-id. This library will automatically create the ID property
   ;; if 'org-id-link-to-org-use-id' is set.
@@ -816,32 +816,33 @@
           (counter -1)
           (numberp))
 
-      (setq results (cl-loop for (begin .  env) in
-                          (org-element-map (org-element-parse-buffer) 'latex-environment
-                            (lambda (env)
-                              (cons
-                               (org-element-property :begin env)
-                               (org-element-property :value env))))
-                          collect
-                          (cond
-                           ((and (string-match "\\\\begin{equation}" env)
-                                 (not (string-match "\\\\tag{" env)))
-                            (cl-incf counter)
-                            (cons begin counter))
-                           ((string-match "\\\\begin{align}" env)
-                            (prog2
-                                (cl-incf counter)
-                                (cons begin counter)
-                              (with-temp-buffer
-                                (insert env)
-                                (goto-char (point-min))
-                                ;; \\ is used for a new line. Each one leads to a number
-                                (cl-incf counter (count-matches "\\\\$"))
-                                ;; unless there are nonumbers.
-                                (goto-char (point-min))
-                                (cl-decf counter (count-matches "\\nonumber")))))
-                           (t
-                            (cons begin nil)))))
+      (setq results
+            (cl-loop for (begin .  env) in
+                     (org-element-map (org-element-parse-buffer) 'latex-environment
+                       (lambda (env)
+                         (cons
+                          (org-element-property :begin env)
+                          (org-element-property :value env))))
+                     collect
+                     (cond
+                      ((and (string-match "\\\\begin{equation}" env)
+                            (not (string-match "\\\\tag{" env)))
+                       (cl-incf counter)
+                       (cons begin counter))
+                      ((string-match "\\\\begin{align}" env)
+                       (prog2
+                           (cl-incf counter)
+                           (cons begin counter)
+                         (with-temp-buffer
+                           (insert env)
+                           (goto-char (point-min))
+                           ;; \\ is used for a new line. Each one leads to a number
+                           (cl-incf counter (count-matches "\\\\$"))
+                           ;; unless there are nonumbers.
+                           (goto-char (point-min))
+                           (cl-decf counter (count-matches "\\nonumber")))))
+                      (t
+                       (cons begin nil)))))
 
       (when (setq numberp (cdr (assoc (point) results)))
         (setf (car args)
