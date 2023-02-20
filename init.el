@@ -161,8 +161,8 @@
 ;; ---------------------------------------------------------------------------
 ;; Editing settings.
 
-;; Set column beyond which automatic line-wrapping should happen (e.g. by
-;; hitting M-q).
+;; Configure 'fill-paragraph' (binded to M-q by default) to wrap lines at 80
+;; characters.
 (customize-set-variable 'fill-column 80)
 
 ;; Enable Flyspell mode in Text mode. Flyspell is a minor mode that performs
@@ -794,6 +794,9 @@
     (interactive)
     (set-window-hscroll (selected-window) 0))
   (advice-add 'org-fill-paragraph :after #'set-selected-window-hscroll-to-0)
+
+  ;; Configure 'fill-paragraph' to wrap lines at 70 characters in org-mode.
+  (setq-mode-local org-mode fill-column 70)
 
   ;; Set the path to default bibliography files:
   ;; '<org-directory>/bibligoraphy.bib'.
