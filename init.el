@@ -595,10 +595,8 @@
 ;;   :ensure nil)
 
 
-;; Org mode (use built-in version).
+;; Org mode.
 (use-package org
-  :ensure nil
-
   :custom
   ;; Fontify (e.g., highlight with a background color) the whole line for
   ;; headings. Looks nice with the leuven theme.
@@ -628,9 +626,23 @@
                                :html-scale 1.0
                                :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
+  ;; Configure LaTeX hyperref package.
+  ;; 1. Better table of contents (TOC), list of figures (LOF) and list of
+  ;;    tables (LOT): make both section and page number be links,
+  ;; 2. Enable color for links,
+  ;; 3. Enable "backlink" text at the end of each item in the bibliography,
+  ;;    as a list of page numbers. This can only work properly if there is
+  ;;    a blank line after each \bibitem.
+  ;;    TODO: probably org-mode should be configured additionally to create
+  ;;    such blank lines.
+  (org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n linktoc=all,\n colorlinks=true,\n pagebackref=true}\n")
+
   ;; Enable syntax highlighting for latex fragments.
   ;; NOTE: I didn't understood
   (org-highlight-latex-and-related '(native))
+
+  ;; Enable syntax higlighting of source blocks in LaTeX export.
+  (org-latex-src-block-backend 'engraved)
 
   ;; Prevent inadvertently edit an invisible part of the buffer and be confused
   ;; on what has been edited and how to undo the mistake. Setting
@@ -863,7 +875,11 @@
 
 ;; Install Org mode export dependencies.
 ;; 1. Htmlize. Convert buffer text and decorations to HTML.
-(use-package htmlize)
+(use-package htmlize
+  :after org)
+;; 2. Engrave-faces. Convert font-lock faces to other formats.
+(use-package engrave-faces
+  :after org)
 
 ;; Org-anki. Emacs minor mode for making Anki cards with Org.
 (use-package org-anki
