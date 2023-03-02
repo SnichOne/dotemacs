@@ -135,30 +135,6 @@
 
 
 ;; ---------------------------------------------------------------------------
-;; Minibuffer.
-
-;; Minibuffer completion.
-;; Enable fido-mode. It's really just icomplete with slightly different defaults
-;; that emulate ido mode as close as possible.
-(fido-mode 1)
-;; Make Fido/Icomplete mode display the possible completions on the same line as
-;; the prompt by default.
-(icomplete-vertical-mode 1)
-
-;; Display the default argument as ‘[DEFAULT-ARG]’ instead of ‘(default
-;; DEFAULT-ARG)’, saving some screen space.
-;;
-;; NOTE: use 'customize-set-variable' or plac before enabling
-;; 'minibuffer-electric-default-mode'.
-(customize-set-variable 'minibuffer-eldef-shorten-default t)
-
-;; Hide the default argument as soon as you modify the contents of the
-;; minibuffer (since typing <RET> would no longer submit that default).
-(minibuffer-electric-default-mode 1)
-;; ---------------------------------------------------------------------------
-
-
-;; ---------------------------------------------------------------------------
 ;; Editing settings.
 
 ;; Configure 'fill-paragraph' (binded to M-q by default) to wrap lines at 80
@@ -340,8 +316,41 @@
   :custom
   (nyan-mode t))
 
+
+;; === Minibuffer. ===========================================================
 
-;; Enable rich annotations using the Marginalia package.
+;; Configure minibuffer completion using the built-in Fido mode.
+(use-package icomplete                  ; built-in
+  :ensure nil
+  :custom
+  ;; Enable fido-mode. It's really just icomplete with slightly different
+  ;; defaults that emulate ido mode as close as possible.
+  (fido-mode t)
+  ;; Make Fido/Icomplete mode display the possible completions on the same line
+  ;; as the prompt by default.
+  (icomplete-vertical-mode t)
+  :config
+  ;; Bind TAB to complete selected candidate.
+  ;; NOTE: I used 'define-key' instead of ':bind' because the latter creates
+  ;; autoloads for the command (see use-package docs for more info).
+  (define-key icomplete-minibuffer-map (kbd "TAB") #'icomplete-force-complete))
+
+
+;; Configure how minibuffer suggest default input.
+(use-package minibuf-eldef              ; built-in
+  :ensure nil
+  :custom
+  ;; Display the default argument as ‘[DEFAULT-ARG]’ instead of ‘(default
+  ;; DEFAULT-ARG)’, saving some screen space.
+  (minibuffer-eldef-shorten-default t)
+
+  ;; Hide the default argument as soon as you modify the contents of the
+  ;; minibuffer (since typing <RET> would no longer submit that default).
+  (minibuffer-electric-default-mode t))
+
+
+;; Add colorful annotations placed at the margin of the minibuffer for
+;; completion candidates.
 (use-package marginalia
   ;; Either bind 'marginalia-cycle' globally or only in the minibuffer.
   :bind
