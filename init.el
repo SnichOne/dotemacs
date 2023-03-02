@@ -657,7 +657,11 @@
   ;; on what has been edited and how to undo the mistake. Setting
   ;; 'org-catch-invisible-edits' to 'error' makes Emacs throw an error and do
   ;; nothing when inserting or deleting a character in an invisible region.
-  (org-catch-invisible-edits 'error)
+  ;; TODO: for some reason, when I hit C-RET on a collapsed tree, newly created
+  ;; headline is created and Emacs shows three dots, as if it is collapsed, and
+  ;; therefore does not let you edit it unless you "expand" it.
+  ;; Disabled this option for that reason until further investigation.
+  ;; (org-catch-invisible-edits 'error)
 
   ;; Store quick notes (C-c C-z) in the drawer (LOGBOOK by default). It is also
   ;; possible to arrange for state change notes and clock times to be stored in
@@ -709,7 +713,7 @@
      ("li" "Life daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
       :empty-lines 1)
-     ("lr" "Life weekly review" entry (file+olp+datetree "life_journal.org")
+     ("lr" "Life weekly review" checkitem (file+olp+datetree "life_journal.org")
       (file "templates/weekly_review.org")
       :empty-lines 1)
 
