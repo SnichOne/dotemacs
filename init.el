@@ -30,16 +30,6 @@
 ;; https://github.com/susam/emfy#keep-working-directory-tidy
 (customize-set-variable 'backup-by-copying t)
 
-;; Better isearch defaults. Isearch stands for incremental search. This means
-;; that search results are updated and highlighted while you are typing your
-;; query, incrementally.
-(customize-set-variable 'lazy-highlight-initial-delay 0)
-;; I tested scroll while isearch is active, it works awfully and doesn't let you
-;; to scroll more than a screen away from the active match. Do not enable it.
-;; (customize-set-variable 'isearch-allow-scroll nil)
-;; Highlighting full buffer does not make a lot of sense without scroll.
-;; (customize-set-variable 'lazy-highlight-buffer t)
-
 ;; Show eldoc (documentation in minibuffer) as soon as possible without any
 ;; delay.
 (customize-set-variable 'eldoc-idle-delay 0)
@@ -317,7 +307,7 @@
   (nyan-mode t))
 
 
-;; === Minibuffer. ===========================================================
+;; === Minibuffer ============================================================
 
 ;; Configure minibuffer completion using the built-in Fido mode.
 (use-package icomplete                  ; built-in
@@ -366,6 +356,38 @@
   :config
   (add-hook 'minibuffer-setup-hook
             (lambda () (setq truncate-lines t))))
+
+;; ===========================================================================
+
+
+;; === Isearch ===============================================================
+
+;; Better isearch defaults. Isearch stands for incremental search. This means
+;; that search results are updated and highlighted while you are typing your
+;; query, incrementally.
+(use-package isearch                    ; built-in
+  :ensure nil
+  :custom
+  ;; Allow scroll while isearch is active.
+  (isearch-allow-scroll 'unlimited)
+  :hook
+  ;; Leave the cursor at the beginning of match after isearch is completed.
+  (isearch-mode-end . isearch-exit-at-start)
+
+  :config
+
+  ;; Source: https://github.com/oantolin/emacs-config/blob/856179ae1095cfe1211424f1dd1416960702a8a4/my-lisp/isearch-extras.el#L3
+  (defun isearch-exit-at-start ()
+    "Leave the cursor at the beginning of match after isearch is completed."
+    (unless (or isearch-mode-end-hook-quit
+                (bound-and-true-p isearch-suspended)
+                (not isearch-forward)
+                (not isearch-other-end)
+                (and (boundp 'avy-command)
+                     (eq avy-command 'avy-isearch)))
+      (goto-char isearch-other-end))))
+
+;; ===========================================================================
 
 
 ;; Enable the minor mode that indicates which buffer is currently active by
