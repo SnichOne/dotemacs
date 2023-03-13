@@ -1032,6 +1032,14 @@
   (setq-mode-local python-mode fill-column 72))
 
 
+;; Markdown mode. A major mode for editing Markdown-formatted text.
+(use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "pandoc")
+  :bind (:map markdown-mode-map
+         ("C-c C-e" . markdown-do)))
+
+
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
 (use-package expand-region
