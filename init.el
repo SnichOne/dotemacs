@@ -414,7 +414,7 @@
 
 ;; Load Modus theme.
 (use-package modus-themes
-  :demand
+  :demand t
   :config
   ;; Add all your customizations prior to loading the themes.
 
