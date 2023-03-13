@@ -1029,8 +1029,7 @@
   (python-fill-docstring-style 'pep-257-nn)
   :config
   ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
-  (setq-mode-local python-mode fill-column 72)
-)
+  (setq-mode-local python-mode fill-column 72))
 
 
 ;; Expand region increases the selected region by semantic units. Just keep
