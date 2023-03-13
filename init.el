@@ -579,8 +579,8 @@
 (use-package flymake
   :ensure nil
   :hook prog-mode
-  :bind (("C-c e ]" . flymake-goto-prev-error)
-         ("C-c e [" . flymake-goto-next-error)
+  :bind (("C-c e [" . flymake-goto-prev-error)
+         ("C-c e ]" . flymake-goto-next-error)
          ("C-c e b" . flymake-show-buffer-diagnostics)
          ("C-c e p" . flymake-show-project-diagnostics))
   :config
