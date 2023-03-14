@@ -1064,3 +1064,25 @@
 ;;   :config
 ;;   (evil-mode 1))
 ;; ---------------------------------------------------------------------------
+
+;; Envrc.el — buffer-local direnv integration for Emacs.
+
+;; NOTE: The documentation states the following.
+
+;; "It's probably wise to load envrc.el late in your startup sequence: you
+;; normally want envrc-mode to be initialized in each buffer before other minor
+;; modes like flycheck-mode which might look for executable.
+;; Counter-intuitively, this means that envrc-global-mode should be enabled
+;; after other global minor modes, since each prepends itself to various hooks."
+
+;; I'm not sure how use-packages should be used in this case. But it seems that
+;; I do not enable any other global minor modes that can interfere.
+(use-package envrc
+  ;; Only load envrc if direnv is installed.
+  :if (executable-find "direnv")
+  :config
+  ;; Enable envrc globally. There is a local minor mode envrc-mode, but you
+  ;; should not try to enable this granularly, e.g. for certain modes or
+  ;; projects, because compilation and other buffers might not get set up with
+  ;; the right environment.
+  (envrc-global-mode))
