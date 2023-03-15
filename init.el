@@ -211,7 +211,7 @@
 (customize-set-variable 'show-paren-delay 0)
 
 ;; Make it easier to follow Git's 50/72 rule in 'VC' (Emacs built-in package,
-;; that is interface to version control systems).
+;; an interface to version control systems).
 (setq-mode-local vc-git-log-edit-mode fill-column 72)
 
 ;; Make Emacs hotkeys work in Russian layout.
@@ -576,7 +576,7 @@
 
 ;; Enable Flymake in prog-mode. Flymake is a universal on-the-fly syntax
 ;; checker.
-(use-package flymake
+(use-package flymake                    ; built-in
   :ensure nil
   :hook prog-mode
   :bind (("C-c e [" . flymake-goto-prev-error)
@@ -1064,6 +1064,20 @@
 ;;   :config
 ;;   (evil-mode 1))
 ;; ---------------------------------------------------------------------------
+
+
+;; TRAMP. TRAMP stands for Transparent Remote Access, Multiple Protocol. In
+;; brief, it’s a lovely way to wander around outside your local filesystem.
+(use-package tramp                      ; built-in
+  :ensure nil
+  :config
+  ;; Configure TRAMP to respect the PATH variable on the remote machine (e.g.,
+  ;; for remote eshell sessions) by adding 'tramp-own-remote-path' to the list
+  ;; 'tramp-remote-
+  ;; NOTE: conda PATH is not set correctly, maybe it's the problem with my
+  ;; .zshrc or using zsh in general.
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 
