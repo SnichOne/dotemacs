@@ -32,7 +32,7 @@
 
 ;; Show eldoc (documentation in minibuffer) as soon as possible without any
 ;; delay.
-(customize-set-variable 'eldoc-idle-delay 0)
+(customize-set-variable 'eldoc-idle-delay 0.3)
 
 ;; Even if you avoid using the customization UI, some settings may cause
 ;; customization variables to be added to your init.el file. Let's change that
@@ -589,8 +589,18 @@
 ;; LSP support.
 (use-package eglot
   :custom
-  ;; This stops eglot from logging the json events of lsp server.
+  ;; This stops eglot from logging the json events of lsp server and improves
+  ;; the performance.
   (eglot-events-buffer-size 0)
+
+  ;; If and M-. (xref-find-definitions) lands you in a file outside of your
+  ;; project, such as a system-installed library or header file, transiently
+  ;; consider that file as managed by the same language server. That file is
+  ;; still outside your project (i.e. project-find-file won’t find it), but
+  ;; Eglot and the server will consider it to be part of the workspace.
+  ;; By default, eglot starts new server, e.g., each time you press M-. on
+  ;; an imported library outside the project.
+  (eglot-extend-to-xref t)
   :hook (python-mode . eglot-ensure))
 ;; (use-package eldoc-box
 ;;   :config
@@ -1029,8 +1039,26 @@
   (python-fill-docstring-style 'pep-257-nn)
   :config
   ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
-  (setq-mode-local python-mode fill-column 72))
+  (setq-mode-local python-mode fill-column 72)
 
+  ;; Configure python to auto-indent line when you insert closing parenthesis or
+  ;; bracket. Hah, I wrote this clutch.
+  (defun python-indent-closing-paren-or-bracket ()
+    ;; Check if the the last inserted char is ")", "]" or "}" and if the line
+    ;; starts with ")", "]" or "}".
+
+    ;; NOTE: this can be improved by matching the line with the regex
+    ;; "^\w*[\)\]]\w*$"
+    (when (and (memq last-command-event '(?\) ?\] ?\}))
+               (memq (char-after (+ (line-beginning-position) (current-indentation))) '(?\) ?\] ?\})))
+      (python-indent-line)))
+
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (add-hook 'post-self-insert-hook
+                        #'python-indent-closing-paren-or-bracket
+                        0
+                        'local))))
 
 ;; Markdown mode. A major mode for editing Markdown-formatted text.
 (use-package markdown-mode
@@ -1076,7 +1104,10 @@
   ;; 'tramp-remote-
   ;; NOTE: conda PATH is not set correctly, maybe it's the problem with my
   ;; .zshrc or using zsh in general.
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
+  ;; Enable search for '.dir-locals.el' for remote files.
+  (setq enable-remote-dir-locals t))
 
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
