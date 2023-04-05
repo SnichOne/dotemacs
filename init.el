@@ -993,6 +993,16 @@
   :custom
   ;; Make Dired show directories first, works on Linux, MacOS.
   (dired-listing-switches "-al --group-directories-first")
+  ;; Commands which ask for a destination directory, such as those which copy
+  ;; and rename files or create links for them, try to guess the default target
+  ;; directory for the operation. Normally, they suggest the Dired buffer’s
+  ;; default directory, but if the option 'dired-dwim-target' is non-nil, and if
+  ;; there is another Dired buffer displayed in some window, that other buffer’s
+  ;; directory is suggested instead.
+
+  ;; The 'dired-dwim-target-next' value makes Dired to prefer the next windows
+  ;; on the same frame. Default is nil.
+  (dired-dwim-target 'dired-dwim-target-next)
   :hook
   ;; Hide details: file properties, owner, size, modified time.
   (dired-mode . dired-hide-details-mode))
