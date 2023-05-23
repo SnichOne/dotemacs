@@ -127,8 +127,8 @@
 ;; ---------------------------------------------------------------------------
 ;; Editing settings.
 
-;; Configure 'fill-paragraph' (binded to M-q by default) to wrap lines at 80
-;; characters.
+;; Set line width: configure 'fill-paragraph' (binded to M-q by default) to wrap
+;; lines at 80 characters.
 (customize-set-variable 'fill-column 80)
 
 ;; Enable Flyspell mode in Text mode. Flyspell is a minor mode that performs
