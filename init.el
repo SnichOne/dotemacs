@@ -89,7 +89,7 @@
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
 
-;; Show the end of buffer with a special glyph in the left fringe.
+;; Show the end of buffer in Text mode with a special glyph in the left fringe.
 (setq-mode-local text-mode indicate-empty-lines t)
 
 ;; Make calendar begin weeks on Monday.
@@ -918,7 +918,7 @@
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
   )
 
-;; Install Org mode export dependencies.
+;; Install Org mode export dependencies: better code syntax highlighting.
 ;; 1. Htmlize. Convert buffer text and decorations to HTML.
 (use-package htmlize
   :after org)
@@ -1123,7 +1123,6 @@
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 
 ;; NOTE: The documentation states the following.
-
 ;; "It's probably wise to load envrc.el late in your startup sequence: you
 ;; normally want envrc-mode to be initialized in each buffer before other minor
 ;; modes like flycheck-mode which might look for executable.
