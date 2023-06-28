@@ -474,20 +474,20 @@
 ;; follow C-x (or as many as space allows given your settings). This includes
 ;; prefixes like C-x 8 which are shown in a different face.
 (use-package which-key
-  :defer 1
-  :config
-  (setq which-key-idle-delay 0.4)
-  (which-key-mode))
+  :hook
+  (after-init . which-key-mode)
+  :custom
+  (which-key-idle-delay 0.4))
 
 
 ;; Collapse all minor modes in modeline, but whitelist flycheck and flymake.
 ;; Probably will switch to doom-modeline, if I ever use evil-mode.
 (use-package minions
-  :defer 1
-  :config
-  (setq minions-mode-line-lighter ";")
-  (setq minions-prominent-modes '(flycheck-mode flymake-mode))
-  (minions-mode 1))
+  :hook
+  (after-init . minions-mode)
+  :custom
+  (minions-mode-line-lighter ";")
+  (minions-prominent-modes '(flycheck-mode flymake-mode envrc-mode)))
 
 
 ;; Convenient completion popup.
