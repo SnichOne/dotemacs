@@ -1137,26 +1137,6 @@
   :bind ("C-=" . er/expand-region))
 
 
-;; Evil — Vim emulation.
-;; (use-package evil
-;;   :init
-;;   ;; Evil uses "C-z" and "C-M-z" to switch to Emacs state, hence unbind "C-z"
-;;   ;; which is bound to 'suspend-emacs' by default.
-;;   (global-unset-key (kbd "C-z"))
-;;   :custom
-;;   ;; Set default Evil state to "emacs".
-;;   (evil-default-state 'emacs)
-;;   ;; There are some other ways to control the Evil state besides the
-;;   ;; 'evil-default-state' variable, e.g. 'evil-motion-state-modes' and
-;;   ;; 'evil-insert-state-modes. Let's configure them as well.
-;;   (evil-motion-state-modes nil)
-;;   (evil-insert-state-modes nil)
-
-;;   :config
-;;   (evil-mode 1))
-;; ---------------------------------------------------------------------------
-
-
 ;; TRAMP. TRAMP stands for Transparent Remote Access, Multiple Protocol. In
 ;; brief, it’s a lovely way to wander around outside your local filesystem.
 (use-package tramp                      ; built-in
@@ -1171,6 +1151,44 @@
 
   ;; Enable search for '.dir-locals.el' for remote files.
   (setq enable-remote-dir-locals t))
+
+
+;; Evil — Vim emulation.
+(use-package evil
+  :init
+  ;; Evil uses "C-z" and "C-M-z" to switch to Emacs state, hence unbind "C-z"
+  ;; which is bound to 'suspend-emacs' by default.
+  (global-unset-key (kbd "C-z"))
+
+  :hook
+  (after-init . evil-mode)
+
+  :bind (:map evil-normal-state-map
+              ("] e" . flymake-goto-next-error)
+              ("[ e" . flymake-goto-prev-error)
+              ("j" . evil-next-visual-line)
+              ("k" . evil-previous-visual-line))
+
+  :custom
+  (evil-undo-system 'undo-redo)
+
+  :config
+  (dolist (mode '(Info-mode
+                  help-mode
+                  flymake-mode-buffer-mode
+                  flymake-project-diagnostics-mode
+                  xeft-mode
+                  xref--xref-buffer-mode))
+    (evil-set-initial-state mode 'emacs)))
+
+
+;; Evil-escape allows to map a chord for escape.
+(use-package evil-escape
+  :after evil
+  :hook
+  (evil-mode . evil-escape-mode)
+  :custom
+  (evil-escape-key-sequence "jk"))
 
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
@@ -1193,3 +1211,12 @@
   ;; projects, because compilation and other buffers might not get set up with
   ;; the right environment.
   (envrc-global-mode))
+
+
+;; Breadcrumb — headerline indication of where you are in a large project.
+;; Local file, since the plugin is not in Melpa.
+(use-package breadcrumb
+  :ensure nil
+  :load-path "lisp/"
+  :hook prog-mode)
+;; ---------------------------------------------------------------------------
