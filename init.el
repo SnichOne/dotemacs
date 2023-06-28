@@ -95,6 +95,16 @@
 ;; Make calendar begin weeks on Monday.
 (customize-set-variable 'calendar-week-start-day 1)
 
+;; Make Emacs mark out URLs specially in the current buffer. When the
+;; `goto-address-mode' buffer-local minor mode is enabled, it finds all the URLs
+;; in the buffer, highlights them, and turns them into clickable buttons. You
+;; can follow the URL by typing ‘C-c <RET>’ (‘goto-address-at-point’) while
+;; point is on its text; or by clicking with ‘mouse-2’, or by clicking ‘mouse-1’
+;; quickly.
+;; NOTE: evil mode has a default keybinding `gx' to follow a link at point, that
+;; works regardless weather the mode is on or off.
+(global-goto-address-mode 1)
+
 ;; Scroll horizontally with touchpad.
 ;; Correct left-right scroll direction for OS X.
 (customize-set-variable 'mouse-wheel-flip-direction t)
@@ -126,6 +136,11 @@
 
 ;; ---------------------------------------------------------------------------
 ;; Editing settings.
+
+;; Enable auto insert of closing parentheses, brackets, etc.
+;; Additionally, If the region is active, the parentheses (brackets, etc.) are
+;; inserted around the region instead.
+(electric-pair-mode 1)
 
 ;; Set line width: configure 'fill-paragraph' (binded to M-q by default) to wrap
 ;; lines at 80 characters.
