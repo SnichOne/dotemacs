@@ -30,7 +30,7 @@
 ;; https://github.com/susam/emfy#keep-working-directory-tidy
 (customize-set-variable 'backup-by-copying t)
 
-;; Show eldoc (documentation in minibuffer) as soon as possible without any
+;; Decrease delay before showing eldoc (documentation in minibuffer).
 ;; delay.
 (customize-set-variable 'eldoc-idle-delay 0.3)
 
