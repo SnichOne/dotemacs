@@ -979,22 +979,6 @@
 (use-package engrave-faces
   :after org)
 
-;; Org-anki. Emacs minor mode for making Anki cards with Org.
-(use-package org-anki
-  :after org                            ; required, because of the binding to
-                                        ; org-mode-map which is created only
-                                        ; after org package is loaded
-  :commands (org-anki-sync-entry
-             org-anki-update-all
-             org-anki-delete-entry
-             org-anki-delete-all)
-  :bind
-  ;; Bind the sync entry command ('org-anki-sync-entry') to "C-c a s".
-  ( :map org-mode-map
-    ("C-c a" . org-anki-sync-entry))
-  :custom
-  (anki-editor-create-decks t))
-
 ;; Org-cliplink. A simple command that takes a URL from the clipboard and
 ;; inserts an org-mode link with a title of a page found by the URL into the
 ;; current buffer.
@@ -1193,6 +1177,28 @@
   (evil-escape-key-sequence "jk"))
 
 
+;; Breadcrumb — headerline indication of where you are in a large project.
+;; Local file, since the plugin is not in Melpa.
+(use-package breadcrumb
+  :ensure nil
+  :load-path "lisp/"
+  :hook prog-mode)
+
+
+;; Org-an — my anki synchronization plugin.
+(use-package org-an
+  :ensure nil
+  :load-path "lisp/"
+  :after org                            ; required, because of the binding to
+                                        ; org-mode-map which is created only
+                                        ; after org package is loaded
+  :commands (org-an-push-entry-at-point
+             org-an-delete-note)
+  :bind
+  ;; Bind the sync entry command ('org-anki-sync-entry') to "C-c a s".
+  ( :map org-mode-map
+    ("C-c a" . org-an-push-entry-at-point)))
+
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 
 ;; NOTE: The documentation states the following.
@@ -1213,12 +1219,4 @@
   ;; projects, because compilation and other buffers might not get set up with
   ;; the right environment.
   (envrc-global-mode))
-
-
-;; Breadcrumb — headerline indication of where you are in a large project.
-;; Local file, since the plugin is not in Melpa.
-(use-package breadcrumb
-  :ensure nil
-  :load-path "lisp/"
-  :hook prog-mode)
 ;; ---------------------------------------------------------------------------
