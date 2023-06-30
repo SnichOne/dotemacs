@@ -1178,7 +1178,9 @@
                   flymake-mode-buffer-mode
                   flymake-project-diagnostics-mode
                   xeft-mode
-                  xref--xref-buffer-mode))
+                  xref--xref-buffer-mode
+                  diff-mode
+                  dired-mode))
     (evil-set-initial-state mode 'emacs)))
 
 
