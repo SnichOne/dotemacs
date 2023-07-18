@@ -22,7 +22,7 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("/home/snich/org/notes.org" "/home/snich/org/life.org"))
  '(package-selected-packages
-   '(plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize org-anki auctex cdlatex magit corfu xeft hl-todo eglot dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode))
+   '(org-inline-anim org-fragtog org-modern plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize auctex cdlatex magit corfu xeft hl-todo eglot dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode))
  '(warning-suppress-types '((org-element-cache))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -5,7 +5,22 @@
 ;; Dependencies: Anki, AnkiConnect should be installed and running.
 
 ;; TODO:
+;; - Use plz.el queue for uploading media and add message in queue :finally
+;;   to notify that all media was uploaded.
+;;
+;; - Add "protected tags" that won't be deleted from Anki even when they're
+;;   absent in Org entries, useful for special tags like "marked" and "leech".
+;;
+;; - When the deck is changed, updating note should move the note to new deck.
+;;
+;; - Add ability to set the front field different from the title, e.g. inherent
+;;   parent heading.
+;;
+;; - Maybe use width size from image attributes (e.g. "#+ATTR_ORG: :width
+;;   830px") to resize images before uploading to the Anki media folder.
+;;
 ;; - Guard ankiConnect and Anki versions.
+;;
 ;; - Make HTML export async. Check out `org-export-async-start', for an example
 ;;   of async elisp based on processes, or see (info "(elisp) Threads") for an
 ;;   alternative based on threads.
@@ -42,6 +57,11 @@
 (defcustom org-an-ankiconnect-host "http://127.0.0.1:8765"
   "The network address AnkiConnect is listening on."
   :type 'string)
+
+(defcustom org-an-not-exported-tags
+  (append org-export-select-tags org-export-exclude-tags '("ATTACH"))
+  "A list of Org tags that are ignored when constructing notes."
+  :type '(repeat string))
 
 
 ;;; Internal variables
@@ -111,6 +131,21 @@ is set."
       (org-an--create-note note))))
 
 ;;;###autoload
+(defun org-an-push-subtree-at-point ()
+  "Push subtree at point to Anki.
+
+The command updates an existing note in Anki if the corresponding
+note exists, otherwise, it creates a new Anki note.
+
+The note is considered to exist if the \"ANKI_NOTE_ID\" property
+is set."
+  (interactive)
+  (let ((note (org-an--compile-note 'subtree)))
+    (if (org-an--note-id note)
+        (org-an--update-note note)
+      (org-an--create-note note))))
+
+;;;###autoload
 (defun org-an-delete-note ()
   "Delete Anki note corresponding to entry at point if there is one.
 
@@ -147,8 +182,8 @@ is set."
 (cl-defstruct org-an--media-file
   path encoded-name)
 
-(defun org-an--compile-note ()
-  "Compile note from the entry at point.
+(defun org-an--compile-note (&optional subtree)
+  "Compile note from the entry (or the subtree if SUBTREE is not nil) at point.
 
 Returns `org-an--note' object where NOTE-ID is nil if the
 \"ANKI_NOTE_ID\" property is not set."
@@ -163,17 +198,22 @@ Returns `org-an--note' object where NOTE-ID is nil if the
 
     (save-excursion
       (save-restriction
-        (narrow-to-region (org-entry-beginning-position) (org-entry-end-position))
+        (if subtree
+            (org-narrow-to-subtree)
+          (narrow-to-region (org-entry-beginning-position) (org-entry-end-position)))
         (setq media (org-an--encode-local-media-filenames))
         (setq fields (org-an--compile-note-fields note-type media))))
     (set-window-start (get-buffer-window) window-start)
 
     (make-org-an--note :id note-id
-                     :deck deck-name
-                     :type note-type
-                     :tags tags
-                     :fields fields
-                     :media media)))
+                       :deck deck-name
+                       :type note-type
+                       ;; Filter ignored tags (see `org-an-not-exported-tags').
+                       :tags (seq-filter
+                              (lambda (tag) (not (member tag org-an-not-exported-tags)))
+                              tags)
+                       :fields fields
+                       :media media)))
 
 (defun org-an--get-deck ()
   "Return Anki deck name for the entry at point."
@@ -211,7 +251,13 @@ method uses MD5 digest for encoded name: \"MD5.ORIGINAL_EXTENSION\"."
         ;; Expand attachment link.
         (when (string= type "attachment")
           (setq type "file")
-          (setq path (org-attach-expand path)))
+          (save-excursion
+            ;; Move point to the link, to make sure that point is at correct
+            ;; entry for `org-attach-expand'. E.g., when there are multiple
+            ;; entries, like during export of the entire subtree, this step is
+            ;; mandatory.
+            (goto-char (org-element-property :begin link))
+            (setq path (org-attach-expand path))))
         ;; If the link is to a local media file, return it, else return
         ;; nil (which will be ignored and skipped by `org-element-map').
         (when (org-an--local-media-link-p type path)

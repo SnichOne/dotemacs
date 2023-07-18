@@ -899,7 +899,8 @@
   ;; available keys.
   (("C-c o a" . org-agenda)
    ("C-c o c" . org-capture)
-   ("C-c o l" . org-store-link))
+   ("C-c o l" . org-store-link)
+   ("C-c o s" . +org-quick-attach-image))
 
   :config
   ;; Org mode sets 'truncate-lines' to 't', so each line of text has just one
@@ -981,7 +982,48 @@
   ;; headers per file basis.
   ;; (add-to-list 'org-latex-packages-alist '("" "cmap" t))
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
-  )
+
+  (define-minor-mode +org-pretty-mode
+    "Hides emphasis markers and toggles pretty entities."
+    :init-value nil
+    :lighter " *"
+    :group 'org
+    (setq org-hide-emphasis-markers +org-pretty-mode)
+    (org-toggle-pretty-entities)
+    (with-silent-modifications
+      ;; In case the above un-align tables
+      (org-table-map-tables 'org-table-align t)))
+
+  (defun +org-quick-attach-image (url width)
+    "Download an image from a URL and insert a link to the image.
+
+Also,
+- convert the downloaded file to GIF if it is an MP4 video;
+- insert \"#+ATTR_HTML :width WIDTH\" before the link.
+
+The image is downloaded to the attach directory."
+    (interactive "*sURL: \nnInline width (in px): ")
+    (org-attach-url url)
+    (insert (format "#+ATTR_HTML: :width %dpx" width))
+    (newline-and-indent)
+    (let ((link-beginning (point))
+          (file (file-name-nondirectory url)))
+      (when (string= (file-name-extension file) "mp4")
+        ;; Convert the video to GIF.
+        (let ((default-directory (org-attach-dir))
+              (gif-file-name (concat (file-name-sans-extension file) ".gif")))
+          (call-process "ffmpeg" nil nil nil
+                        "-y"
+                        "-i" file
+                        gif-file-name)
+          (delete-file file)
+          (setq file gif-file-name)))
+      (insert (format "[[attachment:%s]]" file))
+      (org-display-inline-images nil nil link-beginning (point)))
+    (newline-and-indent))
+
+  (defun +org-refresh-images ()
+   (interactive)))
 
 ;; Install Org mode export dependencies: better code syntax highlighting.
 ;; 1. Htmlize. Convert buffer text and decorations to HTML.
@@ -990,6 +1032,20 @@
 ;; 2. Engrave-faces. Convert font-lock faces to other formats.
 (use-package engrave-faces
   :after org)
+
+;; Org-an — my anki synchronization plugin.
+(use-package org-an
+  :ensure nil
+  :load-path "lisp/"
+  :after org                            ; required, because of the binding to
+                                        ; org-mode-map which is created only
+                                        ; after org package is loaded
+  :commands (org-an-push-entry-at-point
+             org-an-delete-note)
+  :bind
+  ;; Bind the sync entry command ('org-anki-sync-entry') to "C-c a s".
+  ( :map org-mode-map
+    ("C-c a" . org-an-push-entry-at-point)))
 
 ;; Org-cliplink. A simple command that takes a URL from the clipboard and
 ;; inserts an org-mode link with a title of a page found by the URL into the
@@ -1001,6 +1057,32 @@
   :bind
   ( :map org-mode-map
     ("C-c o i" . org-cliplink)))
+
+;; Org-modern. Modern Org Style: Org Mode prettifier.
+;; To have a visual line on the left of the blocks (e.g., source blocks), it
+;; seems, that you need to disable `org-startup-indented' and add a frame
+;; margin: internal-border-width. But I find `org-indent-mode' more useful.
+(use-package org-modern
+  :after org
+  :custom
+  ;; Disable org-modern for tables, otherwise table borders have messed alignment.
+  (org-modern-table nil)
+  :hook (org-mode . org-modern-mode))
+
+;; Org-inline-anim. Inline playback of animated GIF/PNG for Org.
+;;
+;; You can play an animation by M-x org-inline-anim-animate (or C-c C-x m) when
+;; the point is on the image.
+;;
+;; `M-x org-inline-anim-animate-all' (or C-c C-x M) plays all the animatable
+;; images in the buffer at once. You can stop it with a double prefix (C-u C-u)
+;; or a numeric arg 0 (C-u 0 or C-0). The former shows the last frame after
+;; playback is stopped.
+(use-package org-inline-anim
+  :after org
+  :custom
+  (org-inline-anim-loop t)
+  :hook (org-mode . org-inline-anim-mode))
 
 ;; Org-roam
 ;; (use-package org-roam
@@ -1027,13 +1109,19 @@
 ;; Better LaTeX input.
 ;; CDLaTeX.
 (use-package cdlatex
-  :hook
-  (org-mode . turn-on-org-cdlatex))
+  :after org
+  :hook (org-mode . turn-on-org-cdlatex))
 
 ;; AUCTeX.
 (use-package tex
   :ensure auctex
   :defer t)
+
+;; Org-fragtog. Automatically toggle Org mode LaTeX fragment previews as the
+;; cursor enters and exits them
+(use-package org-fragtog
+  :after org
+  :hook (org-mode . org-fragtog-mode))
 
 
 ;; Dired (built-in file manager).
@@ -1159,11 +1247,15 @@
   :hook
   (after-init . evil-mode)
 
-  :bind (:map evil-normal-state-map
-              ("] e" . flymake-goto-next-error)
-              ("[ e" . flymake-goto-prev-error)
-              ("j" . evil-next-visual-line)
-              ("k" . evil-previous-visual-line))
+  :bind ( :map evil-normal-state-map
+          ("] e" . flymake-goto-next-error)
+          ("[ e" . flymake-goto-prev-error)
+
+          ("j" . evil-next-visual-line)
+          ("k" . evil-previous-visual-line)
+
+          :map evil-insert-state-map
+          ("C-y" . yank))
 
   :custom
   (evil-undo-system 'undo-redo)
@@ -1177,7 +1269,10 @@
                   xref--xref-buffer-mode
                   diff-mode
                   dired-mode))
-    (evil-set-initial-state mode 'emacs)))
+    (evil-set-initial-state mode 'emacs))
+
+  ;; Redefine <tab> to `org-cycle' in Normal State in Org mode.
+  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle))
 
 
 ;; Evil-escape allows to map a chord for escape.
@@ -1196,20 +1291,6 @@
   :load-path "lisp/"
   :hook prog-mode)
 
-
-;; Org-an — my anki synchronization plugin.
-(use-package org-an
-  :ensure nil
-  :load-path "lisp/"
-  :after org                            ; required, because of the binding to
-                                        ; org-mode-map which is created only
-                                        ; after org package is loaded
-  :commands (org-an-push-entry-at-point
-             org-an-delete-note)
-  :bind
-  ;; Bind the sync entry command ('org-anki-sync-entry') to "C-c a s".
-  ( :map org-mode-map
-    ("C-c a" . org-an-push-entry-at-point)))
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 

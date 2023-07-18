@@ -1,2 +1,0 @@
-;;; Generated package description from org-anki.el  -*- no-byte-compile: t -*-
-(define-package "org-anki" "20230117.727" "Synchronize org-mode entries to Anki" '((emacs "27.1") (request "0.3.2") (dash "2.17") (promise "1.1")) :commit "f10feec7bd70916808a3cd8b4c3e3c7f65764acf" :authors '(("Markus Läll" . "markus.l2ll@gmail.com")) :maintainer '("Markus Läll" . "markus.l2ll@gmail.com") :keywords '("outlines" "flashcards" "memory") :url "https://github.com/eyeinsky/org-anki")
