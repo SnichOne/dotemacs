@@ -1108,8 +1108,8 @@
 
     ;; NOTE: this can be improved by matching the line with the regex
     ;; "^\w*[\)\]]\w*$"
-    (when (and (memq last-command-event '(?\) ?\] ?\}))
-               (memq (char-after (+ (line-beginning-position) (current-indentation))) '(?\) ?\] ?\})))
+    (when (and (member last-command-event '(?\) ?\] ?\}))
+               (member (char-after (+ (line-beginning-position) (current-indentation))) '(?\) ?\] ?\})))
       (python-indent-line)))
 
   (add-hook 'python-mode-hook
