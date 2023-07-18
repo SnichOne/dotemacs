@@ -1018,7 +1018,7 @@
   ;; Set path to Xeft database.
   (xeft-database "~/.config/xeft")
   ;; Ignore not org files.
-  (xeft-ignore-extension '("iimg" "png" "html" "pdf" "tex" "log"))
+  (xeft-ignore-extension '("iimg" "png" "gif" "jpg" "html" "pdf" "tex" "log"))
   ;; Make Xeft search recursively, by default search works only for first level
   ;; files in 'xeft-directory'
   (xeft-recursive t))
