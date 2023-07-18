@@ -149,6 +149,11 @@
 ;; lines at 80 characters.
 (customize-set-variable 'fill-column 80)
 
+
+;; NOTE: Commented out flyspell mode and flyspell prog mode in favor of speed
+;; and snappiness of Emacs: https://github.com/minad/corfu/issues/163.
+;; Probably, use `jinx' instead: https://www.reddit.com/r/emacs/comments/1231t0t/jinx_enchanted_justintime_spellchecker_gnu_elpa/
+
 ;; Enable Flyspell mode in Text mode. Flyspell is a minor mode that performs
 ;; automatic spell-checking of the text you type as you type it. Note that, as
 ;; Flyspell mode needs to check each word across which you move, it will slow
@@ -165,10 +170,14 @@
 ;; to get such dictionaries. Emacs configures 'ispell-alternate-dictionary' to
 ;; have the right path on Linux and macOS. But on windows, you need to set
 ;; 'ispell-complete-word-dict' manually.
-(add-hook 'text-mode-hook #'flyspell-mode)
+
+;; NOTE: Uncomment here to enable flyspell.
+;; (add-hook 'text-mode-hook #'flyspell-mode)
+
 ;; Enable Flyspell Prog mode in comments in Prog mode. Flyspell Prog mode only
 ;; checks words in comments and string constants.
-(add-hook 'prog-mode-hook #'flyspell-prog-mode)
+;; NOTE: Uncomment here to enable flyspell-prog-mode.
+;; (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 
 ;; Important configuration of flyspell: you need to disable the M-<TAB> (C-M-i,
 ;; <ESC> <TAB>) binding for flyspell, because it's already used for the
