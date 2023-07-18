@@ -39,6 +39,9 @@
 ;; and move customization variables to a separate file and load it.
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
+
+;; As before exiting Emacs
+(customize-set-variable 'confirm-kill-emacs 'y-or-n-p)
 ;; ---------------------------------------------------------------------------
 
 
