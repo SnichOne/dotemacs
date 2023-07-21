@@ -192,18 +192,35 @@ Returns `org-an--note' object where NOTE-ID is nil if the
         (note-type (or (org-entry-get (point) "ANKI_NOTE_TYPE" t)
                        org-an-default-note-type))
         (tags (mapcar #'substring-no-properties (org-get-tags)))
-        (window-start (window-start))
+        (window-position (window-start))
+        subheadings-as-fields?
         media
         fields)
 
+    ;; Narrow the buffer to make collecting media files and fields easier.
     (save-excursion
       (save-restriction
-        (if subtree
-            (org-narrow-to-subtree)
-          (narrow-to-region (org-entry-beginning-position) (org-entry-end-position)))
+        (cond
+         ;; Note = subtree?
+         (subtree (org-narrow-to-subtree))
+
+         ;; Note = entry with fields as subheadings?
+         ((org-an--subheadings-as-fields-p note-type)
+          (setq subheadings-as-fields? t)
+          (org-narrow-to-subtree))
+
+         ;; Note = entry.
+         (t (narrow-to-region (org-entry-beginning-position)
+                              (org-entry-end-position))))
+
         (setq media (org-an--encode-local-media-filenames))
-        (setq fields (org-an--compile-note-fields note-type media))))
-    (set-window-start (get-buffer-window) window-start)
+        (setq fields
+              (if subheadings-as-fields?
+                  (org-an--compile-fields-from-subheadings media)
+                (org-an--compile-note-fields note-type media)))))
+
+    ;; Restore the exact scroll position as it was before parsing the note.
+    (set-window-start (get-buffer-window) window-position)
 
     (make-org-an--note :id note-id
                        :deck deck-name
@@ -226,6 +243,31 @@ Returns `org-an--note' object where NOTE-ID is nil if the
        (substitute-command-keys "Deck name is nil.
 Set \"ANKI_DECK\" property. If you define it using a top level property, \
 do not forget to activate the change using \\[org-ctrl-c-ctrl-c]")))))
+
+(defun org-an--subheadings-as-fields-p (note-type)
+  "Non-nil when the entry contains NOTE-TYPE fields as subheadings."
+  (let ((subheadings (org-an--get-subheadings)))
+    (pcase note-type
+      ("Basic (org-an)"
+       (equal '("Front" "Back") subheadings))
+      (_
+       (error "Unsupported note type: %s" note-type)))))
+
+(defun org-an--get-subheadings ()
+  "Return list of the current entry subheadings."
+  (let ((window-position (window-start))
+        subheadings)
+    (save-excursion
+      (save-restriction
+        (org-narrow-to-subtree)
+        (outline-next-heading)
+        (while (< (point) (point-max))
+          (push (org-get-heading t t t t) subheadings)
+          (outline-next-heading))))
+    (set-window-start (get-buffer-window) window-position)
+
+    ;; Return subheadings.
+    (reverse subheadings)))
 
 (defun org-an--encode-local-media-filenames ()
   "Encode filenames of local media files.
@@ -305,6 +347,30 @@ folder."
       (_
        (error "Unsupported note type: %s" note-type)))))
 
+(defun org-an--compile-fields-from-subheadings (local-media)
+  "Return note fields compiled from subheadings.
+
+LOCAL-MEDIA, list of files, represented as (PATH . ENCODED-NAME),
+is used to adjust links to media files. Original file paths are
+replaced by ENCODED-NAME that stand for files in the Anki media
+folder."
+  (outline-next-heading)
+  (let ((export-options `(:encoded-paths ,local-media))
+        fields)
+    (while (< (point) (point-max))
+      (let ((heading (substring-no-properties (org-get-heading t t t t)))
+            body)
+        (save-restriction
+          (org-end-of-meta-data)
+          (narrow-to-region (point) (org-entry-end-position))
+          (setq body (org-export-as org-an--ox-anki-backend
+                                    nil
+                                    nil
+                                    t
+                                    export-options)))
+        (push (cons (intern heading) body) fields))
+      (outline-next-heading))
+    (reverse fields)))
 
 ;;; Anki export transcoders
 
