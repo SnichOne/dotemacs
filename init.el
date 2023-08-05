@@ -1212,8 +1212,10 @@ The image is downloaded to the attach directory."
 
 ;; Markdown mode. A major mode for editing Markdown-formatted text.
 (use-package markdown-mode
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "pandoc")
+  :custom
+  (markdown-command "pandoc")
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode))
   :bind (:map markdown-mode-map
          ("C-c C-e" . markdown-do)))
 
