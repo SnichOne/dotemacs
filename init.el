@@ -1220,6 +1220,11 @@ The image is downloaded to the attach directory."
          ("C-c C-e" . markdown-do)))
 
 
+;; Yaml mode
+(use-package yaml-mode
+  :mode "\\.yml\\'")
+
+
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
 (use-package expand-region
