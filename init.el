@@ -984,15 +984,17 @@
   ;; (add-to-list 'org-latex-packages-alist '("english,russian" "babel" t))
 
   (define-minor-mode +org-pretty-mode
-    "Hides emphasis markers and toggles pretty entities."
+    "Hides emphasis markers."
     :init-value nil
     :lighter " *"
     :group 'org
     (setq org-hide-emphasis-markers +org-pretty-mode)
-    (org-toggle-pretty-entities)
-    (with-silent-modifications
-      ;; In case the above un-align tables
-      (org-table-map-tables 'org-table-align t)))
+    ;; (with-silent-modifications
+    ;;   ;; In case the above un-align tables
+    ;;   (org-table-map-tables 'org-table-align t))
+    )
+
+  (+org-pretty-mode 1)
 
   (defun +org-quick-attach-image (url width)
     "Download an image from a URL and insert a link to the image.
@@ -1023,7 +1025,8 @@ The image is downloaded to the attach directory."
     (newline-and-indent))
 
   (defun +org-refresh-images ()
-   (interactive)))
+    (interactive)
+    "TODO: refresh/show images that are visible on the screen."))
 
 ;; Install Org mode export dependencies: better code syntax highlighting.
 ;; 1. Htmlize. Convert buffer text and decorations to HTML.
