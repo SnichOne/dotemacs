@@ -548,8 +548,9 @@
   ;; (corfu-auto-delay 0)
   (corfu-auto-prefix 1)
   (corfu-cycle t)
-  ;; TODO: corfu-preselect-first will be deprecated.
-  (corfu-preselect-first nil)
+  ;; Do not preselect anything, this way hitting tab will select the first
+  ;; candidate.
+  (corfu-preselect 'prompt)
   ;; Display candidate documentation or source in a popup next to the candidate
   ;; menu.
   (corfu-popupinfo-mode t)
