@@ -1226,6 +1226,12 @@ The image is downloaded to the attach directory."
   :mode "\\.yml\\'")
 
 
+;; Javascript
+(use-package js
+  :ensure nil
+  :custom
+  (js-indent-level 2))
+
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
 (use-package expand-region
