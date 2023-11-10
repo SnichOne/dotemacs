@@ -371,6 +371,7 @@ folder."
         (push (cons (intern heading) body) fields))
       (outline-next-heading))
     (reverse fields)))
+
 
 ;;; Anki export transcoders
 
