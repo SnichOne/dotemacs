@@ -820,7 +820,7 @@
       "* TODO %^{Name}\n\n%?"
       :empty-lines 1
       :prepend t)
-     ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
+     ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "work_journal.org")
       nil
       :empty-lines 1)))
 
