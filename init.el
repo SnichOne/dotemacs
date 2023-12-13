@@ -1232,6 +1232,10 @@ The image is downloaded to the attach directory."
   :custom
   (js-indent-level 2))
 
+
+;; Dockerfile mode
+(use-package dockerfile-mode)
+
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
 (use-package expand-region
