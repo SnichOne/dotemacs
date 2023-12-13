@@ -1133,7 +1133,7 @@ The image is downloaded to the attach directory."
   :ensure nil
   :custom
   ;; Make Dired show directories first, works on Linux, MacOS.
-  (dired-listing-switches "-al --group-directories-first")
+  (dired-listing-switches "-ahl --group-directories-first")
   ;; Commands which ask for a destination directory, such as those which copy
   ;; and rename files or create links for them, try to guess the default target
   ;; directory for the operation. Normally, they suggest the Dired buffer’s
@@ -1146,7 +1146,14 @@ The image is downloaded to the attach directory."
   (dired-dwim-target 'dired-dwim-target-next)
   :hook
   ;; Hide details: file properties, owner, size, modified time.
-  (dired-mode . dired-hide-details-mode))
+  (dired-mode . dired-hide-details-mode)
+
+
+  :config
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired t
+          insert-directory-program "/opt/local/bin/gls"
+          dired-listing-switches "-ahl --group-directories-first")))
 
 
 ;; Magit. Complete text-based user interface to Git.
