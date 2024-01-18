@@ -22,7 +22,7 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("/Users/snich/org/agenda.org"))
  '(package-selected-packages
-   '(dockerfile-mode yaml-mode org-inline-anim org-fragtog org-modern plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize auctex cdlatex magit corfu xeft hl-todo eglot dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode))
+   '(exec-path-from-shell xeft eglot python-black dockerfile-mode yaml-mode org-inline-anim org-fragtog org-modern plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize auctex cdlatex magit corfu hl-todo dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode))
  '(warning-suppress-types '((org-element-cache))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

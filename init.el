@@ -113,6 +113,11 @@
 (customize-set-variable 'mouse-wheel-flip-direction t)
 ;; Enable left-right scroll from trackpad.
 (customize-set-variable 'mouse-wheel-tilt-scroll t)
+
+;; Do not recenter point during scroll.
+(customize-set-variable 'scroll-conservatively 101)
+;; Enable pixel scrolling.
+(pixel-scroll-precision-mode 1)
 ;; ---------------------------------------------------------------------------
 
 
@@ -672,6 +677,11 @@
 ;;   :config
 ;;   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-at-point-mode t))
 
+(use-package eldoc
+  :ensure nil
+  :custom
+  eldoc-echo-area-prefer-doc-buffer t)
+
 
 ;; Dumb Jump is an Emacs "jump to definition" package with support for 50+
 ;; programming languages that favors "just working". This means minimal — and
@@ -1218,6 +1228,11 @@ The image is downloaded to the attach directory."
                         0
                         'local))))
 
+(use-package python-black
+  :after python
+  :commands (python-black-buffer python-black-region))
+
+
 ;; Markdown mode. A major mode for editing Markdown-formatted text.
 (use-package markdown-mode
   :custom
@@ -1318,6 +1333,13 @@ The image is downloaded to the attach directory."
   :ensure nil
   :load-path "lisp/"
   :hook prog-mode)
+
+
+;; Exec-path-from-shell — A GNU Emacs library to ensure environment variables
+;; inside Emacs look the same as in the user's shell.
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
 
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
