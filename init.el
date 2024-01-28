@@ -1182,6 +1182,13 @@ The image is downloaded to the attach directory."
   (define-key project-prefix-map "m" #'magit-project-status)
   (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
 
+;; Magit Forge. Forge allows you to work with Git forges, such as Github and
+;; Gitlab, from the comfort of Magit and the rest of Emacs.
+(use-package forge
+  :after magit
+  :custom
+  (auth-sources '("~/.authinfo")))
+
 
 ;; Emacs Speaks Statistics (ESS). It is designed to support editing of scripts
 ;; and interaction with various statistical analysis programs such as R, S-Plus,
