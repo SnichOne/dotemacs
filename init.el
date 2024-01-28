@@ -1318,6 +1318,9 @@ The image is downloaded to the attach directory."
                   help-mode
                   flymake-mode-buffer-mode
                   flymake-project-diagnostics-mode
+                  flymake-diagnostics-buffer-mode
+                  occur-mode
+                  forge-pullreq-mode
                   xeft-mode
                   xref--xref-buffer-mode
                   diff-mode
