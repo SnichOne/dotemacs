@@ -40,7 +40,7 @@
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
 
-;; As before exiting Emacs
+;; Ask before exiting Emacs
 (customize-set-variable 'confirm-kill-emacs 'y-or-n-p)
 ;; ---------------------------------------------------------------------------
 
