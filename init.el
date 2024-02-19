@@ -151,6 +151,9 @@
   (setq-local evil-default-cursor #'ignore))
 (add-hook 'image-mode-hook #'hide-cursor)
 (add-hook 'doc-view-mode-hook #'hide-cursor)
+
+;; Enable color output in `proced'
+(customize-set-variable 'proced-enable-color-flag t)
 ;; ---------------------------------------------------------------------------
 
 
