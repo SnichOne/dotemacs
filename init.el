@@ -1247,14 +1247,19 @@ The image is downloaded to the attach directory."
 ;; Python (built-in python.el).
 (use-package python
   :ensure nil
-  :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python[0-9.]*" . python-mode)
+  :mode ("\\.py\\'" . python-ts-mode)
+  :interpreter ("python[0-9.]*" . python-ts-mode)
   :custom
+
+  (python-shell-interpreter "python")
+  (python-shell-completion-native-enable nil) ; otherwise there is warning
+                                              ; related to readline.
+
   ;; Configure multiplier applied to indentation inside multi-line def blocks,
   ;; i.e. defines how function parameters should be indented.
   (python-indent-def-block-scale 1)
-  ;; Use pep 257 style to fill docstrings.
-  (python-fill-docstring-style 'pep-257-nn)
+  ;; Use symmetric style to fill docstrings.
+  (python-fill-docstring-style 'symmetric)
   :config
   ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
   (setq-mode-local python-mode fill-column 72)
@@ -1271,12 +1276,19 @@ The image is downloaded to the attach directory."
                (member (char-after (+ (line-beginning-position) (current-indentation))) '(?\) ?\] ?\})))
       (python-indent-line)))
 
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (add-hook 'post-self-insert-hook
-                        #'python-indent-closing-paren-or-bracket
-                        0
-                        'local))))
+  (defun fix-python-self-insert-hook ()
+    (add-hook 'post-self-insert-hook
+              #'python-indent-closing-paren-or-bracket
+              0
+              'local))
+
+  ;; Add the hook (the fix to auto indenting closing parenthesis or bracket) to
+  ;; both python-mode as well as to python-ts-mode (treesitter counterpart).
+  ;;
+  ;; NOTE: it may be a temporary requiremnt for treesitter mode and may change
+  ;; in the future.
+  (add-hook 'python-mode-hook #'fix-python-self-insert-hook)
+  (add-hook 'python-ts-mode-hook #'fix-python-self-insert-hook))
 
 (use-package python-black
   :after python
