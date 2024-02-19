@@ -1,22 +1,26 @@
 *.elc
 .lsp-session-v*
-places
-projects
-.cache/
-games/
-eln-cache/
+/places
+/projects
+/tramp
+/games/
 /eshell/history
+/tree-sitter/
+eln-cache/
+.cache/
+
+/forge-database.sqlite
 
 # It seems, /trasient/history.el contains magit commands history, so it should
 # not be tracked.
 /transient/history.el
 
-# NOTE: I am not sure what this file is for
+/dirvish/
+
+# NOTE: I am not sure what this file is for.
 .org-id-locations
 
-# NOTE: It seems, this directories contain some cookies, not sure what library
-# created them
+# NOTE: It seems, these directories contain some cookies, not sure what library
+# created them.
 /url/
 /request/
-/tramp
-/forge-database.sqlite
