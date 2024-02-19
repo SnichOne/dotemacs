@@ -48,6 +48,16 @@
 ;; Python, etc. scripts.
 (add-hook 'after-save-hook
   'executable-make-buffer-file-executable-if-script-p)
+
+;; HACK: On macOS, set `treesit-extra-load-path' to nil.
+;;
+;; Reason: MacPorts installs broken python language grammar that hangs Emacs and
+;; the default value of `treesit-extra-load-path' points to this grammar. I
+;; installed the python grammar using `M-x treesit-install-language-grammar' and
+;; it works, and the change is required to tell Emacs to use the correct
+;; grammar.
+(when (eq system-type 'darwin)
+  (setq treesit-extra-load-path nil))
 ;; ---------------------------------------------------------------------------
 
 
