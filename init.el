@@ -144,6 +144,14 @@
 (customize-set-variable 'scroll-conservatively 101)
 ;; Enable pixel scrolling.
 (pixel-scroll-precision-mode 1)
+
+;; Do not allow the cursor in the minibuffer prompt, e.g. in the prompt for
+;; `set-fill-column'.
+;; Source: https://github.com/minad/vertico?tab=readme-ov-file#configuration.
+(setq minibuffer-prompt-properties
+    '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
 ;; Hide cursor in image buffers
 (defun hide-cursor ()
   ;; HACK: nothing else worked for me.
@@ -376,27 +384,294 @@
 ;; Display scroll via nyan cat. Alternative — the 'poke-line' package.
 (use-package nyan-mode
   :custom
-  (nyan-mode t))
+  (nyan-mode t)
+  (nyan-animate-nyancat t)
+  (nyan-wavy-trail t)
+  (nyan-bar-length 16))
+
+
+;; Add parrot — no more lonely nyancat in the mode-line.
+(use-package parrot
+  :after evil
+  :config
+  (parrot-mode 1)
+  (define-key evil-normal-state-map (kbd "[r") 'parrot-rotate-prev-word-at-point)
+  (define-key evil-normal-state-map (kbd "]r") 'parrot-rotate-next-word-at-point)
+  (parrot-set-parrot-type 'science)
+
+  (defun parrot-start-animation+ (&rest args)
+    (parrot-start-animation))
+
+  ;; Animate parrot when switching to a different window.
+  ;; NOTE: works ok-ish: evil ex command input triggers the hook.
+  (add-hook 'window-selection-change-functions #'parrot-start-animation+)
+
+  ;; Animate parrot when switching focus to the Emacs frame.
+  (add-function
+   :after after-focus-change-function
+   (lambda ()
+     (when (frame-focus-state) (parrot-start-animation)))))
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-checker-simple-format t)
+  ;; If non-nil, cause imenu to see `doom-modeline' declarations.
+  ;; This is done by adjusting `lisp-imenu-generic-expression' to
+  ;; include support for finding `doom-modeline-def-*' forms.
+  ;; Must be set before loading doom-modeline.
+  (setq doom-modeline-support-imenu t)
+
+  ;; How tall the mode-line should be. It's only respected in GUI.
+  ;; If the actual char height is larger, it respects the actual height.
+  (setq doom-modeline-height 25)
+
+  ;; How wide the mode-line bar should be. It's only respected in GUI.
+  (setq doom-modeline-bar-width 4)
+
+  ;; Whether to use hud instead of default bar. It's only respected in GUI.
+  ;; NOTE: AFAIU the left bar is changed to bar with little scroll indicator.
+  (setq doom-modeline-hud nil)
+
+  ;; The limit of the window width.
+  ;; If `window-width' is smaller than the limit, some information won't be
+  ;; displayed. It can be an integer or a float number. `nil' means no limit."
+  (setq doom-modeline-window-width-limit 85)
+
+  ;; How to detect the project root.
+  ;; nil means to use `default-directory'.
+  ;; The project management packages have some issues on detecting project root.
+  ;; e.g. `projectile' doesn't handle symlink folders well, while `project' is unable
+  ;; to hanle sub-projects.
+  ;; You can specify one if you encounter the issue.
+  (setq doom-modeline-project-detection 'auto)
+
+  ;; Determines the style used by `doom-modeline-buffer-file-name'.
+  ;;
+  ;; Given ~/Projects/FOSS/emacs/lisp/comint.el
+  ;;   auto => emacs/l/comint.el (in a project) or comint.el
+  ;;   truncate-upto-project => ~/P/F/emacs/lisp/comint.el
+  ;;   truncate-from-project => ~/Projects/FOSS/emacs/l/comint.el
+  ;;   truncate-with-project => emacs/l/comint.el
+  ;;   truncate-except-project => ~/P/F/emacs/l/comint.el
+  ;;   truncate-upto-root => ~/P/F/e/lisp/comint.el
+  ;;   truncate-all => ~/P/F/e/l/comint.el
+  ;;   truncate-nil => ~/Projects/FOSS/emacs/lisp/comint.el
+  ;;   relative-from-project => emacs/lisp/comint.el
+  ;;   relative-to-project => lisp/comint.el
+  ;;   file-name => comint.el
+  ;;   buffer-name => comint.el<2> (uniquify buffer name)
+  ;;
+  ;; If you are experiencing the laggy issue, especially while editing remote files
+  ;; with tramp, please try `file-name' style.
+  ;; Please refer to https://github.com/bbatsov/projectile/issues/657.
+  (setq doom-modeline-buffer-file-name-style 'auto)
+
+  ;; Whether display icons in the mode-line.
+  ;; While using the server mode in GUI, should set the value explicitly.
+  (setq doom-modeline-icon t)
+
+  ;; Whether display the icon for `major-mode'. It respects option `doom-modeline-icon'.
+  (setq doom-modeline-major-mode-icon t)
+
+  ;; Whether display the colorful icon for `major-mode'.
+  ;; It respects `nerd-icons-color-icons'.
+  (setq doom-modeline-major-mode-color-icon t)
+
+  ;; Whether display the icon for the buffer state. It respects option `doom-modeline-icon'.
+  (setq doom-modeline-buffer-state-icon t)
+
+  ;; Whether display the modification icon for the buffer.
+  ;; It respects option `doom-modeline-icon' and option `doom-modeline-buffer-state-icon'.
+  (setq doom-modeline-buffer-modification-icon t)
+
+  ;; Whether display the lsp icon. It respects option `doom-modeline-icon'.
+  (setq doom-modeline-lsp-icon t)
+
+  ;; Whether display the time icon. It respects option `doom-modeline-icon'.
+  (setq doom-modeline-time-icon t)
+
+  ;; Whether display the live icons of time.
+  ;; It respects option `doom-modeline-icon' and option `doom-modeline-time-icon'.
+  (setq doom-modeline-time-live-icon t)
+
+  ;; Whether to use unicode as a fallback (instead of ASCII) when not using icons.
+  (setq doom-modeline-unicode-fallback nil)
+
+  ;; Whether display the buffer name.
+  (setq doom-modeline-buffer-name t)
+
+  ;; Whether highlight the modified buffer name.
+  (setq doom-modeline-highlight-modified-buffer-name t)
+
+  ;; When non-nil, mode line displays column numbers zero-based.
+  ;; See `column-number-indicator-zero-based'.
+  (setq doom-modeline-column-zero-based t)
+
+  (setq doom-modeline-percent-position nil)
+
+  ;; Format used to display line numbers in the mode line.
+  ;; See `mode-line-position-line-format'.
+  (setq doom-modeline-position-line-format '("L%4l"))
+
+  ;; Format used to display column numbers in the mode line.
+  ;; See `mode-line-position-column-format'.
+  (setq doom-modeline-position-column-format '("C%4c"))
+
+  ;; Format used to display combined line/column numbers in the mode line. See `mode-line-position-column-line-format'.
+  (setq doom-modeline-position-column-line-format '("%4l:%3c"))
+
+  ;; Whether display the minor modes in the mode-line.
+  (setq doom-modeline-minor-modes t)
+
+  ;; If non-nil, a word count will be added to the selection-info modeline segment.
+  (setq doom-modeline-enable-word-count nil)
+
+  ;; Major modes in which to display word count continuously.
+  ;; Also applies to any derived modes. Respects `doom-modeline-enable-word-count'.
+  ;; If it brings the sluggish issue, disable `doom-modeline-enable-word-count' or
+  ;; remove the modes from `doom-modeline-continuous-word-count-modes'.
+  (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
+
+  ;; Whether display the buffer encoding.
+  (setq doom-modeline-buffer-encoding t)
+
+  ;; Whether display the indentation information.
+  (setq doom-modeline-indent-info nil)
+
+  ;; Whether display the total line number。
+  (setq doom-modeline-total-line-number nil)
+
+  ;; If non-nil, only display one number for checker information if applicable.
+  (setq doom-modeline-checker-simple-format t)
+
+  ;; The maximum number displayed for notifications.
+  (setq doom-modeline-number-limit 99)
+
+  ;; The maximum displayed length of the branch name of version control.
+  (setq doom-modeline-vcs-max-length 12)
+
+  ;; Whether display the workspace name. Non-nil to display in the mode-line.
+  (setq doom-modeline-workspace-name t)
+
+  ;; Whether display the perspective name. Non-nil to display in the mode-line.
+  (setq doom-modeline-persp-name t)
+
+  ;; If non nil the default perspective name is displayed in the mode-line.
+  (setq doom-modeline-display-default-persp-name nil)
+
+  ;; If non nil the perspective name is displayed alongside a folder icon.
+  (setq doom-modeline-persp-icon t)
+
+  ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
+  (setq doom-modeline-lsp t)
+
+  ;; Whether display the GitHub notifications. It requires `ghub' package.
+  (setq doom-modeline-github t)
+
+  ;; The interval of checking GitHub.
+  (setq doom-modeline-github-interval (* 30 60))
+
+  ;; Whether display the modal state.
+  ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
+  (setq doom-modeline-modal t)
+
+  ;; Whether display the modal state icon.
+  ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
+  (setq doom-modeline-modal-icon t)
+
+  ;; Whether display the modern icons for modals: showing letter inside.
+  (setq doom-modeline-modal-modern-icon t)
+
+  ;; When non-nil, always show the register name when recording an evil macro.
+  (setq doom-modeline-always-show-macro-register nil)
+
+  ;; Whether display the time. It respects `display-time-mode'.
+  (setq doom-modeline-time t)
+
+  ;; Whether display the misc segment on all mode lines.
+  ;; If nil, display only if the mode line is active.
+  (setq doom-modeline-display-misc-in-all-mode-lines t)
+
+  ;; The function to handle `buffer-file-name'.
+  (setq doom-modeline-buffer-file-name-function #'identity)
+
+  ;; The function to handle `buffer-file-truename'.
+  (setq doom-modeline-buffer-file-truename-function #'identity)
+
+  ;; Whether display the environment version.
+  (setq doom-modeline-env-version t)
+
+  ;; Change the executables to use for the language version string
+  ;; (setq doom-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+  ;; (setq doom-modeline-env-ruby-executable "ruby")
+  ;; (setq doom-modeline-env-perl-executable "perl")
+  ;; (setq doom-modeline-env-go-executable "go")
+  ;; (setq doom-modeline-env-elixir-executable "iex")
+  ;; (setq doom-modeline-env-rust-executable "rustc")
+
+  ;; What to display as the version while a new one is being loaded
+  (setq doom-modeline-env-load-string "...")
+
+  ;; By default, almost all segments are displayed only in the active window. To
+  ;; display such segments in all windows, specify e.g.
+  ;; (setq doom-modeline-always-visible-segments '(mu4e irc))
+
+  ;; Hooks that run before/after the modeline version string is updated
+  (setq doom-modeline-before-update-env-hook nil)
+  (setq doom-modeline-after-update-env-hook nil))
 
 
 ;; === Minibuffer ============================================================
 
 ;; Configure minibuffer completion using the built-in Fido mode.
-(use-package icomplete                  ; built-in
-  :ensure nil
-  :custom
-  ;; Enable fido-mode. It's really just icomplete with slightly different
-  ;; defaults that emulate ido mode as close as possible.
-  (fido-mode t)
-  ;; Make Fido/Icomplete mode display the possible completions on the same line
-  ;; as the prompt by default.
-  (icomplete-vertical-mode t)
-  :config
-  ;; Bind TAB to complete selected candidate.
-  ;; NOTE: I used 'define-key' instead of ':bind' because the latter creates
-  ;; autoloads for the command (see use-package docs for more info).
-  (define-key icomplete-minibuffer-map (kbd "TAB") #'icomplete-force-complete))
+;; (use-package icomplete                  ; built-in
+;;   :ensure nil
+;;   :custom
+;;   ;; Enable fido-mode. It's really just icomplete with slightly different
+;;   ;; defaults that emulate ido mode as close as possible.
+;;   (fido-mode t)
+;;   ;; Make Fido/Icomplete mode display the possible completions on the same line
+;;   ;; as the prompt by default.
+;;   (icomplete-vertical-mode t)
+;;   :config
+;;   ;; Bind TAB to complete selected candidate.
+;;   ;; NOTE: I used 'define-key' instead of ':bind' because the latter creates
+;;   ;; autoloads for the command (see use-package docs for more info).
+;;   (define-key icomplete-minibuffer-map (kbd "TAB") #'icomplete-force-complete))
 
+
+;; Vertico — Vertico provides a performant and minimalistic vertical completion
+;; UI based on the default completion system.
+(use-package vertico
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  ;; (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+  )
+
+;; Configure directory extension.
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 ;; Configure how minibuffer suggest default input.
 (use-package minibuf-eldef              ; built-in
@@ -560,6 +835,77 @@
   :custom
   (minions-mode-line-lighter ";")
   (minions-prominent-modes '(flycheck-mode flymake-mode envrc-mode)))
+
+
+;; Add icons.
+(use-package nerd-icons
+  :custom
+  ;; The Nerd Font you want to use in GUI
+  ;; "Symbols Nerd Font Mono" is the default and is recommended
+  ;; but you can use any other Nerd Font if you want
+  ;; (nerd-icons-font-family "Hack Nerd Font Mono"))
+  (nerd-icons-font-family "Symbols Nerd Font Mono"))
+
+;; Addtional syntax highlighting for dired
+(use-package diredfl
+  :hook
+  ((dired-mode . diredfl-mode)
+   (dirvish-directory-view-mode . diredfl-mode)))
+  ;; Show dirnames in bold.
+  ;; :config
+  ;; (set-face-attribute 'diredfl-dir-name nil :bold t))
+
+;; Improved dired.
+(use-package dirvish
+  :init
+  (dirvish-override-dired-mode)
+  :custom
+  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+   '(("h" "~/"                          "Home")
+     ("d" "~/Downloads/"                "Downloads")
+     ("m" "/mnt/"                       "Drives")))
+  :config
+  ;; (dirvish-peek-mode) ; Preview files in minibuffer
+  (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
+  (setq dirvish-path-separators (list
+                                 (format "  %s " (nerd-icons-codicon "nf-cod-home"))
+                                 (format "  %s " (nerd-icons-codicon "nf-cod-root_folder"))
+                                 (format " %s " (nerd-icons-faicon "nf-fa-angle_right"))))
+  (setq dirvish-mode-line-format
+        '(:left (sort symlink) :right (omit yank index)))
+  (setq dirvish-attributes
+        '(nerd-icons file-time file-size collapse subtree-state))
+  (setq delete-by-moving-to-trash t)
+  (when (eq system-type 'darwin)
+    (setq dired-use-ls-dired t
+          insert-directory-program "/opt/local/bin/gls"))
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group")
+
+  ;; Emacs 29 added mouse drag-and-drop support for Dired, the following settings will enable it:
+  (setq dired-mouse-drag-files t)                   ; added in Emacs 29
+  (setq mouse-drag-and-drop-region-cross-program t) ; added in Emacs 29
+
+  :bind ; Bind `dirvish|dirvish-side|dirvish-dwim' as you see fit
+  (("C-c f" . dirvish-fd)
+   :map dirvish-mode-map ; Dirvish inherits `dired-mode-map'
+   ("a"   . dirvish-quick-access)
+   ("f"   . dirvish-file-info-menu)
+   ("y"   . dirvish-yank-menu)
+   ("N"   . dirvish-narrow)
+   ("^"   . dirvish-history-last)
+   ("h"   . dirvish-history-jump) ; remapped `describe-mode'
+   ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
+   ("v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+   ("TAB" . dirvish-subtree-toggle)
+   ("M-f" . dirvish-history-go-forward)
+   ("M-b" . dirvish-history-go-backward)
+   ("M-l" . dirvish-ls-switches-menu)
+   ("M-m" . dirvish-mark-menu)
+   ("M-t" . dirvish-layout-toggle)
+   ("M-s" . dirvish-setup-menu)
+   ("M-e" . dirvish-emerge-menu)
+   ("M-j" . dirvish-fd-jump)))
 
 
 ;; Convenient completion popup.
@@ -1182,32 +1528,35 @@ The image is downloaded to the attach directory."
 
 
 ;; Dired (built-in file manager).
-(use-package dired
-  :ensure nil
-  :custom
-  ;; Make Dired show directories first, works on Linux, MacOS.
-  (dired-listing-switches "-ahl --group-directories-first")
-  ;; Commands which ask for a destination directory, such as those which copy
-  ;; and rename files or create links for them, try to guess the default target
-  ;; directory for the operation. Normally, they suggest the Dired buffer’s
-  ;; default directory, but if the option 'dired-dwim-target' is non-nil, and if
-  ;; there is another Dired buffer displayed in some window, that other buffer’s
-  ;; directory is suggested instead.
+;; (use-package dired
+;;   :ensure nil
+;;   :custom
+;;   ;; Make Dired show directories first, works on Linux, MacOS.
+;;   (dired-listing-switches "-ahl --group-directories-first")
 
-  ;; The 'dired-dwim-target-next' value makes Dired to prefer the next windows
-  ;; on the same frame. Default is nil.
-  (dired-dwim-target 'dired-dwim-target-next)
-  :hook
-  ;; Hide details: file properties, owner, size, modified time.
-  (dired-mode . dired-hide-details-mode)
+;;   ;; Commands which ask for a destination directory, such as those which copy
+;;   ;; and rename files or create links for them, try to guess the default target
+;;   ;; directory for the operation. Normally, they suggest the Dired buffer’s
+;;   ;; default directory, but if the option 'dired-dwim-target' is non-nil, and if
+;;   ;; there is another Dired buffer displayed in some window, that other buffer’s
+;;   ;; directory is suggested instead.
 
+;;   ;; The 'dired-dwim-target-next' value makes Dired to prefer the next windows
+;;   ;; on the same frame. Default is nil.
+;;   (dired-dwim-target 'dired-dwim-target-next)
+;;   :hook
+;;   ;; Hide details: file properties, owner, size, modified time.
+;;   (dired-mode . dired-hide-details-mode)
 
-  :config
-  (when (string= system-type "darwin")
-    (setq dired-use-ls-dired t
-          insert-directory-program "/opt/local/bin/gls"
-          dired-listing-switches "-ahl --group-directories-first")))
+;;   :config
+;;   (when (eq system-type 'darwin)
+;;     (setq dired-use-ls-dired t
+;;           insert-directory-program "/opt/local/bin/gls")))
 
+;; Icons for dired
+;; (use-package nerd-icons-dired
+;;   :hook
+;;   (dired-mode . nerd-icons-dired-mode))
 
 ;; Magit. Complete text-based user interface to Git.
 ;; "A Git Porcelain inside Emacs".
@@ -1359,6 +1708,8 @@ The image is downloaded to the attach directory."
           ("j" . evil-next-visual-line)
           ("k" . evil-previous-visual-line)
 
+          ("C-." . embark-act)
+
           :map evil-insert-state-map
           ("C-y" . yank))
 
@@ -1414,8 +1765,6 @@ The image is downloaded to the attach directory."
 ;; Breadcrumb — headerline indication of where you are in a large project.
 ;; Local file, since the plugin is not in Melpa.
 (use-package breadcrumb
-  :ensure nil
-  :load-path "lisp/"
   :hook prog-mode)
 
 
@@ -1424,6 +1773,184 @@ The image is downloaded to the attach directory."
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
+
+
+;; Consult — Consult provides search and navigation commands based.
+(use-package consult
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings in `goto-map'
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings in `search-map'
+         ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+         ("M-s c" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 3. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  ;;;; 4. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 5. No project support
+  ;; (setq consult-project-function nil)
+)
+
+
+;; Orderless — Completion style that divides the pattern into space-separated
+;; components, and matches candidates that match all of the components in any
+;; order. Each component can match in any one of several ways: literally, as a
+;; regexp, as an initialism, in the flex style, or as multiple word prefixes. By
+;; default, regexp and literal matches are enabled.
+(use-package orderless
+  :custom
+  (completion-styles '(orderless flex basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+
+;; Embark — it's sort of a contextual menu for an object similar to the one you
+;; find in other GUI programs that popups when you right click on something. But
+;; Embark is a bit more than simple contextual menu.
+;;
+;; The "target" (for the contextual menu) depends on the case: it can be the
+;; current item in a completion list, the symbol at point, or some URL at point.
+;; Your conduit to this mode of operation is the `embark-act' command, which you
+;; should bind to a convienient key ("C-." in my case).
+(use-package embark
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding (also, specify
+                                ;; the binding for `embark-act' in :bind
+                                ;; sections of packages with wich you want an
+                                ;; integration, e.g. Evil, Icomplete, etc.)
+
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Embark consult integration.
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
