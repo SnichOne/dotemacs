@@ -238,14 +238,18 @@
 ;; Auto refresh buffers when the underlying file has changed outside of Emacs.
 ;; It's called Auto Revert mode in Emacs.
 (global-auto-revert-mode 1)
-;; When Auto Revert mode a buffer that is under version control, it updates the
-;; version control information in the mode line. However, Auto Revert mode may
-;; not properly update this information if the version control status changes
-;; without changes to the work file, from outside the current Emacs session. If
-;; you set ‘auto-revert-check-vc-info’ to ‘t’, Auto Revert mode updates the
-;; version control status information every ‘auto-revert-interval’ seconds, even
-;; if the work file itself is unchanged. The resulting CPU usage depends on the
-;; version control system, but is usually not excessive.
+;; When Auto Revert mode reverts a buffer that is under version control, it
+;; updates the version control information in the mode line. However, Auto
+;; Revert mode may not properly update this information if the version control
+;; status changes without changes to the work file, from outside the current
+;; Emacs session. If you set ‘auto-revert-check-vc-info’ to ‘t’, Auto Revert
+;; mode updates the version control status information every
+;; ‘auto-revert-interval’ seconds, even if the work file itself is unchanged.
+;; The resulting CPU usage depends on the version control system, but is usually
+;; not excessive.
+;; NOTE: setting `auto-revert-check-vc-info' to `t' also makes
+;; `first-change-hook' unusable: the hook runs periodically besides cases when
+;; you modify unmodified buffer.
 (customize-set-variable 'auto-revert-check-vc-info t)
 
 ;; Auto refresh Dired and other similar buffers.
