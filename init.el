@@ -1368,20 +1368,39 @@ The image is downloaded to the attach directory."
   :config
   (dolist (mode '(Info-mode
                   help-mode
+                  shortdoc-mode
                   flymake-mode-buffer-mode
                   flymake-project-diagnostics-mode
                   flymake-diagnostics-buffer-mode
                   occur-mode
+                  grep-mode
                   forge-pullreq-mode
                   xeft-mode
                   xref--xref-buffer-mode
                   diff-mode
-                  dired-mode))
+                  dired-mode
+                  wdired-mode
+                  Man-mode
+                  image-mode
+                  doc-view-mode))
     (evil-set-initial-state mode 'emacs))
 
   ;; Redefine <tab> to `org-cycle' in Normal State in Org mode.
-  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle))
+  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 
+  ;; Make word motions operate as symbol motions as well as make the * and #
+  ;; searches use symbols instead of words.
+  ;;
+  ;; Explanation. An underscore _ is a word character in Vim. This means that
+  ;; word motions like w skip over underlines in a sequence of letters as if it
+  ;; was a letter itself. In contrast, in Evil the underscore is often a
+  ;; non-word character like operators, e.g. +. Thus aliasing word to symbol
+  ;; (for Evil) should make all motions and text objects implemented in terms of
+  ;; symbols.
+  ;;
+  ;; For more details, see
+  ;; https://evil.readthedocs.io/en/latest/faq.html#underscore-is-not-a-word-character
+  (defalias #'forward-evil-word #'forward-evil-symbol))
 
 ;; Evil-escape allows to map a chord for escape.
 (use-package evil-escape
