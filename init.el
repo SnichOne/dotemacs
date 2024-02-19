@@ -58,6 +58,11 @@
 ;; grammar.
 (when (eq system-type 'darwin)
   (setq treesit-extra-load-path nil))
+
+;; When emacs-mac is used, bind option to meta.
+(when (boundp 'mac-carbon-version-string)
+  (customize-set-variable 'mac-option-modifier
+                          '(:ordinary meta :function meta :mouse meta)))
 ;; ---------------------------------------------------------------------------
 
 
@@ -68,6 +73,11 @@
 ;; allow you to resize the window when you try to drag the window by scroll bar,
 ;; so you have to resize only by dragging the area on modeline.
 ;; (scroll-bar-mode -1)
+
+;; When emacs-mac is used, disable tool bar since it's just several buttons for
+;; the most common operations but takes too much space.
+(when (boundp 'mac-carbon-version-string)
+  (tool-bar-mode -1))
 
 ;; Highlight current line in all buffers.
 (global-hl-line-mode 1)
