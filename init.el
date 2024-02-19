@@ -42,6 +42,12 @@
 
 ;; Ask before exiting Emacs
 (customize-set-variable 'confirm-kill-emacs 'y-or-n-p)
+
+;; On saving a file, check if the file contains a shebang and makes it
+;; executable. This little thing that might come handy when editing bash,
+;; Python, etc. scripts.
+(add-hook 'after-save-hook
+  'executable-make-buffer-file-executable-if-script-p)
 ;; ---------------------------------------------------------------------------
 
 
