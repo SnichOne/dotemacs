@@ -144,6 +144,13 @@
 (customize-set-variable 'scroll-conservatively 101)
 ;; Enable pixel scrolling.
 (pixel-scroll-precision-mode 1)
+;; Hide cursor in image buffers
+(defun hide-cursor ()
+  ;; HACK: nothing else worked for me.
+  ;; source: https://github.com/emacs-evil/evil/issues/592#issuecomment-1034443444.
+  (setq-local evil-default-cursor #'ignore))
+(add-hook 'image-mode-hook #'hide-cursor)
+(add-hook 'doc-view-mode-hook #'hide-cursor)
 ;; ---------------------------------------------------------------------------
 
 
