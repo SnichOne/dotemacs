@@ -162,6 +162,10 @@
 
 ;; Enable color output in `proced'
 (customize-set-variable 'proced-enable-color-flag t)
+
+;; He-he, games inside Emacs? Make them look nicer on modern monitors.
+(when (eq system-type 'darwin)
+  (setq gamegrid-glyph-height-mm 7.3))
 ;; ---------------------------------------------------------------------------
 
 
@@ -432,12 +436,12 @@
 
   ;; Whether to use hud instead of default bar. It's only respected in GUI.
   ;; NOTE: AFAIU the left bar is changed to bar with little scroll indicator.
-  (setq doom-modeline-hud nil)
+  (setq doom-modeline-hud t)
 
   ;; The limit of the window width.
   ;; If `window-width' is smaller than the limit, some information won't be
   ;; displayed. It can be an integer or a float number. `nil' means no limit."
-  (setq doom-modeline-window-width-limit 85)
+  (setq doom-modeline-window-width-limit 135)
 
   ;; How to detect the project root.
   ;; nil means to use `default-directory'.
@@ -513,14 +517,14 @@
 
   ;; Format used to display line numbers in the mode line.
   ;; See `mode-line-position-line-format'.
-  (setq doom-modeline-position-line-format '("L%4l"))
+  (setq doom-modeline-position-line-format '("L%l"))
 
   ;; Format used to display column numbers in the mode line.
   ;; See `mode-line-position-column-format'.
-  (setq doom-modeline-position-column-format '("C%4c"))
+  (setq doom-modeline-position-column-format '("C%c"))
 
   ;; Format used to display combined line/column numbers in the mode line. See `mode-line-position-column-line-format'.
-  (setq doom-modeline-position-column-line-format '("%4l:%3c"))
+  (setq doom-modeline-position-column-line-format '("%l:%3c"))
 
   ;; Whether display the minor modes in the mode-line.
   (setq doom-modeline-minor-modes t)
@@ -620,7 +624,16 @@
 
   ;; Hooks that run before/after the modeline version string is updated
   (setq doom-modeline-before-update-env-hook nil)
-  (setq doom-modeline-after-update-env-hook nil))
+  (setq doom-modeline-after-update-env-hook nil)
+
+  (doom-modeline-def-modeline 'default-but-buffer-position-on-right-side
+    '(eldoc bar workspace-name window-number modals matches follow buffer-info remote-host word-count selection-info)
+    '(buffer-position parrot compilation objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker time))
+
+  ;; Set default mode-line
+  (add-hook 'doom-modeline-mode-hook
+            (lambda ()
+              (doom-modeline-set-modeline 'default-but-buffer-position-on-right-side 'default))))
 
 
 ;; === Minibuffer ============================================================
@@ -798,6 +811,11 @@
           ;; (comment yellow-faint)
           ;; (string green-warmer)))
 
+  ;; Fix fzf colors in term.
+  (custom-set-faces
+   `(term-color-yellow ((t :foreground "light goldenrod"
+                           :background "light goldenrod"))))
+
   ;; Load the theme of your choice:
   (load-theme 'modus-operandi :no-confirm) ;; OR (load-theme 'modus-vivendi :no-confirm).
   :bind ("<f5>" . modus-themes-toggle))
@@ -864,6 +882,18 @@
    '(("h" "~/"                          "Home")
      ("d" "~/Downloads/"                "Downloads")
      ("m" "/mnt/"                       "Drives")))
+
+  ;; Commands which ask for a destination directory, such as those which copy
+  ;; and rename files or create links for them, try to guess the default target
+  ;; directory for the operation. Normally, they suggest the Dired buffer’s
+  ;; default directory, but if the option 'dired-dwim-target' is non-nil, and if
+  ;; there is another Dired buffer displayed in some window, that other buffer’s
+  ;; directory is suggested instead.
+
+  ;; The 'dired-dwim-target-next' value makes Dired to prefer the next windows
+  ;; on the same frame. Default is nil.
+  (dired-dwim-target 'dired-dwim-target-next)
+
   :config
   ;; (dirvish-peek-mode) ; Preview files in minibuffer
   (dirvish-side-follow-mode) ; similar to `treemacs-follow-mode'
@@ -1053,6 +1083,10 @@
   ;; the performance.
   (eglot-events-buffer-size 0)
 
+  ;; Disable elgot freeze the UI for up to 3s when you open file maybe large
+  ;; one.
+  (eglot-sync-connect nil)
+
   ;; If and M-. (xref-find-definitions) lands you in a file outside of your
   ;; project, such as a system-installed library or header file, transiently
   ;; consider that file as managed by the same language server. That file is
@@ -1061,7 +1095,7 @@
   ;; By default, eglot starts new server, e.g., each time you press M-. on
   ;; an imported library outside the project.
   (eglot-extend-to-xref t)
-  :hook (python-mode . eglot-ensure))
+  :hook ((python-mode python-ts-mode) . eglot-ensure))
 ;; (use-package eldoc-box
 ;;   :config
 ;;   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-at-point-mode t))
@@ -1209,7 +1243,8 @@
       :prepend t)
      ("li" "Life daily plan (checkbox items)" checkitem (file+olp+datetree "life_journal.org")
       nil
-      :empty-lines 1)
+      :empty-lines 1
+      :jump-to-captured 1)
      ("lr" "Life weekly review" checkitem (file+olp+datetree "life_journal.org")
       (file "templates/weekly_review.org")
       :empty-lines 1)
@@ -1221,7 +1256,8 @@
       :prepend t)
      ("wi" "Work daily plan (checkbox items)" checkitem (file+olp+datetree "work_journal.org")
       nil
-      :empty-lines 1)))
+      :empty-lines 1
+      :jump-to-captured t)))
 
   ;; Disable automatic bookmarks creation.
   ;; NOTE: Documentation for the 9.5 version says you should change
@@ -1733,7 +1769,10 @@ The image is downloaded to the attach directory."
                   wdired-mode
                   Man-mode
                   image-mode
-                  doc-view-mode))
+                  doc-view-mode
+                  term-mode
+                  eshell-mode
+                  shell-mode))
     (evil-set-initial-state mode 'emacs))
 
   ;; Redefine <tab> to `org-cycle' in Normal State in Org mode.
@@ -1878,6 +1917,7 @@ The image is downloaded to the attach directory."
 
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; TODO: decide if I want this.
   ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
 
   ;; By default `consult-project-function' uses `project-root' from project.el.
@@ -1951,6 +1991,12 @@ The image is downloaded to the attach directory."
 (use-package embark-consult
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+
+;; Wgrep — allows you to edit a grep buffer and apply those changes to the file
+;; buffer like sed interactively. No need to learn sed script, just learn Emacs.
+(use-package wgrep
+  :commands (wgrep-toggle-readonly-area))
 
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
