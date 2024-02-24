@@ -16,6 +16,7 @@ eln-cache/
 /transient/history.el
 
 /dirvish/
+/eshell/
 
 # NOTE: I am not sure what this file is for.
 .org-id-locations
