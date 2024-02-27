@@ -1718,7 +1718,7 @@ The image is downloaded to the attach directory."
   :config
   ;; Configure TRAMP to respect the PATH variable on the remote machine (e.g.,
   ;; for remote eshell sessions) by adding 'tramp-own-remote-path' to the list
-  ;; 'tramp-remote-
+  ;; `tramp-remote-path'.
   ;; NOTE: conda PATH is not set correctly, maybe it's the problem with my
   ;; .zshrc or using zsh in general.
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
