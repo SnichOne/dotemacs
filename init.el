@@ -1,3 +1,8 @@
+;; TODO:
+;; - [ ] corfu: configure tab to expand to longest common prefix of candidates if
+;;   current input is a proper prefix of the longest common prefix.
+;; - [ ] vertico: disable for the `M-x man' command.
+
 ;; The file is divided by sections enclosed by lines of dashes.
 
 ;; General rule: avoid using 'setq', 'setq-default' and use
@@ -142,15 +147,11 @@
 
 ;; Do not recenter point during scroll.
 (customize-set-variable 'scroll-conservatively 101)
-;; Enable pixel scrolling.
-(pixel-scroll-precision-mode 1)
 
-;; Do not allow the cursor in the minibuffer prompt, e.g. in the prompt for
-;; `set-fill-column'.
-;; Source: https://github.com/minad/vertico?tab=readme-ov-file#configuration.
-(setq minibuffer-prompt-properties
-    '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+;; If not emacs-mac is used, enable pixel scrolling mode. Emacs-mac supports
+;; pixel scrolling without the mode, and enabling the mode makes scrolling way
+;; too fast.
+(pixel-scroll-precision-mode (if (boundp 'mac-carbon-version-string) -1 1))
 
 ;; Hide cursor in image buffers
 (defun hide-cursor ()
@@ -638,6 +639,20 @@
 
 ;; === Minibuffer ============================================================
 
+
+;; Do not allow the cursor in the minibuffer prompt, e.g. in the prompt for
+;; `set-fill-column'.
+;; Source: https://github.com/minad/vertico?tab=readme-ov-file#configuration.
+(setq minibuffer-prompt-properties
+    '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+;; Display the default argument as ‘[DEFAULT-ARG]’ instead of ‘(default
+;; DEFAULT-ARG)’, saving some screen space.
+(customize-set-variable 'minibuffer-default-prompt-format " [%s]")
+
+
+
 ;; Configure minibuffer completion using the built-in Fido mode.
 ;; (use-package icomplete                  ; built-in
 ;;   :ensure nil
@@ -690,10 +705,6 @@
 (use-package minibuf-eldef              ; built-in
   :ensure nil
   :custom
-  ;; Display the default argument as ‘[DEFAULT-ARG]’ instead of ‘(default
-  ;; DEFAULT-ARG)’, saving some screen space.
-  (minibuffer-eldef-shorten-default t)
-
   ;; Hide the default argument as soon as you modify the contents of the
   ;; minibuffer (since typing <RET> would no longer submit that default).
   (minibuffer-electric-default-mode t))
@@ -1354,8 +1365,8 @@
     (set-window-hscroll (selected-window) 0))
   (advice-add 'org-fill-paragraph :after #'set-selected-window-hscroll-to-0)
 
-  ;; Configure 'fill-paragraph' to wrap lines at 70 characters in org-mode.
-  (setq-mode-local org-mode fill-column 70)
+  ;; Configure 'fill-paragraph' to wrap lines at 72 characters in org-mode.
+  (setq-mode-local org-mode fill-column 72)
 
   ;; Set the path to default bibliography files:
   ;; '<org-directory>/bibligoraphy.bib'.
@@ -1498,9 +1509,10 @@ The image is downloaded to the attach directory."
     ("C-c o i" . org-cliplink)))
 
 ;; Org-modern. Modern Org Style: Org Mode prettifier.
-;; To have a visual line on the left of the blocks (e.g., source blocks), it
-;; seems, that you need to disable `org-startup-indented' and add a frame
-;; margin: internal-border-width. But I find `org-indent-mode' more useful.
+;; To have a vertical line, that visually shows the span of the bock, to the
+;; left of the blocks (e.g., source blocks), it seems, that you need to disable
+;; `org-startup-indented' and add a frame margin: internal-border-width. But I
+;; find `org-indent-mode' more useful.
 (use-package org-modern
   :after org
   :custom
@@ -1737,17 +1749,21 @@ The image is downloaded to the attach directory."
   :hook
   (after-init . evil-mode)
 
-  :bind ( :map evil-normal-state-map
-          ("] e" . flymake-goto-next-error)
-          ("[ e" . flymake-goto-prev-error)
+  :bind (:map evil-motion-state-map
+         ("C-e" . evil-switch-to-windows-last-buffer)
 
-          ("j" . evil-next-visual-line)
-          ("k" . evil-previous-visual-line)
+         ("j" . evil-next-visual-line)
+         ("k" . evil-previous-visual-line)
+         ("gj" . evil-next-line)
+         ("gk" . evil-previous-line)
 
-          ("C-." . embark-act)
+         ("] e" . flymake-goto-next-error)
+         ("[ e" . flymake-goto-prev-error)
 
-          :map evil-insert-state-map
-          ("C-y" . yank))
+         ("C-." . embark-act)
+
+         :map evil-insert-state-map
+         ("C-y" . yank))
 
   :custom
   (evil-undo-system 'undo-redo)
