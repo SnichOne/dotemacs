@@ -1,7 +1,11 @@
 ;; TODO:
+;; - [ ] refactor init.el:
+;;    + [ ] remove commented code,
+;;    + [ ] use (use-package emacs) for general settings?
 ;; - [ ] corfu: configure tab to expand to longest common prefix of candidates if
 ;;   current input is a proper prefix of the longest common prefix.
 ;; - [ ] vertico: disable for the `M-x man' command.
+;; - [ ] maybe use GNU hyperbole?
 
 ;; The file is divided by sections enclosed by lines of dashes.
 
@@ -1806,7 +1810,21 @@ The image is downloaded to the attach directory."
   ;;
   ;; For more details, see
   ;; https://evil.readthedocs.io/en/latest/faq.html#underscore-is-not-a-word-character
-  (defalias #'forward-evil-word #'forward-evil-symbol))
+  (defalias #'forward-evil-word #'forward-evil-symbol)
+
+  ;; Make consecutive calls of forward-page work in Evil mode.
+  (defun evil-forward-page-nudge (arg)
+    "Move forward by a character if ARG > 0 and Evil mode is enabled.
+
+Moving forward by a character is required if we want consecutive
+calls to `forward-page' work as in Emacs or insert state. This is
+dictated by the difference between cursor position in some of
+Vim (Evil) modes and in Emacs: before the character and after the
+character correspondingly."
+    (when (and evil-mode (> arg 0))
+      ;; Move forward by the length of `page-delimeter'
+      (forward-char (+ (length page-delimiter)))))
+  (advice-add 'forward-page :after #'evil-forward-page-nudge))
 
 ;; Evil-escape allows to map a chord for escape.
 (use-package evil-escape
