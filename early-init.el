@@ -12,3 +12,8 @@
 ;; clicking and dragging on the scroll bar, only clicking and dragging on the
 ;; minibuffer border works (tested in Emacs 28.1).
 (scroll-bar-mode -1)
+
+
+;; Set default font on macOS
+(when (eq system-type 'darwin)
+  (set-face-attribute 'default nil :family "Hack Nerd Font Mono" :height 120))
