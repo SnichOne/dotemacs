@@ -22,7 +22,7 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("/Users/snich/org/agenda.org"))
  '(package-selected-packages
-   '(wgrep breadcrumb async doom-modeline parrot dirvish diredfl nerd-icons vertico embark-consult embark orderless consult forge exec-path-from-shell xeft eglot python-black dockerfile-mode yaml-mode org-inline-anim org-fragtog org-modern plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize auctex cdlatex magit corfu hl-todo dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode))
+   '(ox-gfm wgrep breadcrumb async doom-modeline parrot dirvish diredfl nerd-icons vertico embark-consult embark orderless consult forge exec-path-from-shell xeft eglot python-black dockerfile-mode yaml-mode org-inline-anim org-fragtog org-modern plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize auctex cdlatex magit corfu hl-todo dumb-jump use-package company minions which-key modus-themes marginalia nyan-mode))
  '(safe-local-variable-values
    '((org-modern-statistics)
      (eval add-to-list 'tramp-remote-path "/home/ubuntu_ssm/.cache/pypoetry/virtualenvs/guide-ml-research-_5OzJJ7u-py3.10/bin/")))
@@ -40,4 +40,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(term-color-yellow ((t :foreground "light goldenrod" :background "light goldenrod"))))
