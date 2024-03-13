@@ -1487,6 +1487,10 @@ The image is downloaded to the attach directory."
 (use-package engrave-faces
   :after org)
 
+;; Org mode export to GitHub Flavored Markdown.
+(use-package ox-gfm
+  :after org)
+
 ;; Org-an — my anki synchronization plugin.
 (use-package org-an
   :ensure nil
