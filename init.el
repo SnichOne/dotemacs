@@ -4,7 +4,6 @@
 ;;    + [ ] use (use-package emacs) for general settings?
 ;; - [ ] corfu: configure tab to expand to longest common prefix of candidates if
 ;;   current input is a proper prefix of the longest common prefix.
-;; - [ ] vertico: disable for the `M-x man' command.
 ;; - [ ] maybe use GNU hyperbole?
 
 ;; The file is divided by sections enclosed by lines of dashes.
@@ -72,6 +71,30 @@
 (when (boundp 'mac-carbon-version-string)
   (customize-set-variable 'mac-option-modifier
                           '(:ordinary meta :function meta :mouse meta)))
+
+;; HACK: On macOS, disable completion for `M-x man'.
+;; Reason. `man -k' command does leverage cache (like `mandb'). It makes
+;; completion in the `M-x man' command too slow — so the command freezes Emacs
+;; for few seconds right after the invocation if packages like Vertico or
+;; Icomplete (that automatically list all completion candidates) are used.
+;; Source: https://old.reddit.com/r/emacs/comments/12vjw05/easiest_way_to_browse_man_pages_within_emacs/jhg4jwz/
+(when (eq system-type 'darwin)
+  (define-advice man (:around (orig-func &rest args) no-completing-read)
+    "Inhibit `completing-read'."
+    (interactive
+     (list (let* ((default-entry (Man-default-man-entry))
+                  (input (read-string
+                          (format-prompt "Manual entry"
+                                         (and (not (equal default-entry ""))
+                                              default-entry))
+                          nil 'Man-topic-history default-entry)))
+             (if (string= input "")
+                 (error "No man args given")
+               input))))
+    (apply orig-func args))
+  ;; Undo with:
+  ;; (advice-remove 'man 'man@no-completing-read)
+  )
 ;; ---------------------------------------------------------------------------
 
 
