@@ -1840,15 +1840,15 @@ The image is downloaded to the attach directory."
   (defalias #'forward-evil-word #'forward-evil-symbol)
 
   ;; Make consecutive calls of forward-page work in Evil mode.
-  (defun evil-forward-page-nudge (arg)
-    "Move forward by a character if ARG > 0 and Evil mode is enabled.
+  (defun evil-forward-page-nudge (&optional count)
+    "Move forward by a character if COUNT > 0 and Evil mode is enabled.
 
 Moving forward by a character is required if we want consecutive
 calls to `forward-page' work as in Emacs or insert state. This is
 dictated by the difference between cursor position in some of
 Vim (Evil) modes and in Emacs: before the character and after the
 character correspondingly."
-    (when (and evil-mode (> arg 0))
+    (when (and evil-mode count (> count 0))
       ;; Move forward by the length of `page-delimeter'
       (forward-char (+ (length page-delimiter)))))
   (advice-add 'forward-page :after #'evil-forward-page-nudge))
