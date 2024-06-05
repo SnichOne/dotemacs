@@ -187,6 +187,7 @@
   (setq-local evil-default-cursor #'ignore))
 (add-hook 'image-mode-hook #'hide-cursor)
 (add-hook 'doc-view-mode-hook #'hide-cursor)
+(add-hook 'pdf-view-mode-hook #'hide-cursor)
 
 ;; Enable color output in `proced'
 (customize-set-variable 'proced-enable-color-flag t)
@@ -663,7 +664,16 @@
             (lambda ()
               (doom-modeline-set-modeline 'default-but-buffer-position-on-right-side 'default))))
 
-
+
+;; Better PDF viewer.
+(use-package pdf-tools
+  :mode  ("\\.pdf\\'" . pdf-view-mode)
+  :config
+  (setq-default pdf-view-display-size 'fit-page)
+  (setq pdf-annot-activate-created-annotations t)
+  (pdf-tools-install :no-query)
+  (require 'pdf-occur))
+
 ;; === Minibuffer ============================================================
 
 
@@ -1745,8 +1755,23 @@ The image is downloaded to the attach directory."
   (js-indent-level 2))
 
 
+;; Jsonnet
+(use-package jsonnet-mode
+  :mode ("\\.\\(jsonnet\\|libsonnet\\)\\'" . jsonnet-mode))
+
+
 ;; Dockerfile mode
 (use-package dockerfile-mode)
+
+
+;; SQL mode
+(use-package sql
+  :ensure nil
+  :config
+  (defun set-tab-width ()
+    (setq indent-tabs-mode nil
+          tab-width 4))
+  (add-hook 'sql-mode-hook #'set-tab-width))
 
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
