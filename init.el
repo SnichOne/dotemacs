@@ -856,7 +856,13 @@
           ;; distinguishable from comments.
           (prose-metadata cyan-warmer)
           (prose-metadata-value magenta)))
-          ;; (comment yellow-faint)
+
+  (setq modus-vivendi-palette-overrides
+        '((comment yellow-faint)))
+
+  (setq modus-operandi-palette-overrides
+        '((comment yellow-cooler)))
+          ;; (comment green-faint)))
           ;; (string green-warmer)))
 
   ;; Fix fzf colors in term.
