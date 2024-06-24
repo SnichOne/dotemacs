@@ -67,10 +67,10 @@
 (when (eq system-type 'darwin)
   (setq treesit-extra-load-path nil))
 
-;; When emacs-mac is used, bind option to meta.
-(when (boundp 'mac-carbon-version-string)
-  (customize-set-variable 'mac-option-modifier
-                          '(:ordinary meta :function meta :mouse meta)))
+;; Configure emacs on macOS: bind option and command keys to meta.
+(when (eq system-type 'darwin)
+  (customize-set-variable 'mac-option-modifier 'meta)
+  (customize-set-variable 'mac-command-modifier 'meta))
 
 ;; HACK: On macOS, disable completion for `M-x man'.
 ;; Reason. `man -k' command does leverage cache (like `mandb'). It makes
