@@ -1683,6 +1683,10 @@ The image is downloaded to the attach directory."
 
 
 ;; Python (built-in python.el).
+;; NOTE: In order to make Python shell work as expected on macOS,
+;; you need to install gnureadline (https://pypi.org/project/gnureadline/)
+;; and then run `$ python -m override_readline` or
+;; `$ python -s -m override_readline' in case of virtual environment.
 (use-package python
   :ensure nil
   :mode ("\\.py\\'" . python-ts-mode)
@@ -1690,8 +1694,6 @@ The image is downloaded to the attach directory."
   :custom
 
   (python-shell-interpreter "python")
-  (python-shell-completion-native-enable nil) ; otherwise there is warning
-                                              ; related to readline.
 
   ;; Configure multiplier applied to indentation inside multi-line def blocks,
   ;; i.e. defines how function parameters should be indented.
