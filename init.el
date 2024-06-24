@@ -1895,9 +1895,9 @@ character correspondingly."
 
 ;; Exec-path-from-shell — A GNU Emacs library to ensure environment variables
 ;; inside Emacs look the same as in the user's shell.
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :config
+;;   (exec-path-from-shell-initialize))
 
 
 ;; Consult — Consult provides search and navigation commands based.
