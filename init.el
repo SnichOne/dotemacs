@@ -449,7 +449,6 @@
   :ensure t
   :hook (after-init . doom-modeline-mode)
   :config
-  (setq doom-modeline-checker-simple-format t)
   ;; If non-nil, cause imenu to see `doom-modeline' declarations.
   ;; This is done by adjusting `lisp-imenu-generic-expression' to
   ;; include support for finding `doom-modeline-def-*' forms.
@@ -577,7 +576,7 @@
   (setq doom-modeline-total-line-number nil)
 
   ;; If non-nil, only display one number for checker information if applicable.
-  (setq doom-modeline-checker-simple-format t)
+  (setq doom-modeline-check-simple-format t)
 
   ;; The maximum number displayed for notifications.
   (setq doom-modeline-number-limit 99)
@@ -601,7 +600,7 @@
   (setq doom-modeline-lsp t)
 
   ;; Whether display the GitHub notifications. It requires `ghub' package.
-  (setq doom-modeline-github t)
+  ;; (setq doom-modeline-github t)
 
   ;; The interval of checking GitHub.
   (setq doom-modeline-github-interval (* 30 60))
@@ -657,7 +656,7 @@
 
   (doom-modeline-def-modeline 'default-but-buffer-position-on-right-side
     '(eldoc bar workspace-name window-number modals matches follow buffer-info remote-host word-count selection-info)
-    '(buffer-position parrot compilation objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker time))
+    '(buffer-position parrot compilation objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs check time))
 
   ;; Set default mode-line
   (add-hook 'doom-modeline-mode-hook
