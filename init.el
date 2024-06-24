@@ -1834,25 +1834,27 @@ The image is downloaded to the attach directory."
 
   :config
   (dolist (mode '(Info-mode
-                  help-mode
-                  shortdoc-mode
-                  flymake-mode-buffer-mode
-                  flymake-project-diagnostics-mode
-                  flymake-diagnostics-buffer-mode
-                  occur-mode
-                  grep-mode
-                  forge-pullreq-mode
-                  xeft-mode
-                  xref--xref-buffer-mode
+                  Man-mode
                   diff-mode
                   dired-mode
-                  wdired-mode
-                  Man-mode
-                  image-mode
                   doc-view-mode
-                  term-mode
+                  embark-collect-mode
                   eshell-mode
-                  shell-mode))
+                  flymake-diagnostics-buffer-mode
+                  flymake-mode-buffer-mode
+                  flymake-project-diagnostics-mode
+                  forge-pullreq-mode
+                  grep-mode
+                  help-mode
+                  image-mode
+                  inferior-python-mode
+                  occur-mode
+                  shell-mode
+                  shortdoc-mode
+                  term-mode
+                  wdired-mode
+                  xeft-mode
+                  xref--xref-buffer-mode))
     (evil-set-initial-state mode 'emacs))
 
   ;; Redefine <tab> to `org-cycle' in Normal State in Org mode.
