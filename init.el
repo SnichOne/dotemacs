@@ -1737,7 +1737,13 @@ The image is downloaded to the attach directory."
 
 (use-package python-black
   :after python
-  :commands (python-black-buffer python-black-region))
+  :commands (python-black-buffer python-black-region python-black-partial-dwim)
+  :bind (:map python-mode-map
+         ("C-c b" . python-black-partial-dwim)
+         ("C-c C-b" . python-black-partial-dwim)
+         :map python-ts-mode-map
+         ("C-c b" . python-black-partial-dwim)
+         ("C-c C-b" . python-black-partial-dwim)))
 
 
 ;; Markdown mode. A major mode for editing Markdown-formatted text.
