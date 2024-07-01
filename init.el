@@ -1840,6 +1840,7 @@ The image is downloaded to the attach directory."
   :config
   (dolist (mode '(Info-mode
                   Man-mode
+                  compilation-mode
                   diff-mode
                   dired-mode
                   doc-view-mode
