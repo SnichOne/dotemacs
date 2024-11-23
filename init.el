@@ -67,10 +67,22 @@
 (when (eq system-type 'darwin)
   (setq treesit-extra-load-path nil))
 
+;; HACK: make Emacs always use treesit powered modes instead of some default
+;; modes
+(setq major-mode-remap-alist
+ '((yaml-mode . yaml-ts-mode)
+   (bash-mode . bash-ts-mode)
+   (js2-mode . js-ts-mode)
+   (typescript-mode . typescript-ts-mode)
+   (json-mode . json-ts-mode)
+   (css-mode . css-ts-mode)
+   (ruby-mode . ruby-ts-mode)))
+
 ;; Configure emacs on macOS: bind option and command keys to meta.
 (when (eq system-type 'darwin)
   (customize-set-variable 'mac-option-modifier 'meta)
-  (customize-set-variable 'mac-command-modifier 'meta))
+  (customize-set-variable 'mac-command-modifier 'meta)
+  (customize-set-variable 'mac-right-command-modifier 'super))
 
 ;; HACK: On macOS, disable completion for `M-x man'.
 ;; Reason. `man -k' command does leverage cache (like `mandb'). It makes
@@ -95,6 +107,10 @@
   ;; Undo with:
   ;; (advice-remove 'man 'man@no-completing-read)
   )
+
+
+;; Disable bell sound.
+(setq ring-bell-function 'ignore)
 ;; ---------------------------------------------------------------------------
 
 
