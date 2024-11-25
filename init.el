@@ -882,12 +882,16 @@
 
   ;; Fix fzf colors in term.
   (custom-set-faces
-   `(term-color-yellow ((t :foreground "light goldenrod"
-                           :background "light goldenrod"))))
+   '(term-color-yellow ((t :foreground "light goldenrod"
+                           :background "light goldenrod")))
+   '(term-color-green ((t (:background "#00AE00"
+                           :foreground "#00AE00"))))
+   '(term-color-black ((t (:background "#000000"
+                           :foreground "#000000")))))
 
   ;; Load the theme of your choice:
   (load-theme 'modus-operandi :no-confirm) ;; OR (load-theme 'modus-vivendi :no-confirm).
-  :bind ("<f5>" . modus-themes-toggle))
+  :bind ("<f5>" . modus-themes-select))
 
 
 ;; Olivetti lets you center your buffer for aesthetics and focus.
