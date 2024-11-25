@@ -689,6 +689,20 @@
   (pdf-tools-install :no-query)
   (require 'pdf-occur))
 
+
+;; ANSI-colors in the compilation buffer output
+;; Source: https://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
+(use-package ansi-color
+  :ensure nil
+  :hook
+  (compilation-filter . endless/colorize-compilation)
+  :config
+  (defun endless/colorize-compilation ()
+    "Colorize from `compilation-filter-start' to `point'."
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region
+       compilation-filter-start (point)))))
+
 ;; === Minibuffer ============================================================
 
 
@@ -893,16 +907,18 @@
   (load-theme 'modus-operandi :no-confirm) ;; OR (load-theme 'modus-vivendi :no-confirm).
   :bind ("<f5>" . modus-themes-select))
 
+(use-package ef-themes
+  :commands ef-themes-select)
 
 ;; Olivetti lets you center your buffer for aesthetics and focus.
 ;; NOTE: I tried it mostly for org mode, but it needs some configuration:
 ;; 1. disable conflicting with org-cdlatex keybind: "C-c {",
-;; 2. customize initial width for org-mode, since I have large columns than then
-;;    fill-column value.
-;; (use-package olivetti
-;;   :bind
-;;   ("<left-margin> <mouse-1>" . ignore)
-;;   ("<right-margin> <mouse-1>" . ignore))
+;; 2. customize initial width for org-mode because I have large columns in bles
+;;    than then fill-column value.
+(use-package olivetti
+  :bind
+  ("<left-margin> <mouse-1>" . ignore)
+  ("<right-margin> <mouse-1>" . ignore))
 
 
 ;; Enable the minor mode for Emacs that displays the key bindings following your
@@ -953,6 +969,7 @@
   :custom
   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
    '(("h" "~/"                          "Home")
+     ("s" "~/src/"                      "Projects")
      ("d" "~/Downloads/"                "Downloads")
      ("m" "/mnt/"                       "Drives")))
 
@@ -1063,23 +1080,25 @@
 
 ;; Add extensions to corfu: additional backends.
 (use-package cape
-  ;; Bind dedicated completion commands
-  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+  ;; Press C-c p ? to for help.
+  :bind ("C-c p" . cape-prefix-map) ;; Alternative keys: M-p, M-+, ...
+  ;; Alternatively bind Cape commands individually.
+  ;; :bind (("C-c p p" . completion-at-point) ;; capf
+  ;;        ("C-c p t" . complete-tag)        ;; etags
+  ;;        ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+  ;;        ("C-c p h" . cape-history)
+  ;;        ("C-c p f" . cape-file)
+  ;;        ("C-c p k" . cape-keyword)
+  ;;        ("C-c p s" . cape-symbol)
+  ;;        ("C-c p a" . cape-abbrev)
+  ;;        ("C-c p l" . cape-line)
+  ;;        ("C-c p w" . cape-dict)
+  ;;        ("C-c p \\" . cape-tex)
+  ;;        ("C-c p _" . cape-tex)
+  ;;        ("C-c p ^" . cape-tex)
+  ;;        ("C-c p &" . cape-sgml)
+  ;;        ("C-c p r" . cape-rfc1345))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
@@ -1168,7 +1187,16 @@
   ;; By default, eglot starts new server, e.g., each time you press M-. on
   ;; an imported library outside the project.
   (eglot-extend-to-xref t)
-  :hook ((python-mode python-ts-mode) . eglot-ensure))
+  :hook ((python-mode python-ts-mode) . eglot-ensure)
+  :commands eglot
+  :config
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '((ruby-mode ruby-ts-mode) . ("bundle" "exec" "rubocop" "--lsp")))
+  )
+
+ ;; ((ruby-mode ruby-ts-mode)
+ ;;  "solargraph" "socket" "--port" :autoport)
+
 ;; (use-package eldoc-box
 ;;   :config
 ;;   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-at-point-mode t))
@@ -1776,28 +1804,28 @@ The image is downloaded to the attach directory."
          ("C-c C-e" . markdown-do)))
 
 
-;; Yaml mode
+;; Yaml mode.
 (use-package yaml-mode
   :mode "\\.yml\\'")
 
 
-;; Javascript
+;; Javascript.
 (use-package js
   :ensure nil
   :custom
   (js-indent-level 2))
 
 
-;; Jsonnet
+;; Jsonnet.
 (use-package jsonnet-mode
   :mode ("\\.\\(jsonnet\\|libsonnet\\)\\'" . jsonnet-mode))
 
 
-;; Dockerfile mode
+;; Dockerfile mode.
 (use-package dockerfile-mode)
 
 
-;; SQL mode
+;; SQL mode.
 (use-package sql
   :ensure nil
   :config
@@ -1805,6 +1833,19 @@ The image is downloaded to the attach directory."
     (setq indent-tabs-mode nil
           tab-width 4))
   (add-hook 'sql-mode-hook #'set-tab-width))
+
+
+;; Swift mode.
+(use-package swift-mode
+  ;; Configuration for Swift language
+  :mode ("\\.swift\\'" . swift-mode))
+
+
+;; Ruby support.
+;; Rbenv integration.
+(use-package rbenv
+  :hook (after-init . global-rbenv-mode))
+(use-package rspec-mode)
 
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
@@ -2119,6 +2160,20 @@ character correspondingly."
 ;; buffer like sed interactively. No need to learn sed script, just learn Emacs.
 (use-package wgrep
   :commands (wgrep-toggle-readonly-area))
+
+
+;; Es-mode — Kibana's Console-envy for Emacs users.
+(use-package es-mode
+  :mode ("\\.es\\'" . es-mode)
+  :custom
+  (es-always-pretty-print t))
+
+
+;; Jinx — fast just-in-time spell checker.
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode)
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)))
 
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.

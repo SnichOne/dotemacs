@@ -64,11 +64,10 @@ If INTERACTIVE is nil the function acts like a Capf.
 (fn &optional INTERACTIVE)" t)
 (autoload 'cape-company-to-capf "cape" "\
 Convert Company BACKEND function to Capf.
-VALID is a function taking the old and new input string.  It
-should return nil if the cached candidates became invalid.  The
-default value for VALID is `string-prefix-p' such that the
-candidates are only fetched again if the input prefix
-changed.  The function `cape-company-to-capf' is experimental.
+VALID is a function taking the old and new input string.  It should
+return nil if the cached candidates became invalid.  The default value
+for VALID is `string-prefix-p' such that the candidates are only fetched
+again if the input prefix changed.
 
 (fn BACKEND &optional VALID)")
 (autoload 'cape-interactive "cape" "\
@@ -93,9 +92,6 @@ multiple super Capfs in the `completion-at-point-functions':
               (cape-capf-super \\='cape-dabbrev
                                :with \\='tempel-complete)))
 
-The functions `cape-wrap-super' and `cape-capf-super' are
-experimental.
-
 (fn &rest CAPFS)")
 (autoload 'cape-wrap-debug "cape" "\
 Call CAPF and return a completion table which prints trace messages.
@@ -118,10 +114,11 @@ Call CAPF and make sure that no completion style filtering takes place.
 
 (fn CAPF)")
 (autoload 'cape-wrap-properties "cape" "\
-Call CAPF and add additional completion PROPERTIES.
-Completion properties include for example :exclusive, :annotation-function and
-the various :company-* extensions.  Furthermore a boolean :sort flag and a
-completion :category symbol can be specified.
+Call CAPF and strip or add completion PROPERTIES.
+Completion properties include for example :exclusive,
+:annotation-function and the various :company-* extensions.  Furthermore
+a boolean :sort flag and a completion :category symbol can be specified.
+The boolean :strip flag means to strip all completion properties.
 
 (fn CAPF &rest PROPERTIES)")
 (autoload 'cape-wrap-nonexclusive "cape" "\
@@ -141,10 +138,10 @@ This function can be used as an advice around an existing Capf.
 (fn CAPF)")
 (autoload 'cape-wrap-case-fold "cape" "\
 Call CAPF and return a case-insensitive completion table.
-If DONT-FOLD is non-nil return a case sensitive table instead.
-This function can be used as an advice around an existing Capf.
+If NOFOLD is non-nil return a case sensitive table instead.  This
+function can be used as an advice around an existing Capf.
 
-(fn CAPF &optional DONT-FOLD)")
+(fn CAPF &optional NOFOLD)")
 (autoload 'cape-wrap-noninterruptible "cape" "\
 Call CAPF and return a non-interruptible completion table.
 This function can be used as an advice around an existing Capf.
@@ -204,6 +201,7 @@ This function can be used as an advice around an existing Capf.
  (autoload 'cape-capf-purify "cape")
  (autoload 'cape-capf-silent "cape")
  (autoload 'cape-capf-super "cape")
+ (autoload 'cape-prefix-map "cape" nil t 'keymap)
 (register-definition-prefixes "cape" '("cape-"))
 
 
