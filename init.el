@@ -1849,6 +1849,8 @@ The image is downloaded to the attach directory."
 (use-package rbenv
   :hook (after-init . global-rbenv-mode))
 (use-package rspec-mode)
+(use-package rubocop
+  :hook (ruby-mode . rubocop-mode))
 
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
@@ -2178,6 +2180,17 @@ character correspondingly."
   :bind (("M-$" . jinx-correct)
          ("C-M-$" . jinx-languages)))
 
+
+;; Gptel — a simple LLM client for Emacs.
+(use-package gptel
+  :custom
+  (gptel-backend (gptel-make-openai "OpenAI gateway"
+                   :protocol "https"
+                   :host "ai-gateway.zende.sk"
+                   :key (lambda () (gptel-api-key-from-auth-source "ai-gateway.zende.sk"))
+                   :models '(gpt-4o
+                             gpt-4o-mini)))
+  :commands (gptel gptel-send))
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 
