@@ -211,6 +211,9 @@
 ;; He-he, games inside Emacs? Make them look nicer on modern monitors.
 (when (eq system-type 'darwin)
   (setq gamegrid-glyph-height-mm 7.3))
+
+;; Default font size
+(set-face-attribute 'default nil :height 130)  ;; 130 corresponds to a font size of 13pt
 ;; ---------------------------------------------------------------------------
 
 
@@ -1444,7 +1447,7 @@
   ;; scree line. But there is a problem with it: you can be left with horizontal
   ;; scroll after you invoke 'org-fill-paragraph' on a long line and you will
   ;; have to manually scroll to adjust the view. You can change
-  ;; 'auto-hscholl-mode' to f'current-line' locally to 'org-mode' to avoid the
+  ;; 'auto-hscholl-mode' to 'current-line' locally to 'org-mode' to avoid the
   ;; problem. But setting this option makes inconvenient table editing of tables
   ;; that do not fit on screen.
   ;; So instead of setting 'auto-hscroll-mode' to 'current-line' I better remap
