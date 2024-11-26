@@ -1889,6 +1889,8 @@ The image is downloaded to the attach directory."
 (use-package rspec-mode)
 (use-package rubocop
   :hook (ruby-mode . rubocop-mode))
+(use-package inf-ruby
+  :commands inf-ruby)
 
 ;; Expand region increases the selected region by semantic units. Just keep
 ;; pressing the key until it selects what you want.
@@ -2006,9 +2008,14 @@ character correspondingly."
   :custom
   (evil-escape-key-sequence "jk"))
 
+;; Evil-matchit — Press “%” to jump between matched tags (“<div>” and “</div>”
+;; in html, etc).
+;; TODO: Configure it for python-ts-mode?, ruby-ts-mode?, etc.
+(use-package evil-matchit
+  :hook (emacs-startup . global-evil-matchit-mode))
+
 
 ;; Breadcrumb — headerline indication of where you are in a large project.
-;; Local file, since the plugin is not in Melpa.
 (use-package breadcrumb
   :hook prog-mode)
 
