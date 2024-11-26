@@ -16,6 +16,10 @@
 ;; Easy Customization UI, e.g. you can see all customized variables with the
 ;; 'customize-unsaved' command.
 
+;; Tips and tricks:
+;; 1. Use (debug-on-variable-change VARIABLE) to trigger a debugger when
+;; VARIABLE is changed.
+
 (require 'mode-local)                   ; provides 'setq-mode-local'
 (require 'package)                      ; package manager
 
@@ -441,7 +445,6 @@
   (nyan-wavy-trail t)
   (nyan-bar-length 16))
 
-
 ;; Add parrot — no more lonely nyancat in the mode-line.
 (use-package parrot
   :after evil
@@ -450,6 +453,16 @@
   (define-key evil-normal-state-map (kbd "[r") 'parrot-rotate-prev-word-at-point)
   (define-key evil-normal-state-map (kbd "]r") 'parrot-rotate-next-word-at-point)
   (parrot-set-parrot-type 'science)
+
+  ;; Set `pulse-flag' to t so that the highlight from parrot-rotate is momentary
+  ;; (not persisting until a key is pressed)
+  ;; NOTE: parrot library should have been implemented better, and not rely on
+  ;; global value of `pulse-flag', e.g. like it is done in breadcrumb by joaotabora:
+  ;; https://github.com/joaotavora/breadcrumb/blob/dcb6e2e82de2432d8eb75be74c8d6215fc97a2d3/breadcrumb.el#L410
+  ;; And the current implementation of parrot messes with other libraries that
+  ;; rely on pulse, e.g. gptel.
+  (require 'pulse)
+  (setq pulse-flag t)
 
   (defun parrot-start-animation+ (&rest args)
     (parrot-start-animation))
@@ -882,7 +895,7 @@
           (border-mode-line-inactive unspecified)
 
           ;; remove fringe background
-          ;; (fringe unspecified)
+          (fringe unspecified)
 
           ;; make org properties and attributes (e.g., lines like "#+title: ...")
           ;; distinguishable from comments.
@@ -920,8 +933,9 @@
 ;;    than then fill-column value.
 (use-package olivetti
   :bind
-  ("<left-margin> <mouse-1>" . ignore)
-  ("<right-margin> <mouse-1>" . ignore))
+  ;; ("<left-margin> <mouse-1>" . ignore)
+  ;; ("<right-margin> <mouse-1>" . ignore)
+  :commands olivetti-mode)
 
 
 ;; Enable the minor mode for Emacs that displays the key bindings following your
@@ -1140,6 +1154,30 @@
 ;;   (flycheck-status-emoji-mode))
 
 ;; LSP support.
+;; (use-package lsp-mode
+;;   :init
+;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   (defun my/lsp-mode-setup-completion ()
+;;     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+;;           '(flex))) ;; Configure flex
+;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+;;          (python-mode . lsp)
+;;          (python-ts-mode . lsp)
+;;          (ruby-mode . lsp)
+;;          (ruby-ts-mode . lsp)
+;;          ;; if you want which-key integration
+;;          (lsp-mode . lsp-enable-which-key-integration)
+;;          (lsp-completion-mode . my/lsp-mode-setup-completion))
+;;   :custom
+;;   (lsp-modeline-diagnostics-scope :workspace)
+;;   (lsp-headerline-breadcrumb-enable nil)
+;;   (lsp-completion-provider :none)
+;;   :commands lsp)
+;; (use-package lsp-ui :commands lsp-ui-mode)
+;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+
 ;; (use-package lsp-mode
 ;;   :init
 ;;   ;; Set prefix for lsp-command-keymap (few alternatives - "s-l", "C-c l").
@@ -2184,13 +2222,19 @@ character correspondingly."
 ;; Gptel — a simple LLM client for Emacs.
 (use-package gptel
   :custom
+  (gptel-default-mode #'org-mode)
   (gptel-backend (gptel-make-openai "OpenAI gateway"
                    :protocol "https"
                    :host "ai-gateway.zende.sk"
                    :key (lambda () (gptel-api-key-from-auth-source "ai-gateway.zende.sk"))
                    :models '(gpt-4o
-                             gpt-4o-mini)))
-  :commands (gptel gptel-send))
+                             gpt-4o-mini)
+                   :stream t))
+  :commands (gptel gptel-send)
+  :hook
+  (gptel-mode . (lambda () (visual-line-mode t) (olivetti-mode t)))
+  :config
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 
