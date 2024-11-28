@@ -1567,6 +1567,8 @@
     :lighter " *"
     :group 'org
     (setq org-hide-emphasis-markers +org-pretty-mode)
+    ;; Refontify buffer.
+    (font-lock-update)
     ;; (with-silent-modifications
     ;;   ;; In case the above un-align tables
     ;;   (org-table-map-tables 'org-table-align t))
