@@ -1886,11 +1886,20 @@ The image is downloaded to the attach directory."
 
 ;; Ruby support.
 ;; Rbenv integration.
+(use-package ruby-mode
+  :ensure nil
+  :custom
+  (ruby-method-params-indent nil)
+  (ruby-method-call-indent nil))
 (use-package rbenv
-  :hook (after-init . global-rbenv-mode))
+  :hook
+  (after-init . global-rbenv-mode))
+  ;; (ruby-mode . (lambda () (rbenv-use-corresponding))))
 (use-package rspec-mode)
 (use-package rubocop
-  :hook (ruby-mode . rubocop-mode))
+  :hook (ruby-mode . rubocop-mode)
+  :custom
+  (rubocop-autocorrect-on-save t))
 (use-package inf-ruby
   :commands inf-ruby)
 
@@ -2014,7 +2023,11 @@ character correspondingly."
 ;; in html, etc).
 ;; TODO: Configure it for python-ts-mode?, ruby-ts-mode?, etc.
 (use-package evil-matchit
-  :hook (emacs-startup . global-evil-matchit-mode))
+  :hook (emacs-startup . global-evil-matchit-mode)
+  :config
+  ;; Configure for ruby-ts-mode — I could not find documentation of how to do it
+  ;; and what this line does exactly (e.g., parameters meaning).
+  (evilmi-load-plugin-rules '(ruby-ts-mode) '(ruby)))
 
 
 ;; Breadcrumb — headerline indication of where you are in a large project.
