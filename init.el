@@ -1949,7 +1949,17 @@ The image is downloaded to the attach directory."
          ("C-." . embark-act)
 
          :map evil-insert-state-map
-         ("C-y" . yank))
+         ("C-y" . yank)
+
+         :map evil-ex-completion-map    ; https://emacs.stackexchange.com/questions/14163/how-create-keybindings-for-evil-command-line
+         ("C-a" . move-beginning-of-line)
+         ("C-b" . 'backward-char)
+         ("C-f" . 'forward-char)
+         ("C-d" . 'delete-char)
+         ("M-b" . 'backward-word)
+         ("M-f" . 'forward-word)
+         ("M-d" . 'kill-word)
+         ("C-g" . 'abort-recursive-edit))
 
   :custom
   (evil-undo-system 'undo-redo)
