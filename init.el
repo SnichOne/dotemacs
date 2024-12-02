@@ -33,7 +33,7 @@
 (customize-set-variable 'backup-directory-alist
                         '(("." . "~/.local/state/emacs/backup/")))
 
-;; Create backup files by copying our files, not moving our files. Everytime
+;; Create backup files by copying our files, not moving our files. Every time
 ;; Emacs has to create a backup file, it moves our file to the backup location,
 ;; then creates a new file at the same location as that of the one we are
 ;; editing, copies our content to this new file, and then resumes editing our
