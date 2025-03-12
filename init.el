@@ -425,9 +425,11 @@
   (package-refresh-contents))
 
 
-;; Install use-package.
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+;; Install use-package (If on older Emacs (< 29), Emacs 29+ has built-in use-package).
+;; (unless (package-installed-p 'use-package)
+;;   (package-install 'use-package))
+
+(use-package use-package)
 
 
 ;; Configure use-package to install packages with package.el if they are not
@@ -1231,12 +1233,22 @@
   :hook ((python-mode python-ts-mode) . eglot-ensure)
   :commands eglot
   :config
+  (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode)  "ruby-lsp"))
   ;; (add-to-list 'eglot-server-programs
   ;;              '((ruby-mode ruby-ts-mode) . ("bundle" "exec" "rubocop" "--lsp")))
   )
 
  ;; ((ruby-mode ruby-ts-mode)
  ;;  "solargraph" "socket" "--port" :autoport)
+
+;; ;; NOTE: maybe it's not needed in Emacs 30+ due to faster built-in json parsing
+;; Can't use because the binary lacks proper signing at the moment.
+;; I think I should try to build the binary from the source myself.
+;; (use-package eglot-booster
+;;   :after eglot
+;;   ;; :when (executable-find "cargo")
+;;   :vc (:url "https://github.com/jdtsmith/eglot-booster")
+;;   :config (eglot-booster-mode))
 
 ;; (use-package eldoc-box
 ;;   :config
@@ -1247,6 +1259,23 @@
   :custom
   eldoc-echo-area-prefer-doc-buffer t)
 
+(use-package lsp-mode
+  :custom
+  (lsp-keymap-prefix "C-c l")
+
+  (lsp-rubocop-use-bundler t)
+
+  (lsp-headerline-breadcrumb-enable nil)
+  :hook (
+         ;; ((ruby-mode ruby-ts-mode) . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration)) ; shows keymap names, e.g. +goto, +refactor, etc.
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-ui
+  :custom
+  (lsp-ui-sideline-show-code-actions t)
+  (lsp-ui-sideline-show-hover nil)
+  :commands lsp-ui-mode)
 
 ;; Dumb Jump is an Emacs "jump to definition" package with support for 50+
 ;; programming languages that favors "just working". This means minimal — and
@@ -1893,11 +1922,11 @@ The image is downloaded to the attach directory."
   (ruby-method-call-indent nil))
 (use-package rbenv
   :hook
-  (after-init . global-rbenv-mode))
-  ;; (ruby-mode . (lambda () (rbenv-use-corresponding))))
+  (after-init . global-rbenv-mode)
+  ((ruby-mode ruby-ts-mode) . (lambda () (rbenv-use-corresponding))))
 (use-package rspec-mode)
 (use-package rubocop
-  :hook (ruby-mode . rubocop-mode)
+  :hook ((ruby-mode ruby-ts-mode) . rubocop-mode)
   :custom
   (rubocop-autocorrect-on-save t))
 (use-package inf-ruby
@@ -2241,7 +2270,14 @@ character correspondingly."
 (use-package es-mode
   :mode ("\\.es\\'" . es-mode)
   :custom
-  (es-always-pretty-print t))
+  (es-always-pretty-print t)
+
+  ;; There is an issue with basic authentication support.
+  ;; Curl will refuse to handle unsigned certificates unless it is called with
+  ;; the --insecure flag.
+  ;; Alternative solution to customizing `request-curl-options' is to modify
+  ;; .curlrc.
+  (request-curl-options '("-k")))
 
 
 ;; Jinx — fast just-in-time spell checker.
@@ -2262,6 +2298,7 @@ character correspondingly."
                    :models '(gpt-4o
                              gpt-4o-mini)
                    :stream t))
+  (gptel-model 'gpt-4o)
   :commands (gptel gptel-send)
   :hook
   (gptel-mode . (lambda () (visual-line-mode t) (olivetti-mode t)))
