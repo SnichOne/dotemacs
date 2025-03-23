@@ -22,24 +22,25 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("/Users/snich/org/agenda.org"))
  '(package-selected-packages
-   '(lsp-ui lsp-mode inf-ruby evil-matchit rubocop gptel jinx rspec-mode rbenv es-mode ef-themes olivetti swift-mode embark-consult embark orderless org-modern closql emacsql f ghub jsonrpc xref pdf-tools jsonnet-mode ox-gfm wgrep breadcrumb doom-modeline parrot dirvish diredfl nerd-icons vertico consult forge exec-path-from-shell xeft eglot python-black dockerfile-mode yaml-mode org-inline-anim org-fragtog plz evil-escape evil project cape envrc markdown-mode org engrave-faces expand-region ess org-cliplink htmlize auctex cdlatex magit corfu hl-todo dumb-jump use-package minions which-key modus-themes marginalia nyan-mode))
+   '(auctex breadcrumb cape cdlatex closql consult corfu diredfl dirvish
+            dockerfile-mode doom-modeline dumb-jump ef-themes eglot emacsql
+            embark embark-consult engrave-faces envrc es-mode ess evil
+            evil-escape evil-matchit exec-path-from-shell expand-region f forge
+            ghub gptel hl-todo htmlize inf-ruby jinx jsonnet-mode jsonrpc
+            lsp-mode lsp-ui magit marginalia markdown-mode minions modus-themes
+            nerd-icons nyan-mode olivetti orderless org org-cliplink org-fragtog
+            org-inline-anim org-modern ox-gfm parrot pdf-tools plz project
+            python-black rbenv rspec-mode rubocop swift-mode use-package vertico
+            vterm wgrep which-key xeft xref yaml-mode))
  '(package-vc-selected-packages
    '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster")))
  '(safe-local-variable-values
-   '((lsp-enabled-clients quote ruby-lsp-ls)
-     (lsp-enabled-clients . ruby-lsp-ls)
-     (python-black-extra-args "--line-length" "120")
-     (eval add-to-list 'tramp-remote-path "/home/ubuntu_ssm/.cache/pypoetry/virtualenvs/guide-ml-research-_5OzJJ7u-py3.10/bin/")))
+   '((python-black-extra-args "--line-length" "120")
+     (eval add-to-list 'tramp-remote-path
+           "/home/ubuntu_ssm/.cache/pypoetry/virtualenvs/guide-ml-research-_5OzJJ7u-py3.10/bin/")))
  '(tetris-buffer-name "*config*")
  '(tetris-x-colors
-   [[0.392 0.584 0.941]
-    [0.7 0 1]
-    [1 1 0]
-    [1 0 1]
-    [0 1 1]
-    [0 1 0]
-    [1 0 0]])
- '(warning-suppress-types '((org-element-cache))))
+   [[0.392 0.584 0.941] [0.7 0 1] [1 1 0] [1 0 1] [0 1 1] [0 1 0] [1 0 0]]))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

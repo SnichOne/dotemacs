@@ -68,8 +68,8 @@
 ;; installed the python grammar using `M-x treesit-install-language-grammar' and
 ;; it works, and the change is required to tell Emacs to use the correct
 ;; grammar.
-(when (eq system-type 'darwin)
-  (setq treesit-extra-load-path nil))
+;; (when (eq system-type 'darwin)
+;;   (setq treesit-extra-load-path nil))
 
 ;; HACK: make Emacs always use treesit powered modes instead of some default
 ;; modes
@@ -1045,6 +1045,17 @@
    ("M-s" . dirvish-setup-menu)
    ("M-e" . dirvish-emerge-menu)
    ("M-j" . dirvish-fd-jump)))
+
+
+(use-package vterm
+  :custom
+  (vterm-always-compile-module t)
+  (vterm-max-scrollback 100000)
+  :hook (vterm-mode . my-disable-hl-line-in-vterm)
+  :config
+  (defun my-disable-hl-line-in-vterm ()
+    "Disable `hl-line-mode` in vterm buffers."
+    (setq-local global-hl-line-mode nil)))
 
 
 ;; Convenient completion popup.
