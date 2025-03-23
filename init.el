@@ -1977,21 +1977,34 @@ The image is downloaded to the attach directory."
 
          ("C-." . embark-act)
 
+         ("C-g" . nohighlight-or-keyboard-quit)
+
          :map evil-insert-state-map
          ("C-y" . yank)
 
          :map evil-ex-completion-map    ; https://emacs.stackexchange.com/questions/14163/how-create-keybindings-for-evil-command-line
          ("C-a" . move-beginning-of-line)
-         ("C-b" . 'backward-char)
-         ("C-f" . 'forward-char)
-         ("C-d" . 'delete-char)
-         ("M-b" . 'backward-word)
-         ("M-f" . 'forward-word)
-         ("M-d" . 'kill-word)
-         ("C-g" . 'abort-recursive-edit))
+         ("C-b" . backward-char)
+         ("C-f" . forward-char)
+         ("C-d" . delete-char)
+         ("M-b" . backward-word)
+         ("M-f" . forward-word)
+         ("M-d" . kill-word)
+         ("C-k" . kill-line)
+
+         :map evil-ex-search-keymap
+         ("C-a" . move-beginning-of-line)
+         ("C-b" . backward-char)
+         ("C-f" . forward-char)
+         ("C-d" . delete-char)
+         ("M-b" . backward-word)
+         ("M-f" . forward-word)
+         ("M-d" . kill-word)
+         ("C-k" . kill-line))
 
   :custom
   (evil-undo-system 'undo-redo)
+  (evil-symbol-word-search t)
 
   :config
   (dolist (mode '(Info-mode
@@ -2016,7 +2029,9 @@ The image is downloaded to the attach directory."
                   term-mode
                   wdired-mode
                   xeft-mode
-                  xref--xref-buffer-mode))
+                  xref--xref-buffer-mode
+                  vterm-mode
+                  proced-mode))
     (evil-set-initial-state mode 'emacs))
 
   ;; Redefine <tab> to `org-cycle' in Normal State in Org mode.
@@ -2048,7 +2063,15 @@ character correspondingly."
     (when (and evil-mode count (> count 0))
       ;; Move forward by the length of `page-delimeter'
       (forward-char (+ (length page-delimiter)))))
-  (advice-add 'forward-page :after #'evil-forward-page-nudge))
+  (advice-add 'forward-page :after #'evil-forward-page-nudge)
+
+  (evil-select-search-module 'evil-search-module 'evil-search)
+
+  (defun nohighlight-or-keyboard-quit()
+    (interactive)
+    (if (evil-ex-hl-active-p 'evil-ex-search)
+        (evil-ex-nohighlight)
+      (keyboard-quit))))
 
 ;; Evil-escape allows to map a chord for escape.
 (use-package evil-escape
