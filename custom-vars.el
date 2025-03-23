@@ -46,6 +46,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(rbenv-active-ruby-face ((t (:inherit warning))))
  '(term-color-black ((t (:background "#000000" :foreground "#000000"))))
  '(term-color-green ((t (:background "#00AE00" :foreground "#00AE00"))))
  '(term-color-yellow ((t :foreground "light goldenrod" :background "light goldenrod"))))
