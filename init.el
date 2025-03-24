@@ -2084,9 +2084,12 @@ character correspondingly."
 
   (defun nohighlight-or-keyboard-quit()
     (interactive)
-    (if (evil-ex-hl-active-p 'evil-ex-search)
-        (evil-ex-nohighlight)
-      (keyboard-quit))))
+    (cond
+     ((evil-ex-hl-active-p 'evil-ex-search) ; if search highlighting is active
+      (evil-ex-nohighlight))
+     ((evil-visual-state-p)             ; if selection highlighting is active
+      (evil-exit-visual-state))
+     (t (keyboard-quit)))))             ; otherwise default action for C-g (keyboard-quit)
 
 ;; Evil-escape allows to map a chord for escape.
 (use-package evil-escape
