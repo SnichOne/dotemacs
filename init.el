@@ -1052,6 +1052,10 @@
   (vterm-always-compile-module t)
   (vterm-max-scrollback 100000)
   :hook (vterm-mode . my-disable-hl-line-in-vterm)
+  :bind
+  (:map vterm-mode-map
+   ("C-g" . vterm--self-insert)
+   ("C-u" . vterm--self-insert))
   :config
   (defun my-disable-hl-line-in-vterm ()
     "Disable `hl-line-mode` in vterm buffers."
