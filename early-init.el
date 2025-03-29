@@ -13,7 +13,15 @@
 ;; minibuffer border works (tested in Emacs 28.1).
 (scroll-bar-mode -1)
 
+;; Maximize/fullscreen Emacs on startup.
+;; There are two ways to do it: using 'default-frame-alist' or
+;; 'initial-frame-alist':
+;; 1. Maximize all frames.
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; 2. Should only the first frame be maximized, use 'initial-frame-alist',
+;; ((un)comment the following(previous) line)
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; Set default font on macOS
 (when (eq system-type 'darwin)
-  (set-face-attribute 'default nil :family "Hack Nerd Font Mono" :height 120))
+  (add-to-list 'default-frame-alist '(font . "Hack Nerd Font Mono-12")))

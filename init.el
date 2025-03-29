@@ -50,7 +50,10 @@
 ;; customization variables to be added to your init.el file. Let's change that
 ;; and move customization variables to a separate file and load it.
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-(load custom-file 'noerror 'nomessage)
+(load custom-file 'noerror 'nomessage 'nosuffix)
+;; Load customized safe-local variables
+(load (locate-user-emacs-file "my-safe-local-variables.el") 'noerror 'nomessage 'nosuffix)
+
 
 ;; Ask before exiting Emacs
 (customize-set-variable 'confirm-kill-emacs 'y-or-n-p)
@@ -137,15 +140,6 @@
 ;; Inhibit the startup screen with the "Welcome to GNU Emacs" message from
 ;; appearing.
 (customize-set-variable 'inhibit-startup-message t)
-
-;; Maximize/fullscreen Emacs on startup.
-;; There are two ways to do it: using 'default-frame-alist' or
-;; 'initial-frame-alist':
-;; 1. Maximize all frames.
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-;; 2. Should only the first frame be maximized, use 'initial-frame-alist',
-;; ((un)comment the following(previous) line)
-;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; Enable the leuven theme, a nice light theme available by default, e.g.
 ;; provides awesome Org-mode support by highlighting headers and changing title

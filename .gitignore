@@ -1,3 +1,4 @@
+/my-safe-local-variables.el
 *.elc
 .lsp-session-v*
 /places
