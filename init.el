@@ -907,8 +907,8 @@
   (setq modus-vivendi-palette-overrides
         '((comment yellow-faint)))
 
-  (setq modus-operandi-palette-overrides
-        '((comment yellow-cooler)))
+  ;; (setq modus-operandi-palette-overrides
+  ;;       '((comment yellow-cooler)))
           ;; (comment green-faint)))
           ;; (string green-warmer)))
 
