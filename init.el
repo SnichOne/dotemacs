@@ -928,7 +928,7 @@
 ;; 2. customize initial width for org-mode because I have large columns in bles
 ;;    than then fill-column value.
 (use-package olivetti
-  :bind
+  ;; :bind
   ;; ("<left-margin> <mouse-1>" . ignore)
   ;; ("<right-margin> <mouse-1>" . ignore)
   :commands olivetti-mode)
@@ -1874,15 +1874,28 @@ The image is downloaded to the attach directory."
          ("C-c b" . python-black-partial-dwim)
          ("C-c C-b" . python-black-partial-dwim)))
 
+;; Define minor mode that can be used for buffers that are mostly for reading.
+;; For instance, for markdown or gptel.
+(define-minor-mode +reading-mode
+  "Controls olivetti-mode and visual-line-mode."
+  :init-value nil
+  :lighter nil
+  (visual-line-mode (if +reading-mode 1 -1))
+  (olivetti-mode (if +reading-mode 1 -1)))
 
 ;; Markdown mode. A major mode for editing Markdown-formatted text.
 (use-package markdown-mode
   :custom
   (markdown-command "pandoc")
+  (markdown-hide-markup t)
+  (markdown-max-image-size '(680 . 680))
   :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode))
+         ("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . gfm-mode))
   :bind (:map markdown-mode-map
-         ("C-c C-e" . markdown-do)))
+         ("C-c C-e" . markdown-do))
+  :hook
+  (markdown-mode . markdown-display-inline-images)
+  (markdown-mode . +reading-mode))
 
 
 ;; Yaml mode.
@@ -1984,9 +1997,10 @@ The image is downloaded to the attach directory."
          ("] e" . flymake-goto-next-error)
          ("[ e" . flymake-goto-prev-error)
 
-         ("C-." . embark-act)
-
          ("C-g" . nohighlight-or-keyboard-quit)
+
+         :map evil-normal-state-map
+         ("C-." . embark-act)
 
          :map evil-insert-state-map
          ("C-y" . yank)
@@ -2043,9 +2057,13 @@ The image is downloaded to the attach directory."
                   proced-mode))
     (evil-set-initial-state mode 'emacs))
 
-  ;; Redefine <tab> to `org-cycle' in Normal State in Org mode.
-  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+  ;; Redefine <tab> to `org-cycle' in Motion State in Org mode.
+  (evil-define-key 'motion org-mode-map (kbd "<tab>") #'org-cycle)
 
+  (evil-define-key 'normal markdown-mode-map (kbd "gx") #'markdown-follow-thing-at-point)
+  (evil-define-key 'normal markdown-mode-map (kbd "gd") #'markdown-do)
+
+  (evil-define-key 'normal gptel-mode-map (kbd "RET") #'gptel-send)
   ;; Make word motions operate as symbol motions as well as make the * and #
   ;; searches use symbols instead of words.
   ;;
@@ -2235,6 +2253,8 @@ character correspondingly."
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
+
+  (add-to-list 'consult-preview-allowed-hooks #'+reading-mode)
 )
 
 
@@ -2336,7 +2356,7 @@ character correspondingly."
   (gptel-model 'gpt-4o)
   :commands (gptel gptel-send)
   :hook
-  (gptel-mode . (lambda () (visual-line-mode t) (olivetti-mode t)))
+  (gptel-mode . +reading-mode)
   :config
   (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 
