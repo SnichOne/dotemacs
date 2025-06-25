@@ -92,10 +92,11 @@
   (customize-set-variable 'mac-right-command-modifier 'super))
 
 ;; HACK: On macOS, disable completion for `M-x man'.
-;; Reason. `man -k' command does leverage cache (like `mandb'). It makes
-;; completion in the `M-x man' command too slow — so the command freezes Emacs
-;; for few seconds right after the invocation if packages like Vertico or
-;; Icomplete (that automatically list all completion candidates) are used.
+;; Reason. `man -k' command does leverage cache (like `mandb'). But something is
+;; off with man on macOS, it makes completion in the `M-x man' command too slow
+;; — so the command freezes Emacs for a few seconds right after the invocation
+;; if packages like Vertico or Icomplete (that automatically list all completion
+;; candidates) are used.
 ;; Source: https://old.reddit.com/r/emacs/comments/12vjw05/easiest_way_to_browse_man_pages_within_emacs/jhg4jwz/
 (when (eq system-type 'darwin)
   (define-advice man (:around (orig-func &rest args) no-completing-read)
@@ -118,6 +119,26 @@
 
 ;; Disable bell sound.
 (setq ring-bell-function 'ignore)
+
+(defun my/copy-relative-path-to-project-root ()
+  "Copy the relative path of the current buffer file to the project root."
+  (interactive)
+  (let* ((project (project-current))
+         (project-root (if project
+                           (expand-file-name (project-root project))
+                         nil))
+         (file-path (or (buffer-file-name) default-directory))
+         (relative-path (if project-root
+                            (file-relative-name file-path project-root)
+                          nil)))
+    (if relative-path
+        (progn
+          (kill-new relative-path)
+          (message "Copied: %s" relative-path))
+      (message "Not in a project or no file in buffer."))))
+
+
+(global-set-key (kbd "C-c p r") 'my/copy-relative-path-to-project-root)
 ;; ---------------------------------------------------------------------------
 
 
@@ -211,7 +232,7 @@
   (setq gamegrid-glyph-height-mm 7.3))
 
 ;; Default font size
-(set-face-attribute 'default nil :height 130)  ;; 130 corresponds to a font size of 13pt
+;; (set-face-attribute 'default nil :height 130)  ;; 130 corresponds to a font size of 13pt
 ;; ---------------------------------------------------------------------------
 
 
@@ -1042,14 +1063,31 @@
 
 
 (use-package vterm
+  :after project
   :custom
   (vterm-always-compile-module t)
   (vterm-max-scrollback 100000)
+  :preface
+  ;; Add vterm entry to `project-switch-project'.
+  ;; Source: https://www.reddit.com/r/emacs/comments/wu5rxi/comment/ilagtzv/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+  (defun project-vterm ()
+    (interactive)
+    (defvar vterm-buffer-name)
+    (let* ((default-directory (project-root     (project-current t)))
+           (vterm-buffer-name (project-prefixed-buffer-name "vterm"))
+           (vterm-buffer (get-buffer vterm-buffer-name)))
+      (if (and vterm-buffer (not current-prefix-arg))
+          (pop-to-buffer vterm-buffer  (bound-and-true-p display-comint-buffer-action))
+        (vterm))))
   :hook (vterm-mode . my-disable-hl-line-in-vterm)
   :bind
   (:map vterm-mode-map
    ("C-g" . vterm--self-insert)
-   ("C-u" . vterm--self-insert))
+   ("C-u" . vterm--self-insert)
+   :map project-prefix-map
+   ("t" . project-vterm))
+  :init
+  (add-to-list 'project-switch-commands '(project-vterm "Vterm") t)
   :config
   (defun my-disable-hl-line-in-vterm ()
     "Disable `hl-line-mode` in vterm buffers."
@@ -1614,6 +1652,7 @@
 
   (+org-pretty-mode 1)
 
+  ;; NOTE: probably, not relevant anymore because of `yank-media'.
   (defun +org-quick-attach-image (url width)
     "Download an image from a URL and insert a link to the image.
 
@@ -1644,7 +1683,9 @@ The image is downloaded to the attach directory."
 
   (defun +org-refresh-images ()
     (interactive)
-    "TODO: refresh/show images that are visible on the screen."))
+    "TODO: refresh/show images that are visible on the screen.")
+
+  (require 'org-attach))
 
 ;; Install Org mode export dependencies: better code syntax highlighting.
 ;; 1. Htmlize. Convert buffer text and decorations to HTML.
@@ -1826,7 +1867,6 @@ The image is downloaded to the attach directory."
   :mode ("\\.py\\'" . python-ts-mode)
   :interpreter ("python[0-9.]*" . python-ts-mode)
   :custom
-
   (python-shell-interpreter "python")
 
   ;; Configure multiplier applied to indentation inside multi-line def blocks,
@@ -1834,6 +1874,11 @@ The image is downloaded to the attach directory."
   (python-indent-def-block-scale 1)
   ;; Use symmetric style to fill docstrings.
   (python-fill-docstring-style 'symmetric)
+  ;; Disable automatic showing eldoc in the message area. AFAIU, it kicks in
+  ;; only when python inferior process is running, then it shows both method
+  ;; signature and docstring in the message area and it's annoying. Eglot
+  ;; provides just method signature and does not rely on python inferior process.
+  (python-eldoc-get-doc nil)
   :config
   ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
   (setq-mode-local python-mode fill-column 72)
@@ -1888,7 +1933,7 @@ The image is downloaded to the attach directory."
   :custom
   (markdown-command "pandoc")
   (markdown-hide-markup t)
-  (markdown-max-image-size '(680 . 680))
+  (markdown-max-image-size '(580 . 580))
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . gfm-mode))
   :bind (:map markdown-mode-map
@@ -1945,7 +1990,8 @@ The image is downloaded to the attach directory."
 (use-package rbenv
   :hook
   (after-init . global-rbenv-mode)
-  ((ruby-mode ruby-ts-mode) . (lambda () (rbenv-use-corresponding))))
+  ((ruby-mode ruby-ts-mode) . (lambda () (rbenv-use-corresponding)))
+  (project-switch-project . rbenv-use-corresponding))
 (use-package rspec-mode)
 (use-package rubocop
   :hook ((ruby-mode ruby-ts-mode) . rubocop-mode)
@@ -2004,6 +2050,7 @@ The image is downloaded to the attach directory."
 
          :map evil-insert-state-map
          ("C-y" . yank)
+         ("C-c RET" . gptel-send)
 
          :map evil-ex-completion-map    ; https://emacs.stackexchange.com/questions/14163/how-create-keybindings-for-evil-command-line
          ("C-a" . move-beginning-of-line)
@@ -2062,6 +2109,7 @@ The image is downloaded to the attach directory."
 
   (evil-define-key 'normal markdown-mode-map (kbd "gx") #'markdown-follow-thing-at-point)
   (evil-define-key 'normal markdown-mode-map (kbd "gd") #'markdown-do)
+  (evil-define-key 'normal markdown-mode-map (kbd "RET") #'markdown-do)
 
   (evil-define-key 'normal gptel-mode-map (kbd "RET") #'gptel-send)
   ;; Make word motions operate as symbol motions as well as make the * and #
@@ -2265,7 +2313,7 @@ character correspondingly."
 ;; default, regexp and literal matches are enabled.
 (use-package orderless
   :custom
-  (completion-styles '(orderless flex basic))
+  (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 
@@ -2358,7 +2406,18 @@ character correspondingly."
   :hook
   (gptel-mode . +reading-mode)
   :config
-  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+  (add-to-list 'gptel-directives '(autocorrector . "Your task is to improve messages that I will be sending to you. The messages will be my texts that can contain mistakes or other issues.
+
+You must
+- correct all grammar mistakes in them,
+- let me know if they can be rephrased for better clarity or style, provide better option or options.
+
+Explain yourself, list all corrections made.
+
+Start with the best revised version. End with a list of changes and recommendations, for this list, use bold and italic emphasis if needed for better readability."))
+  (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "@user\n")
+  (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n"))
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 
