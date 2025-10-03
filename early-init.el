@@ -25,3 +25,9 @@
 ;; Set default font on macOS
 (when (eq system-type 'darwin)
   (add-to-list 'default-frame-alist '(font . "Hack Nerd Font Mono-12")))
+
+
+;; Garbage collector https://gitlab.com/koral/gcmh trick
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(require 'gcmh)
+(gcmh-mode 1)

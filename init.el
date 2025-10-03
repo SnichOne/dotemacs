@@ -1838,12 +1838,12 @@ The image is downloaded to the attach directory."
   (define-key project-prefix-map "m" #'magit-project-status)
   (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
 
-;; Magit Forge. Forge allows you to work with Git forges, such as Github and
-;; Gitlab, from the comfort of Magit and the rest of Emacs.
-(use-package forge
-  :after magit
-  :custom
-  (auth-sources '("~/.authinfo")))
+;; ;; Magit Forge. Forge allows you to work with Git forges, such as Github and
+;; ;; Gitlab, from the comfort of Magit and the rest of Emacs.
+;; (use-package forge
+;;   :after magit
+;;   :custom
+;;   (auth-sources '("~/.authinfo")))
 
 
 ;; Emacs Speaks Statistics (ESS). It is designed to support editing of scripts
@@ -1874,14 +1874,14 @@ The image is downloaded to the attach directory."
   (python-indent-def-block-scale 1)
   ;; Use symmetric style to fill docstrings.
   (python-fill-docstring-style 'symmetric)
+  :config
+  ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
+  (setq-mode-local python-mode fill-column 72)
   ;; Disable automatic showing eldoc in the message area. AFAIU, it kicks in
   ;; only when python inferior process is running, then it shows both method
   ;; signature and docstring in the message area and it's annoying. Eglot
   ;; provides just method signature and does not rely on python inferior process.
-  (python-eldoc-get-doc nil)
-  :config
-  ;; Configure 'fill-paragraph' to wrap lines at 72 characters in python-mode.
-  (setq-mode-local python-mode fill-column 72)
+  (setq-default python-eldoc-get-doc nil)
 
   ;; Configure python to auto-indent line when you insert closing parenthesis or
   ;; bracket. Hah, I wrote this clutch.
@@ -2093,6 +2093,7 @@ The image is downloaded to the attach directory."
                   help-mode
                   image-mode
                   inferior-python-mode
+                  inf-ruby-mode
                   occur-mode
                   shell-mode
                   shortdoc-mode
@@ -2398,10 +2399,11 @@ character correspondingly."
                    :protocol "https"
                    :host "ai-gateway.zende.sk"
                    :key (lambda () (gptel-api-key-from-auth-source "ai-gateway.zende.sk"))
-                   :models '(gpt-4o
-                             gpt-4o-mini)
+                   :models '(gpt-5
+                             gpt-4.1
+                             gpt-4.1-mini)
                    :stream t))
-  (gptel-model 'gpt-4o)
+  (gptel-model 'gpt-5)
   :commands (gptel gptel-send)
   :hook
   (gptel-mode . +reading-mode)
