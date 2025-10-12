@@ -1,0 +1,13 @@
+# Target labels
+ libvterm
+# Source files and their labels
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/CMakeFiles/libvterm
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/CMakeFiles/libvterm.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/CMakeFiles/libvterm-complete.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-build.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-configure.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-download.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-install.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-mkdir.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-patch.rule
+/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/libvterm-prefix/src/libvterm-stamp/libvterm-update.rule

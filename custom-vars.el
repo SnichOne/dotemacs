@@ -21,16 +21,15 @@
           (mode . gnus-summary-mode) (mode . gnus-article-mode)))))
  '(org-agenda-files '("/Users/snich/org/agenda.org"))
  '(package-selected-packages
-   '(auctex breadcrumb cape cdlatex closql consult corfu diredfl dirvish
-            dockerfile-mode doom-modeline dumb-jump ef-themes eglot emacsql
-            embark embark-consult engrave-faces envrc es-mode ess evil
-            evil-escape evil-matchit exec-path-from-shell expand-region f forge
-            ghub gptel hl-todo htmlize inf-ruby jinx jsonnet-mode jsonrpc
-            lsp-mode lsp-ui magit marginalia markdown-mode minions modus-themes
-            nerd-icons nyan-mode olivetti orderless org org-cliplink org-fragtog
-            org-inline-anim org-modern ox-gfm parrot pdf-tools plz project
-            python-black rbenv rspec-mode rubocop swift-mode use-package vertico
-            vterm wgrep which-key xeft xref yaml-mode))
+   '(aidermacs auctex breadcrumb cape cdlatex compile-angel corfu diredfl dirvish
+               dockerfile-mode doom-modeline dumb-jump ef-themes eglot
+               embark-consult engrave-faces envrc es-mode ess evil-escape
+               evil-matchit expand-region forge gptel hl-todo htmlize inf-ruby
+               jinx jsonnet-mode lsp-ui magit-delta marginalia minions
+               modus-themes nyan-mode olivetti orderless org-cliplink
+               org-fragtog org-inline-anim org-modern ox-gfm parrot pdf-tools
+               plz python-black rbenv rspec-mode rubocop swift-mode use-package
+               vertico vterm wgrep which-key xeft yaml-mode))
  '(package-vc-selected-packages
    '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster")))
  '(tetris-buffer-name "*config*")

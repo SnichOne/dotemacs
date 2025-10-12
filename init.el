@@ -439,19 +439,47 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-
 ;; Install use-package (If on older Emacs (< 29), Emacs 29+ has built-in use-package).
 ;; (unless (package-installed-p 'use-package)
 ;;   (package-install 'use-package))
 
-(use-package use-package)
+
+;; compile-angel.el - Speed up Emacs by Byte-compiling and Native-compiling all Elisp files
+
+(use-package compile-angel
+  :demand t
+  :config
+  ;; Set `compile-angel-verbose' to nil to disable compile-angel messages.
+  ;; (When set to nil, compile-angel won't show which file is being compiled.)
+  (setq compile-angel-verbose t)
+
+  ;; Uncomment the line below to compile automatically when an Elisp file is saved
+  ;; (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode)
+
+  ;; The following directive prevents compile-angel from compiling your init
+  ;; files. If you choose to remove this push to `compile-angel-excluded-files'
+  ;; and compile your pre/post-init files, ensure you understand the
+  ;; implications and thoroughly test your code. For example, if you're using
+  ;; the `use-package' macro, you'll need to explicitly add:
+  ;; (eval-when-compile (require 'use-package))
+  ;; at the top of your init file.
+  (push "/init.el" compile-angel-excluded-files)
+  (push "/early-init.el" compile-angel-excluded-files)
+  (push "/lisp/org-an.el" compile-angel-excluded-files)
+
+  ;; A global mode that compiles .el files before they are loaded
+  ;; using `load' or `require'.
+  (compile-angel-on-load-mode 1))
 
 
 ;; Configure use-package to install packages with package.el if they are not
 ;; installed.
-(eval-when-compile (require 'use-package))
+;; (eval-when-compile (require 'use-package))
 (require 'bind-key)
 (setq use-package-always-ensure t)
+
+
+(use-package use-package)
 
 
 ;; Display scroll via nyan cat. Alternative — the 'poke-line' package.
@@ -1845,6 +1873,9 @@ The image is downloaded to the attach directory."
 ;;   :custom
 ;;   (auth-sources '("~/.authinfo")))
 
+;; (use-package magit-delta
+;;   :hook (magit-mode . magit-delta-mode))
+
 
 ;; Emacs Speaks Statistics (ESS). It is designed to support editing of scripts
 ;; and interaction with various statistical analysis programs such as R, S-Plus,
@@ -2420,6 +2451,17 @@ Explain yourself, list all corrections made.
 Start with the best revised version. End with a list of changes and recommendations, for this list, use bold and italic emphasis if needed for better readability."))
   (setf (alist-get 'org-mode gptel-prompt-prefix-alist) "@user\n")
   (setf (alist-get 'org-mode gptel-response-prefix-alist) "@assistant\n"))
+
+
+;; Aidermacs: AI Pair Programming in Emacs
+(use-package aidermacs
+  :bind (("C-c a" . aidermacs-transient-menu))
+  :custom
+  ; See the Configuration section below
+  (aidermacs-default-chat-mode 'architect)
+  (aidermacs-default-model "us.anthropic.claude-sonnet-4-5-20250929-v1:0")
+  (aidermacs-backend 'vterm))
+
 
 ;; Envrc.el — buffer-local direnv integration for Emacs.
 

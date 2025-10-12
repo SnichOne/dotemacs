@@ -31,3 +31,19 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (require 'gcmh)
 (gcmh-mode 1)
+
+
+
+;; Fix for Native Comp (AOT) linker errors on macOS GUI launch
+(let ((brew-prefix "/opt/homebrew/bin"))
+  (when (file-directory-p brew-prefix)
+    (setenv "PATH" (concat brew-prefix ":" (getenv "PATH")))
+    (add-to-list 'exec-path brew-prefix)))
+
+
+;; Ensure Emacs loads the most recent byte-compiled files.
+(setq load-prefer-newer t)
+
+;; Make Emacs Native-compile .elc files asynchronously by setting
+;; `native-comp-jit-compilation' to t.
+(setq native-comp-jit-compilation t)
