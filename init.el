@@ -1864,7 +1864,25 @@ The image is downloaded to the attach directory."
   ;; the following two lines from 'magit-extras' and put it here, in the :init
   ;; block.
   (define-key project-prefix-map "m" #'magit-project-status)
-  (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
+  (add-to-list 'project-switch-commands '(magit-project-status "Magit") t)
+  :config
+  ;; FYI: During a rebase, git replays your commits on top of the target branch,
+  ;; so the roles flip relative to a normal merge:
+  ;; - side "ours", the branch you're rebasing onto (upstream), smerge-keep-upper
+  ;; - side "theirs", the commit being replayed (your work), smerge-keep-lower
+  (defun my/resolve-conflicts-keep-lower ()
+    "Keep the lower (theirs, during rebase) side in every unmerged file, then stage."
+    (interactive)
+    (require 'smerge-mode)
+    (dolist (file (magit-unmerged-files))
+      (with-current-buffer (find-file-noselect file)
+        (goto-char (point-min))
+        (smerge-mode 1)
+        (while (smerge-next)
+          (smerge-keep-lower))
+        (save-buffer)
+        (magit-stage-file file)))
+    (magit-refresh)))
 
 ;; ;; Magit Forge. Forge allows you to work with Git forges, such as Github and
 ;; ;; Gitlab, from the comfort of Magit and the rest of Emacs.
@@ -2105,6 +2123,7 @@ The image is downloaded to the attach directory."
 
   :custom
   (evil-undo-system 'undo-redo)
+  (evil-want-fine-undo t)
   (evil-symbol-word-search t)
 
   :config
@@ -2358,6 +2377,8 @@ character correspondingly."
 ;; Your conduit to this mode of operation is the `embark-act' command, which you
 ;; should bind to a convienient key ("C-." in my case).
 (use-package embark
+  :custom
+  (embark-quit-after-action nil)
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding (also, specify
                                 ;; the binding for `embark-act' in :bind
