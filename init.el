@@ -2430,11 +2430,11 @@ character correspondingly."
                    :protocol "https"
                    :host "ai-gateway.zende.sk"
                    :key (lambda () (gptel-api-key-from-auth-source "ai-gateway.zende.sk"))
-                   :models '(gpt-5
-                             gpt-4.1
-                             gpt-4.1-mini)
+                   :models '(gpt-5.6-terra
+                             gpt-5.6-sol
+                             gpt-5.6-luna)
                    :stream t))
-  (gptel-model 'gpt-5)
+  (gptel-model 'gpt-5.6-terra)
   :commands (gptel gptel-send)
   :hook
   (gptel-mode . +reading-mode)
