@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/Users/snich/.config/emacs/elpa/vterm-20250929.1514/build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

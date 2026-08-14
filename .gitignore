@@ -26,3 +26,6 @@ eln-cache/
 # created them.
 /url/
 /request/
+
+# vterm's CMake build tree is generated locally.
+/elpa/vterm-*/build/
